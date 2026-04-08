@@ -12,12 +12,14 @@ header, div, ul, li, nav, a{
     margin: 0;
 }
 
+/* ------ NAV SECTION ------- */
+
 .nav {
     background-color: #006439;
     width: 100vw;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    justify-content: space-between;
+    align-items: center;
     position: fixed;
     top: 0;
     left: 0;
@@ -26,21 +28,26 @@ header, div, ul, li, nav, a{
 }
 
 .nav__logo {
-    width: 70px;
+    margin-left: 20px;
+    width: 60px;
+    max-width: 100%;
     object-fit: contain;
 }
 
-.nav__item {
+.nav__list_item {
     display: flex;
     align-items: center;
+    justify-content: center;
+    padding: 20px;
 }
 
-.nav__item:has(:not(.link--login)) {
+.nav__list_item:has(:not(.link--login)) {
+    border-bottom: 3px solid transparent;
     transition: border-bottom .3s;
 }
 
 
-.nav__item:hover:has(:not(.link--login)) {
+.nav__list_item:hover:has(:not(.link--login)) {
     border-bottom: 3px solid #f5f5f5;
 }
 
@@ -49,10 +56,8 @@ header, div, ul, li, nav, a{
     padding: 0;
     margin: 0;
     display: flex;
-    flex-wrap: wrap;
     list-style: none;
-    align-items: stretch;
-    justify-content: center;
+    margin-right: 60px;
 }
 
 .nav__link{
@@ -68,6 +73,7 @@ header, div, ul, li, nav, a{
     color: #006439;
     border-radius: 8px;
     font-weight: bold;
+    border: 2px solid transparent;
     transition: background-color .3s, border .23s;
 }
 
@@ -77,10 +83,15 @@ header, div, ul, li, nav, a{
     border: 2px solid #f5f5f5;
 }
 
+/* ------ NAV SECTION ENDS ------- */
+
+
+/* ------ HERO SECTION ------- */
+
 .hero {
     height: 100vh;
     width: 100%;
-    background-image: url(heroImage.png);
+    background-image: linear-gradient(#0009, #0009), url(heroImage.png);
     background-size: cover;
     background-position: center;
     display: flex;
@@ -88,16 +99,6 @@ header, div, ul, li, nav, a{
     flex-direction: column;
     justify-content: center;
     align-items: center;
-}
-
-.hero__overlay {
-    background-color: #0009;
-    box-sizing: border-box;
-    width: 100%;
-    height: 100vh;
-    position: absolute;
-    top: 0;
-    left: 0;
 }
 
 .hero__title, .hero__subtitle, .hero__button{
@@ -131,6 +132,7 @@ header, div, ul, li, nav, a{
     padding: 15px 30px;
     border-radius: 8px;
     background-color: #006439;
+    border: 2px solid transparent;
     transition: background-color .23s, border .23s;
 }
 
@@ -140,8 +142,41 @@ header, div, ul, li, nav, a{
     border: 2px solid #f5f5f5;
 }
 
-main {
-    font-size: 30px;
+/* ------ HERO SECTION ENDS ------- */
+
+.intro {
+    height: 100vh;
+    background-color: #00643925;
+}
+
+.intro__wrapper {
+    max-width: 1200px;
+    background-color: #f5f5f5;
+    border-radius: 20px;
+    margin: auto;
+    display: flex;
+}
+
+.intro__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px 30px;
+}
+
+.intro__title {
+    color: #1d8f5e;
+    font-weight: 800;
+    font-size: 2.5em;
+    text-align: center;
+    margin-bottom: 0;
+}
+
+.intro__description {
+    text-wrap: balance;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 
