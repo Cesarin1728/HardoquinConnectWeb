@@ -1,0 +1,169 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+/* --- RESET Y ESTILOS BASE --- */
+* { box-sizing: border-box; }
+
+body {
+    background: #f0f2f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* --- ESTILOS DE TEXTO --- */
+.texto-titulo { font-weight: bold; margin: 0; font-size: 2rem; color: #333; }
+.texto-blanco { color: #ffffff; font-weight: bold; font-size: 2.2rem; }
+.texto-ayuda { font-size: 12px; margin: 15px 0; color: #555; }
+.texto-parrafo { font-size: 14px; margin: 20px 0; line-height: 1.5; color: #fff; }
+
+/* --- CONTENEDOR MAESTRO --- */
+.autenticacion-container {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 14px 28px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+    width: 900px;
+    max-width: 100%;
+    min-height: 550px;
+}
+
+/* --- SECCIONES DE FORMULARIO --- */
+.formulario-wrapper {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    transition: all 0.6s ease-in-out;
+}
+
+.login-lado { left: 0; width: 50%; z-index: 2; }
+.registro-lado { left: 0; width: 50%; opacity: 0; z-index: 1; }
+
+/* Desplazamiento de los formularios según el estado activo */
+.autenticacion-container.estado-registro-activo .login-lado { transform: translateX(100%); }
+.autenticacion-container.estado-registro-activo .registro-lado {
+    transform: translateX(100%);
+    opacity: 1;
+    z-index: 5;
+}
+
+/*Iván no se baña*/
+.formulario-contenido {
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 60px;
+    height: 100%;
+    text-align: center;
+}
+
+.campo-entrada {
+    background-color: #f1f3f5;
+    border: none;
+    padding: 14px 15px;
+    margin: 8px 0;
+    width: 100%;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    outline: none;
+}
+
+/* --- BOTONES --- */
+.boton-accion {
+    border-radius: 6px;
+    border: none;
+    background-color: #43b69d;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 14px 50px;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 25px;
+    transition: transform 0.1s;
+}
+
+.boton-accion:active { transform: scale(0.95); }
+
+.boton-outline {
+    background-color: transparent;
+    border: 2px solid #ffffff;
+    color: #ffffff;
+    padding: 12px 45px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.boton-outline:active { transform: scale(0.95); }
+
+/* --- CAPA INTERACTIVA (PANEL VERDE) --- */
+.capa-interactiva-contenedor {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    transition: transform 0.6s ease-in-out;
+    z-index: 100;
+}
+
+.autenticacion-container.estado-registro-activo .capa-interactiva-contenedor {
+    transform: translateX(-100%);
+}
+
+.capa-interactiva-fondo {
+    background: linear-gradient(to right, #43b69d, #3ca38d);
+    color: #ffffff;
+    position: relative;
+    left: -100%;
+    height: 100%;
+    width: 200%;
+    transform: translateX(0);
+    transition: transform 0.6s ease-in-out;
+}
+
+.autenticacion-container.estado-registro-activo .capa-interactiva-fondo {
+    transform: translateX(50%);
+}
+
+.info-panel {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 40px;
+    text-align: center;
+    top: 0;
+    height: 100%;
+    width: 50%;
+    transition: transform 0.6s ease-in-out;
+}
+
+/* --- BORDES CURVOS EN LA UNIÓN --- */
+.info-izquierda { 
+    transform: translateX(-20%);
+    border-radius: 0 150px 150px 0; 
+}
+
+.autenticacion-container.estado-registro-activo .info-izquierda { 
+    transform: translateX(0); 
+}
+
+.info-derecha { 
+    right: 0; 
+    transform: translateX(0);
+    border-radius: 150px 0 0 150px;
+}
+
+.autenticacion-container.estado-registro-activo .info-derecha { 
+    transform: translateX(20%); 
+}
