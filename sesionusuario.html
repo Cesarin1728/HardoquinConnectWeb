@@ -7,9 +7,9 @@
     <link rel="stylesheet" href="sesionusuario.css">
 </head>
 <body>
-    <div class="autenticacion-container" id="panel-principal">
+    <section class="autenticacion-container" id="panel-principal">
         
-        <div class="formulario-wrapper registro-lado">
+        <section class="formulario-wrapper registro-lado">
             <form id="form-registro" class="formulario-contenido">
                 <h1 class="texto-titulo">Registrarse</h1>
                 <span class="texto-ayuda">Use su correo electrónico para registrarse</span>
@@ -18,9 +18,9 @@
                 <input type="password" id="reg-password" class="campo-entrada" placeholder="Contraseña" required />
                 <button type="submit" class="boton-accion">REGISTRARSE</button>
             </form>
-        </div>
+        </section>
 
-        <div class="formulario-wrapper login-lado">
+        <section class="formulario-wrapper login-lado">
             <form id="form-login" class="formulario-contenido">
                 <h1 class="texto-titulo">Iniciar Sesión</h1>
                 <span class="texto-ayuda">Use su correo y contraseña</span>
@@ -28,7 +28,7 @@
                 <input type="password" id="log-password" class="campo-entrada" placeholder="Contraseña" required />
                 <button type="submit" class="boton-accion">INICIAR SESIÓN</button>
             </form>
-        </div>
+        </section>
 
         <div class="capa-interactiva-contenedor">
             <div class="capa-interactiva-fondo">
@@ -44,7 +44,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="sesionusuario.js"></script>

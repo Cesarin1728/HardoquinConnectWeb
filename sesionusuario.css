@@ -4,7 +4,7 @@
 * { box-sizing: border-box; }
 
 body {
-    background: #f0f2f5;
+    background: #F4F6F7;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -14,14 +14,14 @@ body {
 }
 
 /* --- ESTILOS DE TEXTO --- */
-.texto-titulo { font-weight: bold; margin: 0; font-size: 2rem; color: #333; }
-.texto-blanco { color: #ffffff; font-weight: bold; font-size: 2.2rem; }
-.texto-ayuda { font-size: 12px; margin: 15px 0; color: #555; }
-.texto-parrafo { font-size: 14px; margin: 20px 0; line-height: 1.5; color: #fff; }
+.texto-titulo { font-weight: bold; margin: 0; font-size: 2rem; color: #0A2342; }
+.texto-blanco { color: #F3F3F3; font-weight: bold; font-size: 2.2rem; }
+.texto-ayuda { font-size: 12px; margin: 15px 0; color: #0D2646; }
+.texto-parrafo { font-size: 14px; margin: 20px 0; line-height: 1.5; color: #F3F3F3; }
 
 /* --- CONTENEDOR MAESTRO --- */
 .autenticacion-container {
-    background-color: #fff;
+    background-color: #F3F3F3;
     border-radius: 15px;
     box-shadow: 0 14px 28px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.1);
     position: relative;
@@ -77,8 +77,8 @@ body {
 .boton-accion {
     border-radius: 6px;
     border: none;
-    background-color: #43b69d;
-    color: #ffffff;
+    background-color: #1B4F72;
+    color: #F3F3F3;
     font-size: 12px;
     font-weight: bold;
     padding: 14px 50px;
@@ -92,8 +92,8 @@ body {
 
 .boton-outline {
     background-color: transparent;
-    border: 2px solid #ffffff;
-    color: #ffffff;
+    border: 2px solid #F3F3F3;
+    color: #F3F3F3;
     padding: 12px 45px;
     border-radius: 6px;
     font-weight: bold;
@@ -120,8 +120,8 @@ body {
 }
 
 .capa-interactiva-fondo {
-    background: linear-gradient(to right, #43b69d, #3ca38d);
-    color: #ffffff;
+    background: linear-gradient(to right, #1B4F72, #124669);
+    color: #F3F3F3;
     position: relative;
     left: -100%;
     height: 100%;
