@@ -10,6 +10,8 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const contenedor = document.getElementById('panel-principal');
 const btnIrARegistro = document.getElementById('activar-registro');
 const btnIrALogin = document.getElementById('activar-login');
+const linkIrARegistro = document.getElementById('ir-a-registro');
+const linkIrALogin = document.getElementById('ir-a-login');
 const formRegistro = document.getElementById('form-registro');
 const formLogin = document.getElementById('form-login');
 
@@ -23,6 +25,16 @@ btnIrARegistro.addEventListener('click', () => {
 btnIrALogin.addEventListener('click', () => {
     contenedor.classList.remove('estado-registro-activo');
 });
+
+linkIrARegistro.addEventListener('click', (e) => {
+    e.preventDefault();
+    contenedor.classList.add('estado-registro-activo');
+})
+
+linkIrALogin.addEventListener('click', (e) => {
+    e.preventDefault();
+    contenedor.classList.remove('estado-registro-activo');
+})
 
 /**
  * PROCESO DE REGISTRO

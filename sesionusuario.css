@@ -9,6 +9,7 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
+    height: 100dvh;
     margin: 0;
     font-family: 'Poppins', sans-serif;
 }
@@ -18,6 +19,8 @@ body {
 .texto-blanco { color: #F3F3F3; font-weight: bold; font-size: 2.2rem; }
 .texto-ayuda { font-size: 12px; margin: 15px 0; color: #0D2646; }
 .texto-parrafo { font-size: 14px; margin: 20px 0; line-height: 1.5; color: #F3F3F3; }
+.switch_movil, .switch_movil > a { display: none; font-size: 13px; color: #0D2646;}
+.switch_movil > a { text-decoration: underline; cursor: pointer;}
 
 /* --- CONTENEDOR MAESTRO --- */
 .autenticacion-container {
@@ -27,7 +30,7 @@ body {
     position: relative;
     overflow: hidden;
     width: 900px;
-    max-width: 100%;
+    max-width: 95%;
     min-height: 550px;
 }
 
@@ -35,15 +38,19 @@ body {
 .formulario-wrapper {
     position: absolute;
     top: 0;
+    left: 0;
+    width: 50%;
     height: 100%;
-    transition: all 0.6s ease-in-out;
 }
 
-.login-lado { left: 0; width: 50%; z-index: 2; }
-.registro-lado { left: 0; width: 50%; opacity: 0; z-index: 1; }
+.login-lado { width: 50%; z-index: 2; opacity: 1;}
+.registro-lado { width: 50%; opacity: 0; z-index: 1; }
 
 /* Desplazamiento de los formularios según el estado activo */
-.autenticacion-container.estado-registro-activo .login-lado { transform: translateX(100%); }
+.autenticacion-container.estado-registro-activo .login-lado { 
+    transform: translateX(100%); 
+}
+
 .autenticacion-container.estado-registro-activo .registro-lado {
     transform: translateX(100%);
     opacity: 1;
@@ -53,13 +60,16 @@ body {
 /*Iván no se baña*/
 .formulario-contenido {
     background-color: #ffffff;
+    position: absolute;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     padding: 0 60px;
+    width: 100%;
     height: 100%;
     text-align: center;
+    transition: all 0.6s ease-in-out;
 }
 
 .campo-entrada {
@@ -103,7 +113,7 @@ body {
 
 .boton-outline:active { transform: scale(0.95); }
 
-/* --- CAPA INTERACTIVA (PANEL VERDE) --- */
+/* --- CAPA INTERACTIVA (PANEL AZUL) --- */
 .capa-interactiva-contenedor {
     position: absolute;
     top: 0;
@@ -166,4 +176,58 @@ body {
 
 .autenticacion-container.estado-registro-activo .info-derecha { 
     transform: translateX(20%); 
+}
+
+/* ----- MEDIA QUERY PARA DISPOSITIVOS MENORES -------- */
+
+@media (max-width: 710px){
+    .formulario-wrapper {
+        background-color: pink;
+        width: 200%;
+        height: 100%;
+        display: flex;
+        transition: transform 0.6s ease-in-out;
+    }
+
+    .formulario-viewport {
+        background-color: coral;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .formulario-contenido {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        opacity: 1;
+        z-index: 10;
+    }
+
+    .autenticacion-container.estado-registro-activo .formulario-wrapper {
+        transform: translateX(-50%);
+    }
+
+    .autenticacion-container .formulario-wrapper {
+        transform: translateX(-50%);
+    }
+
+    #form-registro .texto-titulo,
+    #form-registro .texto-ayuda,
+    #form-registro .switch_movil,
+    #form-registro .switch_movil > a {
+        color: #F3F3F3;
+    }
+
+    #form-registro {
+        background-color: #0A2342;
+    }
+
+    #form-registro .boton-accion{
+        background-color: transparent;
+        outline: 2px solid #F3F3F3;
+    }
+    .switch_movil, .switch_movil > a { display: inline-block;}
+
+    .capa-interactiva-contenedor { display: none;}
 }
