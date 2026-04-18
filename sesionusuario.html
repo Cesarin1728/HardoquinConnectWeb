@@ -10,6 +10,14 @@
     <main class="autenticacion-container" id="panel-principal">
         <section class="formulario-viewport">
             <section class="formulario-wrapper">
+                <form id="form-login" class="formulario-contenido login-lado">
+                    <h1 class="texto-titulo">Iniciar Sesión</h1>
+                    <span class="texto-ayuda">Use su correo y contraseña</span>
+                    <input type="email" id="log-email" class="campo-entrada" placeholder="Email" required />
+                    <input type="password" id="log-password" class="campo-entrada" placeholder="Contraseña" required />
+                    <p class="switch_movil">No tienes una cuenta? <a id="ir-a-registro">Regístrate</a></p>
+                    <button type="submit" class="boton-accion">INICIAR SESIÓN</button>
+                </form>
                 <form id="form-registro" class="formulario-contenido registro-lado">
                     <h1 class="texto-titulo">Registrarse</h1>
                     <span class="texto-ayuda">Use su correo electrónico para registrarse</span>
@@ -18,14 +26,6 @@
                     <input type="password" id="reg-password" class="campo-entrada" placeholder="Contraseña" required />
                     <p class="switch_movil">Ya tienes cuenta? <a id="ir-a-login">Inicia Sesión</a></p>
                     <button type="submit" class="boton-accion">REGISTRARSE</button>
-                </form>
-                <form id="form-login" class="formulario-contenido login-lado">
-                    <h1 class="texto-titulo">Iniciar Sesión</h1>
-                    <span class="texto-ayuda">Use su correo y contraseña</span>
-                    <input type="email" id="log-email" class="campo-entrada" placeholder="Email" required />
-                    <input type="password" id="log-password" class="campo-entrada" placeholder="Contraseña" required />
-                    <p class="switch_movil">No tienes una cuenta? <a id="ir-a-registro">Regístrate</a></p>
-                    <button type="submit" class="boton-accion">INICIAR SESIÓN</button>
                 </form>
             </section>
         </section>

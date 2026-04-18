@@ -15,7 +15,7 @@ body {
 }
 
 /* --- ESTILOS DE TEXTO --- */
-.texto-titulo { font-weight: bold; margin: 0; font-size: 2rem; color: #0A2342; }
+.texto-titulo { font-weight: bold; margin: 0; font-size: 2rem; color: #1B4F72; }
 .texto-blanco { color: #F3F3F3; font-weight: bold; font-size: 2.2rem; }
 .texto-ayuda { font-size: 12px; margin: 15px 0; color: #0D2646; }
 .texto-parrafo { font-size: 14px; margin: 20px 0; line-height: 1.5; color: #F3F3F3; }
@@ -182,7 +182,8 @@ body {
 
 @media (max-width: 710px){
     .formulario-wrapper {
-        background-color: pink;
+        top: 0;
+        left: 0;
         width: 200%;
         height: 100%;
         display: flex;
@@ -190,7 +191,6 @@ body {
     }
 
     .formulario-viewport {
-        background-color: coral;
         width: 100%;
         height: 100%;
         overflow: hidden;
@@ -201,7 +201,7 @@ body {
         width: 100%;
         height: 100%;
         opacity: 1;
-        z-index: 10;
+        transform: none !important;
     }
 
     .autenticacion-container.estado-registro-activo .formulario-wrapper {
@@ -209,7 +209,7 @@ body {
     }
 
     .autenticacion-container .formulario-wrapper {
-        transform: translateX(-50%);
+        transform: translateX(0);
     }
 
     #form-registro .texto-titulo,
@@ -220,7 +220,7 @@ body {
     }
 
     #form-registro {
-        background-color: #0A2342;
+        background-color: #1B4F72;
     }
 
     #form-registro .boton-accion{
