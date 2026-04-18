@@ -4,6 +4,7 @@ body, ul, li, nav, header, section, article, a, button, h2, h1, h3 {
     margin: 0;
     padding: 0;
     font-family: 'Poppins', sans-serif;
+    scroll-behavior: smooth;
 }
 
 * {
@@ -13,13 +14,11 @@ body, ul, li, nav, header, section, article, a, button, h2, h1, h3 {
 /* -------- NAVBAR SECTION ---------- */
 
 .navbar {
-    background-color: aqua;
+    background-color: #0D2646;
     display: flex;
-    border: 2px solid black;
     justify-content: space-between;
     align-items: center;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding: 6px 20px;
     container-name: navbar;
     container-type: normal;
     width: 100%;
@@ -30,7 +29,6 @@ body, ul, li, nav, header, section, article, a, button, h2, h1, h3 {
 }
 
 .nav__list {
-    background-color: red;
     display: flex;
     list-style: none;
     justify-content: space-evenly;
@@ -46,6 +44,7 @@ body, ul, li, nav, header, section, article, a, button, h2, h1, h3 {
 
 .nav__link {
     text-decoration: none;
+    color: #F3F3F3;
     font-size: 1.2rem;
 }
 
@@ -53,7 +52,8 @@ body, ul, li, nav, header, section, article, a, button, h2, h1, h3 {
     display: none;
 }
 
-.nav__user_dropdown  {
+.nav__user_info  {
+    cursor: pointer;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -71,6 +71,7 @@ body, ul, li, nav, header, section, article, a, button, h2, h1, h3 {
 
 .nav__username {
     font-size: 1.2rem;
+    color: #F3F3F3;
     font-family: inherit;
 }
 
@@ -84,20 +85,37 @@ body, ul, li, nav, header, section, article, a, button, h2, h1, h3 {
     background-size: cover;
     display: flex;
     flex-direction: column;
-    align-items: start;
+    align-items: center;
     justify-content: center;
-
 }
 
 .hero__title, .hero__subtitle, .hero__button {
     color: #fafafa;
-
+    text-align: center;
 }
 
 .hero__title {
     font-size: 4rem;
     text-wrap: balance;
-    width: 45%;
-    background-color: aquamarine;
+    width: 55%;
+}
+
+.hero__subtitle {
+    font-size: 1em;
+    text-wrap: balance;
+    width: 56%;
+}
+
+.hero__button {
+    margin-top: 25px;
+    text-decoration: none;
+    padding: 13px 20px;
+    outline: 2px solid #F3F3F3;
+    border-radius: 10px;
+    transition: transform 0.1s;
+}
+
+.hero__button:active {
+    transform: scale(0.95);
 }
 /* -------- HERO ENDS ---------- */
