@@ -12,13 +12,13 @@ body, ul, li, nav, header, section, article, a, button, h2, h1, h3 {
 }
 
 /* -------- NAVBAR SECTION ---------- */
-
 .navbar {
     background-color: #0D2646;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 6px 20px;
+    padding: 6px;
+    height: 8.5vh;
     container-name: navbar;
     container-type: normal;
     width: 100%;
@@ -26,6 +26,13 @@ body, ul, li, nav, header, section, article, a, button, h2, h1, h3 {
     top: 0;
     left: 0;
     z-index: 10;
+}
+
+.navbar__logo {
+    height: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    width: auto;
 }
 
 .nav__list {
@@ -81,6 +88,7 @@ body, ul, li, nav, header, section, article, a, button, h2, h1, h3 {
 
 .hero__wrapper {
     height: 100vh;
+    width: 100%;
     background-image: linear-gradient(#05183099, #05183099), url(../Assets/adoquinesHero.jpg);
     background-size: cover;
     display: flex;
