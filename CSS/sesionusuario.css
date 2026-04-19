@@ -173,6 +173,52 @@ body {
     transform: translateX(20%); 
 }
 
+.selector-avatar-container {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.opciones-avatar {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.avatar-opcion {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    object-fit: cover;
+    background-color: #f1f3f5;
+}
+
+.avatar-opcion:hover {
+    transform: scale(1.1);
+}
+
+.avatar-opcion.seleccionada {
+    border-color: #1B4F72;
+    box-shadow: 0 0 8px rgba(27, 79, 114, 0.4);
+}
+
+#foto-usuario-login {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #1B4F72;
+    margin-top: 15px;
+}
+
+#nombre-usuario-login {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1B4F72;
+    margin: 5px 0 0 0;
+}
 /* ----- MEDIA QUERY PARA DISPOSITIVOS MENORES -------- */
 
 @media (max-width: 710px){

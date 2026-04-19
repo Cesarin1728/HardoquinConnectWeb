@@ -15,6 +15,23 @@ const linkIrALogin = document.getElementById('ir-a-login');
 const formRegistro = document.getElementById('form-registro');
 const formLogin = document.getElementById('form-login');
 
+// --- LÓGICA DE SELECCIÓN DE AVATAR ---
+let rutaFotoSeleccionada = 'Assets/ImagenesPerfil/usuarioimg0.png'; // Ruta por defecto
+const avatares = document.querySelectorAll('.avatar-opcion');
+
+avatares.forEach(avatar => {
+    avatar.addEventListener('click', () => {
+        // Quitar la clase seleccionada de todos los avatares
+        avatares.forEach(img => img.classList.remove('seleccionada'));
+        
+        // Añadir la clase al avatar clickeado
+        avatar.classList.add('seleccionada');
+        
+        // Obtener la ruta del atributo data-ruta
+        rutaFotoSeleccionada = avatar.getAttribute('data-ruta');
+    });
+});
+
 /**
  * CONTROL DE ANIMACIÓN
  */
@@ -50,7 +67,8 @@ formRegistro.addEventListener('submit', async (e) => {
     const { error } = await supabaseClient.rpc('registrar_usuario', {
         p_username: username,
         p_clave: password,
-        p_correo: email
+        p_correo: email,
+        p_foto: rutaFotoSeleccionada // Se envía la ruta de la imagen seleccionada
     });
 
     if (error) {
@@ -60,6 +78,12 @@ formRegistro.addEventListener('submit', async (e) => {
 
     alert('Registro exitoso');
     formRegistro.reset();
+    
+    // Resetear visualmente el avatar al primero después del registro
+    avatares.forEach(img => img.classList.remove('seleccionada'));
+    if(avatares[0]) avatares[0].classList.add('seleccionada');
+    rutaFotoSeleccionada = 'Assets/ImagenesPerfil/usuarioimg0.png';
+
     contenedor.classList.remove('estado-registro-activo');
 });
 
@@ -93,5 +117,28 @@ formLogin.addEventListener('submit', async (e) => {
     // Guardar sesión en sessionStorage
     sessionStorage.setItem('usuario', JSON.stringify(usuario));
 
-    alert(`¡Hola de nuevo, ${usuario.username}!`);
+    // alert(`¡Hola de nuevo, ${usuario.username}!`);
+
+    // Mostrar foto de perfil y nombre de usuario en el panel de login
+    console.log('Usuario logueado:', usuario.username);
+
+    const fotoExistente = document.getElementById('foto-usuario-login');
+    if (fotoExistente) fotoExistente.remove();
+
+    const fotoEl = document.createElement('img');
+    fotoEl.id = 'foto-usuario-login';
+    fotoEl.src = `../${usuario.foto || 'Assets/ImagenesPerfil/usuarioimg0.png'}`;
+    fotoEl.alt = usuario.username;
+
+    document.getElementById('form-login').appendChild(fotoEl);
+
+    // Mostrar el nombre de usuario
+    const nombreExistente = document.getElementById('nombre-usuario-login');
+    if (nombreExistente) nombreExistente.remove();
+
+    const nombreEl = document.createElement('p');
+    nombreEl.id = 'nombre-usuario-login';
+    nombreEl.textContent = usuario.username;
+
+    document.getElementById('form-login').appendChild(nombreEl);
 });
