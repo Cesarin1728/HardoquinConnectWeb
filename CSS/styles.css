@@ -15,6 +15,11 @@
     top: 0;
     left: 0;
     z-index: 10;
+    /* position: fixed;
+    width: 100%;
+    background: rgba(13, 38, 70, 0.6); /* tu color oscuro */
+    /* backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255,255,255,0.08); */ 
 }
 
 .navbar__logo {
@@ -78,7 +83,7 @@
 .hero__wrapper {
     height: 100vh;
     width: 100%;
-    background-image: linear-gradient(#05183099, #05183099), url(../Assets/adoquinesHero.jpg);
+    background-image: linear-gradient(rgba(13, 38, 70, 0.6),rgba(13, 38, 70, 0.85)), url(../Assets/adoquinesHero.jpg);
     background-size: cover;
     display: flex;
     flex-direction: column;
@@ -94,13 +99,19 @@
 .hero__title {
     font-size: 4rem;
     text-wrap: balance;
-    width: 55%;
+    /* width: 55%; */
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    max-width: 700px;
+    line-height: 1.1;
 }
 
 .hero__subtitle {
     font-size: 1em;
     text-wrap: balance;
-    width: 56%;
+    /* width: 56%; */
+    max-width: 500px;
+    opacity: 0.85;
+    margin-top: 1rem;
 }
 
 .hero__button {
@@ -110,9 +121,45 @@
     outline: 2px solid var(--color-blanco);
     border-radius: 10px;
     transition: transform 0.1s;
+    /* margin-top: 20px;
+    text-decoration: none;
+    background: #028090;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.6rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    backdrop-filter: blur(6px); */
 }
 
 .hero__button:active {
     transform: scale(0.95);
 }
+
+.hero__button:hover {
+    background: #1B4F72;
+    transform: translateY(-2px);
+}
 /* -------- HERO ENDS ---------- */
+
+/* -------- SOLUTION SECTION ---------- */
+
+.solution {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.solution__wrapper {
+    display: flex;
+    max-height: 80vh;
+    width: 90%;
+    justify-content: space-evenly;
+    background-color: pink;
+}
+.solution__video {
+    background-color: black;
+}

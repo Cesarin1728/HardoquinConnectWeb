@@ -3,10 +3,10 @@
 /* --- RESET Y ESTILOS BASE --- */
 
 body {
-    background: #F4F6F7;
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 100vh;
 }
 
 /* --- ESTILOS DE TEXTO --- */
