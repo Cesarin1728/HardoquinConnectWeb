@@ -14,7 +14,7 @@ body {
 .texto-blanco { color: #F3F3F3; font-weight: bold; font-size: 2.2rem; }
 .texto-ayuda { font-size: 12px; margin: 15px 0; color: #0D2646; }
 .texto-parrafo { font-size: 14px; margin: 20px 0; line-height: 1.5; color: #F3F3F3; }
-.switch_movil, .switch_movil > a { display: none; font-size: 13px; color: #0D2646;}
+.switch_movil, .switch_movil > a { display: none; font-size: 13px; color: #0D2646; margin-top: 15px;}
 .switch_movil > a { text-decoration: underline; cursor: pointer;}
 
 /* --- CONTENEDOR MAESTRO --- */
@@ -266,6 +266,7 @@ body {
     #form-registro .boton-accion{
         background-color: transparent;
         outline: 2px solid #F3F3F3;
+        margin-top: 20px;
     }
     .switch_movil, .switch_movil > a { display: inline-block;}
 

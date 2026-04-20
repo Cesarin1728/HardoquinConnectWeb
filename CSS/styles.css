@@ -6,7 +6,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 6px;
+    padding: 0 20px;
     height: 8.5vh;
     container-name: navbar;
     container-type: normal;
@@ -24,12 +24,13 @@
 
 .navbar__logo {
     height: 100%;
-    aspect-ratio: 1;
+    aspect-ratio: 2 /1;
     object-fit: cover;
     width: auto;
 }
 
 .nav__list {
+    height: 8.5vh;
     display: flex;
     list-style: none;
     justify-content: space-evenly;
@@ -38,9 +39,15 @@
 }
 
 .nav__list_item {
-    display: block;
-    padding-bottom: 10px;
-    padding-top: 10px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    border-bottom: 3px solid transparent;
+}
+
+.nav__list_item:not(:has(.nav__user_info)):hover {
+    border-bottom: 3px solid var(--color-blanco);
 }
 
 .nav__link {
@@ -58,15 +65,23 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    background-color: transparent;
+    padding: 6px 15px;
+    border-radius: 40px;
+    background-color: var(--color-acento-azul);
     outline: none;
     border: none;
+    box-shadow: 6px 8px 10px #0006;
     transition: opacity 0.3s ease-in-out;
 }
 
+.nav__user_info:hover {
+    opacity: 70%;
+    border-bottom: none;
+}
 .nav__img_perfil {
     border-radius: 50%;
-    width: 100%;
+    width: 40px;
+    aspect-ratio: 1;
     object-fit: contain;
 }
 
@@ -80,11 +95,25 @@
 
 /* -------- HERO SECTION ---------- */
 
+#hero {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+}
+
+#hero__canvas {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
 .hero__wrapper {
     height: 100vh;
     width: 100%;
-    background-image: linear-gradient(rgba(13, 38, 70, 0.6),rgba(13, 38, 70, 0.85)), url(../Assets/adoquinesHero.jpg);
-    background-size: cover;
+    position: relative;
+    /* background-image: linear-gradient(rgba(13, 38, 70, 0.6),rgba(13, 38, 70, 0.85)), url(../Assets/adoquinesHero.jpg);
+    background-size: cover; */
     display: flex;
     flex-direction: column;
     align-items: center;

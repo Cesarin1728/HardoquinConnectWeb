@@ -11,7 +11,7 @@
     <header class="header">
         <section class="navbar">
             <button class="navbar__toggle" aria-label="Abrir el menú de navegación">E</button>
-            <img src="Assets/logoimg.png" alt="Logo de Hardoquin Connect" class="navbar__logo" width="50px" height="50px">
+            <img src="Assets/logoimg2.png" alt="Logo de Hardoquin Connect" class="navbar__logo" width="50px" height="50px">
             <nav class="navbar__nav">
                 <ul class="nav__list">
                     <li class="nav__list_item">
@@ -25,14 +25,15 @@
                     </li>
                     <li class="nav__list_item">
                         <button class="nav__user_info">
+                            <img src="Assets/ImagenesPerfil/usuarioimg0.png" alt="Imagen de Foto de Perfil del Usuario" class="nav__img_perfil">
                             <span class="nav__username">Username</span>
-                            <img src="Assets/imagenPerfil.png" alt="Imagen de Foto de Perfil del Usuario" class="nav__img_perfil" width="50px" height="50px">
                         </button>
                     </li>
                 </ul>
             </nav>
         </section>
-        <section class="hero">
+        <section id="hero">
+            <canvas id="hero__canvas"></canvas>
             <div class="hero__wrapper">
                 <h2 class="hero__title">El suelo que transforma tu ciudad</h2>
                 <p class="hero__subtitle">Descubre como Hardoquin transforma el suelo urbano a través de simulaciones y ánalisis interactivos.</p>
@@ -133,5 +134,6 @@
     <footer>
 
     </footer>
+    <script type="module" src="Js/main-landingPage.js"></script>
 </body>
 </html>
