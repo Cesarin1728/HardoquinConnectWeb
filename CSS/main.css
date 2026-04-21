@@ -9,16 +9,17 @@
 body {
     scroll-behavior: smooth;
     font-family: 'Poppins', sans-serif;
-    background-color: var(--color-fondo);
+    background-color: rgb(var(--color-fondo));
 }
 
 :root {
-    --color-primario: #1B4F72;
-    --color-oscuro: #0D2646;
-    --color-acento-azul: #028090;
-    --color-acento-verde: #52B788;
-    --color-claro: #A9CCE3;
-    --color-fondo: #F4F6F7;
-    --color-fondo-oscuro: #dee4e6;
-    --color-blanco: #F3F3F3;
+    --color-primario: 27, 79, 114;
+    --color-oscuro: 13, 36, 70;
+    --color-texto: 52, 73, 94;
+    --color-acento-azul: 2, 128, 144;
+    --color-acento-verde: 82, 183, 136;
+    --color-claro: 169, 204, 227;
+    --color-fondo: 244, 246, 247;
+    --color-fondo-oscuro: 222, 228, 230;
+    --color-blanco: 243, 243, 243;
 }

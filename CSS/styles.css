@@ -2,7 +2,7 @@
 
 /* -------- NAVBAR SECTION ---------- */
 .navbar {
-    background-color: var(--color-oscuro);
+    background-color: rgb(var(--color-oscuro));
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -38,6 +38,7 @@
 }
 
 .nav__list_item {
+    cursor: pointer;
     height: 100%;
     display: flex;
     align-items: center;
@@ -46,12 +47,12 @@
 }
 
 .nav__list_item:not(:has(.nav__user_info)):hover {
-    border-bottom: 3px solid var(--color-blanco);
+    border-bottom: 3px solid rgb(var(--color-blanco));
 }
 
 .nav__link {
     text-decoration: none;
-    color: var(--color-blanco);
+    color: rgb(var(--color-blanco));
     font-size: 1.2rem;
 }
 
@@ -66,7 +67,7 @@
     gap: 12px;
     padding: 6px 15px;
     border-radius: 40px;
-    background-color: var(--color-acento-azul);
+    background-color: rgb(var(--color-acento-azul));
     outline: none;
     border: none;
     box-shadow: 6px 8px 10px #0006;
@@ -86,7 +87,7 @@
 
 .nav__username {
     font-size: 1.2rem;
-    color: var(--color-blanco);
+    color: rgb(var(--color-blanco));
     font-family: inherit;
 }
 
@@ -125,7 +126,7 @@
 }
 
 .hero__title, .hero__subtitle, .hero__button {
-    color: var(--color-blanco);
+    color: rgb(var(--color-blanco));
     text-align: center;
 }
 
@@ -143,7 +144,7 @@
 }
 
 .hero__title span {
-    color: var(--color-acento-verde)
+    color: rgb(var(--color-acento-verde));
 }
 
 .hero__subtitle {
@@ -159,7 +160,7 @@
     margin-top: 25px;
     text-decoration: none;
     padding: 13px 20px;
-    outline: 2px solid var(--color-blanco);
+    outline: 2px solid rgb(var(--color-blanco));
     border-radius: 10px;
     transition: transform 0.2s, background-color 0.2s;
 }
@@ -174,22 +175,104 @@
 }
 /* -------- HERO ENDS ---------- */
 
+/* -------- REUTILIZABLE SECTION ---------- */
+
+main section {
+    padding: 30px;
+    height: 100vh;
+}
+.section-header {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: space-evenly;
+    gap: 10px;
+}
+
+.section-header__intro {
+    color: rgb(var(--color-acento-azul));
+    font-size: 1.2em;
+}
+
+.section-header__title {
+    font-size: 2.4em;
+}
+
+.section-header__title > span {
+    color: rgb(var(--color-acento-azul));
+}
+
+.section-header__description {
+    font-size: 0.9em;
+    color: rgb(var(--color-texto));
+}
+
+
+/* -------- REUTILIZABLE ENDS ---------- */
+
+
 /* -------- SOLUTION SECTION ---------- */
 
-.solution {
-    height: 100vh;
+#solution {
     display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: space-evenly;
+}
+
+.solution__content {
+    flex-grow: 0.2;
+    display: grid;
+    gap: 30px;
+    max-height: 90vh;
+    width: 90%;
+    grid-template-columns: 1.2fr 1fr;
+    justify-items: center;
     align-items: center;
     justify-content: center;
 }
 
-.solution__wrapper {
-    display: flex;
-    max-height: 80vh;
-    width: 90%;
-    justify-content: space-evenly;
-    background-color: pink;
-}
 .solution__video {
     background-color: black;
+    width: 90%;
+    aspect-ratio: 1.2 / 1;
 }
+
+.solution__info {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.solution-card {
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+    border-radius: 20px;
+    border: 1px solid rgb(var(--color-fondo-oscuro));
+}
+
+.solution-card__title {
+    color: rgb(var(--color-acento-azul));
+    font-size: 1.7em;
+    font-weight: 600;
+}
+
+.solution-card__description {
+    color: rgb(var(--color-texto));
+}
+
+.solution-card--conclusion {
+    background-color: rgba(var(--color-acento-verde), 0.1);
+    border: 1px solid rgb(var(--color-acento-verde));
+}
+
+.solution-card--conclusion > .solution-card__title {
+    color: color-mix(in srgb, rgb(var(--color-acento-verde)) 60%, black);;
+}
+
+/* -------- SOLUTION ENDS ---------- */
