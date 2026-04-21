@@ -92,6 +92,13 @@
 
 /* -------- NAVBAR ENDS ---------- */
 
+/* -------- DROPDOWN SECTION ---------- */
+
+.nav__user_dropdown {
+    display: none;
+}
+/* -------- DROPDOWN ENDS ---------- */
+
 /* -------- HERO SECTION ---------- */
 
 #hero {
@@ -128,6 +135,15 @@
     font-size: clamp(2.5rem, 5vw, 4rem);
     max-width: 700px;
     line-height: 1.1;
+    font-weight: 400;
+}
+
+.hero__title--segunda-linea {
+    font-weight: 800;
+}
+
+.hero__title span {
+    color: var(--color-acento-verde)
 }
 
 .hero__subtitle {
