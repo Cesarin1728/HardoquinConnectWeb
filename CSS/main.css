@@ -12,6 +12,9 @@ body {
     background-color: rgb(var(--color-fondo));
 }
 
+p {
+    color: rgb(var(--color-texto));
+}
 :root {
     --color-primario: 27, 79, 114;
     --color-oscuro: 13, 36, 70;
@@ -19,7 +22,7 @@ body {
     --color-acento-azul: 2, 128, 144;
     --color-acento-verde: 82, 183, 136;
     --color-claro: 169, 204, 227;
-    --color-fondo: 244, 246, 247;
-    --color-fondo-oscuro: 222, 228, 230;
+    --color-fondo: 247, 249, 252;
+    --color-fondo-oscuro: 233, 238, 244;
     --color-blanco: 243, 243, 243;
 }
