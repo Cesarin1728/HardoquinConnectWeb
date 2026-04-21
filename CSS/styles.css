@@ -234,7 +234,6 @@
 }
 
 .solution__video {
-    background-color: black;
     width: 90%;
     aspect-ratio: 1.2 / 1;
 }
@@ -415,6 +414,8 @@
 .characteristics__tabs-item {
     padding: 10px 40px;
     cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: border 0.3s, color 0.3s;
 }
 
 .characteristics__tabs-item--active {
