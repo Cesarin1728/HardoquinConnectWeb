@@ -4,8 +4,8 @@
 .navbar {
     background-color: rgb(var(--color-oscuro));
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     padding: 0 20px;
     height: 8.5vh;
     container-name: navbar;
@@ -34,20 +34,22 @@
     display: flex;
     list-style: none;
     justify-content: space-evenly;
-    gap: 50px;
+    align-self: end;
 }
 
 .nav__list_item {
     cursor: pointer;
+    flex-grow: 1;
     height: 100%;
     display: flex;
     align-items: center;
-    padding: 0 10px;
+    padding: 0 30px;
     border-bottom: 3px solid transparent;
 }
 
 .nav__list_item:not(:has(.nav__user_info)):hover {
-    border-bottom: 3px solid rgb(var(--color-blanco));
+    background-image: linear-gradient(to top, rgba(var(--color-acento-azul), 0.4), transparent, transparent);
+    border-bottom: 3px solid rgb(var(--color-acento-azul), 0.4);
 }
 
 .nav__link {
@@ -89,6 +91,7 @@
     font-size: 1.2rem;
     color: rgb(var(--color-blanco));
     font-family: inherit;
+    font-weight: 400;
 }
 
 /* -------- NAVBAR ENDS ---------- */
@@ -177,6 +180,15 @@
 
 /* -------- REUTILIZABLE SECTION ---------- */
 
+.section {
+    height: 100vh;
+    width: 100%;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: space-evenly;
+}
 
 .section-header {
     display: flex;
@@ -211,7 +223,7 @@
 
 /* -------- SOLUTION SECTION ---------- */
 
-#solution {
+/* #solution {
     display: flex;
     flex-direction: column;
     align-items: start;
@@ -219,7 +231,7 @@
     height: 100vh;
     width: 100%;
     padding: 50px;
-}
+} */
 
 .solution__content {
     flex-grow: 0.2;
@@ -272,7 +284,7 @@
 }
 
 .solution-card--conclusion > .solution-card__title {
-    color: color-mix(in srgb, rgb(var(--color-acento-verde)) 60%, black);;
+    color: color-mix(in srgb, rgb(var(--color-acento-verde)) 60%, black);
 }
 
 /* -------- SOLUTION ENDS ---------- */
@@ -281,8 +293,7 @@
 
 /* -------- BENEFITS SECTION ---------- */
 
-#benefits {
-    background-color: rgb(var(--color-fondo-oscuro));
+/* #benefits {
     display: flex;
     flex-direction: column;
     align-items: start;
@@ -290,8 +301,13 @@
     height: 100vh;
     width: 100%;
     padding: 50px;
-}
+} */
 
+.section--dark {
+    background-color: rgb(var(--color-fondo-oscuro));
+    border-bottom: 1px solid color-mix(in srgb, rgb(var(--color-fondo-oscuro)) 90%, black);
+    border-top: 1px solid color-mix(in srgb, rgb(var(--color-fondo-oscuro)) 90%, black);
+}
 .benefits-slider {
     width: 100%;
     height: auto;
@@ -350,24 +366,25 @@
     border-radius: 20px 20px 0 0;
 }
 
-.benefits-slider__track .benefits-card:nth-child(1) .benefits-card__img_wrapper {
+.benefits-slider__track .benefits-card:nth-child(2n) .benefits-card__img_wrapper {
     background-image: linear-gradient(135deg, rgb(var(--color-oscuro)), rgb(var(--color-acento-azul)));
 }
 
-.benefits-slider__track .benefits-card:nth-child(2) .benefits-card__img_wrapper {
+.benefits-slider__track .benefits-card:nth-child(2n+1) .benefits-card__img_wrapper {
     background-image: linear-gradient(135deg, rgb(var(--color-acento-azul)), rgb(var(--color-acento-verde)));
 }
 
-.benefits-slider__track .benefits-card:nth-child(3) .benefits-card__img_wrapper {
+/* .benefits-slider__track .benefits-card:nth-child(3) .benefits-card__img_wrapper {
     background-image: linear-gradient(135deg, rgb(var(--color-texto)), rgb(var(--color-acento-azul)));
 }
 
 .benefits-slider__track .benefits-card:nth-child(4) .benefits-card__img_wrapper {
     background-image: linear-gradient(135deg, rgb(var(--color-acento-azul)), rgb(var(--color-oscuro)));
-}
+} */
 
 .benefits-card__info {
-    padding: 8px 10px;
+    padding: 8px 12px;
+    text-align: center;
 }
 
 .benefits-card__intro {
@@ -390,15 +407,9 @@
 
 /* -------- CHARACTERISTICS SECTION ---------- */
 
-#characteristics {
-    height: 100vh;
-    width: 100%;
-    padding: 50px;
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    justify-content: space-evenly;
-}
+/* #characteristics {
+    
+} */
 
 .characteristics__tabs {
     width: 100%;
@@ -473,9 +484,21 @@
 
 .characteristics__panel-item--diferenciador {
     list-style: none;
+    color: rgb(var(--color-acento-verde));
     border-radius: 20px;
     padding: 20px;
-    background-color: rgba(var(--color-acento-azul), 0.1);
-    border: 0.5px solid rgb(var(--color-acento-azul));
+    background-color: rgba(var(--color-acento-verde), 0.1);
+    border: 0.5px solid rgb(var(--color-acento-verde));
 }
 /* -------- CHARACTERISTICS ENDS ---------- */
+
+
+/* -------- SERVICES SECTION ---------- */
+
+/* #services {
+    height: 100vh;
+    width: 100%;
+    padding: 50px;
+} */
+
+/* -------- SERVICES ENDS ---------- */
