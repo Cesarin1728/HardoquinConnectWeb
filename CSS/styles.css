@@ -252,6 +252,11 @@
 .solution__video {
     width: 90%;
     aspect-ratio: 1.2 / 1;
+    background-color: transparent;
+    outline: none;
+    border: none;
+    object-fit: cover;
+    transform: scale(1.01);
 }
 
 .solution__info {
@@ -538,7 +543,7 @@
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 8px;
+    padding: 20px 15px;
     border: 1px solid rgb(var(--color-fondo-oscuro));
 }
 /* -------- SERVICES ENDS ---------- */
