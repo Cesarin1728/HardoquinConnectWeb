@@ -27,3 +27,9 @@ p {
     --color-blanco: 243, 243, 243;
     --color-gris-claro: 220, 226, 235;
 }
+
+.icon {
+    width: 32px;
+    aspect-ratio: 1;
+    color: rgb(var(--color-oscuro));
+}

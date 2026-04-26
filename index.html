@@ -102,7 +102,7 @@
                     <div class="benefits-slider__track">
                         <article class="benefits-card">
                             <div class="benefits-card__img_wrapper">
-                                <img src="Assets/Iconos/PermiabilidadIcono.png" alt="Ícono representativo de permeabilidad del Hardoquin" class="benefits-card__img" width="100px" height="100px">
+                                <i data-lucide="waves-arrow-down" class="benefits-card__icon"></i>
                             </div>
                             <div class="benefits-card__info">
                                 <strong class="benefits-card__intro">PERMEABILIDAD</strong>
@@ -112,7 +112,7 @@
                         </article>
                         <article class="benefits-card">
                             <div class="benefits-card__img_wrapper">
-                                <img src="Assets/Iconos/CostoIcono.png" alt="Ícono representativo del costo del Hardoquin" class="benefits-card__img" width="100px" height="100px">
+                                <i data-lucide="dollar-sign" class="benefits-card__icon"></i>                            
                             </div>
                             <div class="benefits-card__info">
                                 <strong class="benefits-card__intro">
@@ -128,7 +128,7 @@
                         </article>
                         <article class="benefits-card">
                             <div class="benefits-card__img_wrapper">
-                                <img src="Assets/Iconos/TraficoIcono.png" alt="Ícono representativo del nivel de tráfico que soporta Hardoquin" class="benefits-card__img" width="100px" height="100px">
+                                <i data-lucide="car" class="benefits-card__icon"></i>
                             </div>
                             <div class="benefits-card__info">
                                 <strong class="benefits-card__intro">
@@ -144,7 +144,7 @@
                         </article>
                         <article class="benefits-card">
                             <div class="benefits-card__img_wrapper">
-                                <img src="Assets/Iconos/DurabilidadIcono.png" alt="Ícono representativo del módulo de durabilidad del Hardoquin" class="benefits-card__img" width="100px" height="100px">
+                                <i data-lucide="clock-arrow-up" class="benefits-card__icon"></i>
                             </div>
                             <div class="benefits-card__info">
                                 <strong class="benefits-card__intro">
@@ -296,49 +296,97 @@
             </header>
             <div class="services__wrapper">
                 <article class="services-card">
-                    <img src="Assets/Iconos/SimulacionIcono.png" alt="Ícono representativo del módulo de simulación" class="card__img" width="100px" height="100px">
-                    <h3 class="services-card__title">Simulación</h3>
-                    <p class="services-card__description">Realiza simulaciones del beneficio de Hardoquin en base a datos de un caso real.</p>
+                    <i data-lucide="brain-circuit" class="icon services-card__icon"></i>
+                    <h3 class="services-card__title">Análisis de Impacto</h3>
+                    <p class="services-card__description">Evalúa los beneficios de implementar Hardoquin en un entorno específico, estimando reducción de inundaciones, infiltración de agua y rendimiento del sistema.</p>
                 </article>
                 <article class="services-card">
-                    <img src="Assets/Iconos/CotizacionIcono.png" alt="Ícono representativo del módulo de simulación" class="card__img" width="100px" height="100px">
+                    <i data-lucide="calculator" class="icon services-card__icon"></i>
                     <h3 class="services-card__title">Cotización</h3>
-                    <p class="services-card__description">Cotiza el costo de aplicación del Hardoquin en base a datos de un caso real.</p>
+                    <p class="services-card__description">Calcula el costo estimado de implementación con base en las condiciones del proyecto, considerando el área que se desea cubrir en metros cuadrados.</p>
                 </article>
                 <article class="services-card">
-                    <img src="Assets/Iconos/ComparacionIcono.png" alt="Ícono representativo del módulo de simulación" class="card__img" width="100px" height="100px">
+                    <i data-lucide="chart-column" class="icon services-card__icon"></i>
                     <h3 class="services-card__title">Comparativa</h3>
-                    <p class="servcices-card__description">Compara Hardoquin con otros materiales en base a datos de un caso real.</p>
+                    <p class="services-card__description">Compara el desempeño de Hardoquin frente a otros materiales, analizando variables como permeabilidad, durabilidad y costos a largo plazo.</p>
+                </article>
+                <article class="services-card">
+                    <i data-lucide="messages-square" class="icon services-card__icon"></i>
+                    <h3 class="services-card__title">Tablón Comunitario</h3>
+                    <p class="services-card__description">Espacio donde usuarios pueden compartir experiencias, resolver dudas y aportar información sobre Hardoquin, con posibilidad de interactuar, responder y filtrar por categorías.</p>
                 </article>
             </div>
         </section>
-        <section id="faq" class="section">
-            <article class="faq__item">
-                <button class="faq__question" aria-expanded="false">
-                    Pregunta 1
-                    <span faq__icon>+</span>
-                </button>
-                <div class="faq__answer">Respuesta 1</div>
-            </article>
-            <article class="faq__item">
-                <button class="faq__question" aria-expanded="false">
-                    Pregunta 1
-                    <span faq__icon>+</span>
-                </button>
-                <div class="faq__answer">Respuesta 1</div>
-            </article>
-            <article class="faq__item">
-                <button class="faq__question" aria-expanded="false">
-                    Pregunta 1
-                    <span faq__icon>+</span>
-                </button>
-                <div class="faq__answer">Respuesta 1</div>
-            </article>
+        <section id="faqs" class="section">
+            <header class="info-section_header">
+                <strong class="section-header__intro">PREGUNTAS FRECUENTES</strong>
+                <h2 class="section-header__title">Todo lo que <span>necesitas saber</span></h2>
+                <p class="section-header__description">
+                    ¿Tienes más preguntas? Visita el Tablón de la comunidad.
+                </p>
+                <a href="" class="section-header__boton-cta">
+                    <strong>Ir al Tablón</strong>
+                    <i data-lucide="arrow-right" class="section-header__boton-cta-icon"></i>
+                </a>
+            </header>
+            <section class="faq__list">
+                <article class="faq__item">
+                    <button class="faq__question" aria-expanded="false">
+                        <strong>¿Necesito registrarme para usar Hardoquin Connect?</strong>
+                        <i data-lucide="plus" class="faq__icon faq__icon-open"></i>
+                        <i data-lucide="x" class="faq__icon faq__icon-close"></i>
+                    </button>
+                    <p class="faq__answer">
+                        No es necesario registrarse para explorar la plataforma. Puedes realizar análisis y consultar información. Sin embargo, al crear una cuenta podrás guardar tus resultados, acceder a tu historial y participar en el tablón comunitario.
+                    </p>
+                </article>
+                <article class="faq__item">
+                    <button class="faq__question" aria-expanded="false">
+                        <strong>¿Qué información proporciona el análisis de impacto?</strong>
+                        <i data-lucide="plus" class="faq__icon faq__icon-open"></i>
+                        <i data-lucide="x" class="faq__icon faq__icon-close"></i>
+                    </button>
+                    <p class="faq__answer">
+                        El análisis muestra resultados basados en los datos ingresados, incluyendo estimaciones de infiltración de agua, reducción de encharcamientos, costos de implementación y comparativas frente a otros materiales.
+                    </p>
+                </article>
+                <article class="faq__item">
+                    <button class="faq__question" aria-expanded="false">
+                        <strong>¿Con qué materiales se puede comparar Harodquin en el análisis?</strong>
+                        <i data-lucide="plus" class="faq__icon faq__icon-open"></i>
+                        <i data-lucide="x" class="faq__icon faq__icon-close"></i>
+                    </button>
+                    <p class="faq__answer">
+                        Puedes comparar Hardoquin con materiales como asfalto, concreto y adoquín tradicional, evaluando diferencias en permeabilidad, durabilidad y costos a largo plazo.
+                    </p>
+                </article>
+                <article class="faq__item">
+                    <button class="faq__question" aria-expanded="false">
+                        <strong>¿Dónde se puede implementar Hardoquin?</strong>
+                        <i data-lucide="plus" class=" faq__icon faq__icon-open"></i>
+                        <i data-lucide="x" class="faq__icon faq__icon-close"></i>
+                    </button>
+                    <p class="faq__answer">
+                        Hardoquin puede implementarse en calles, estacionamientos, banquetas y espacios urbanos con alto flujo vehicular o peatonal, adaptándose a distintas necesidades de infraestructura.
+                    </p>
+                </article>
+                <article class="faq__item">
+                    <button class="faq__question" aria-expanded="false">
+                        <strong>¿Qué es el tablón comunitario?</strong>
+                        <i data-lucide="plus" class="faq__icon faq__icon-open"></i>
+                        <i data-lucide="x" class="faq__icon faq__icon-close"></i>
+                    </button>
+                    <p class="faq__answer">
+                        Es un espacio donde los usuarios pueden compartir experiencias, resolver dudas y aportar información sobre Hardoquin. Los usuarios registrados pueden publicar y responder, mientras que los visitantes pueden consultar el contenido.
+                    </p>
+                </article>
+            </section>
         </section>
     </main>
     <footer>
 
     </footer>
+    <script src="https://unpkg.com/lucide@0.555.0"></script>
     <script type="module" src="Js/main-landingPage.js"></script>
 </body>
 </html>
