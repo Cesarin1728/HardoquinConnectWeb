@@ -107,7 +107,7 @@
 /* -------- DROPDOWN SECTION ---------- */
 
 .nav__user_dropdown {
-    display: none;
+    display: block;
 }
 /* -------- DROPDOWN ENDS ---------- */
 
