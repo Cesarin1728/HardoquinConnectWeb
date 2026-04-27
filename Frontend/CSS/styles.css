@@ -29,6 +29,10 @@
     width: auto;
 }
 
+.navbar__nav {
+    flex-grow: 0.05;
+}
+
 .nav__list {
     height: 8.5vh;
     display: flex;
@@ -39,10 +43,8 @@
 
 .nav__list_item {
     cursor: pointer;
-    flex-grow: 1;
     height: 100%;
     display: flex;
-    padding: 0 30px;
     align-items: center;
     border-bottom: 6px solid transparent;
     transition: border-bottom-color 0.4s ease-in-out;
@@ -52,30 +54,38 @@
     transition: background-size 0.4s ease-in-out; */
 }
 
-.nav__list_item:not(:has(.nav__user_info)):hover {
+.nav__list_item:not(:has(.nav__user)){
+    padding: 0 30px;
+}
+
+.nav__list_item:not(:has(.nav__user)):hover {
     /* background-size: 100% 37%; */
     border-bottom-color: rgb(var(--color-acento-verde));
 }
 
+.nav__list_item:has(.nav__user){
+    padding: 0 0 0 15px;
+}
 .nav__link {
     text-decoration: none;
     color: rgb(var(--color-blanco));
     font-size: 1.2rem;
 }
 
+.nav__list_item--user-info {
+    position: relative;
+}
 .navbar__toggle {
     display: none;
 }
 
-.nav__user_info  {
+.nav__user  {
     cursor: pointer;
     display: flex;
-    width: 90%;
-    flex: 3;
-    justify-content: space-between;
+    justify-content: space-evenly;
     align-items: center;
-    gap: 12px;
-    padding: 12px 14px;
+    gap: 16px;
+    padding: 12px;
     border-radius: 999px;
     background-color: rgba(var(--color-fondo-oscuro), 0.05);
     outline: none;
@@ -83,10 +93,10 @@
     transition: opacity 0.3s ease-in-out;
 }
 
-.nav__user_info:hover {
+.nav__user:hover {
     opacity: 70%;
 }
-.nav__img_perfil {
+.nav__user_img-perfil {
     border-radius: 50%;
     width: 32px;
     background-color: rgb(var(--color-acento-verde));
@@ -95,11 +105,15 @@
     object-fit: contain;
 }
 
-.nav__username {
+.nav__user-name {
     font-size: 1.2rem;
     color: rgb(var(--color-blanco));
     font-family: inherit;
     font-weight: 400;
+}
+
+.nav__user-icon {
+    color: rgb(var(--color-blanco));
 }
 
 /* -------- NAVBAR ENDS ---------- */
@@ -107,8 +121,94 @@
 /* -------- DROPDOWN SECTION ---------- */
 
 .nav__user_dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 10px;
+    width: 240px; 
+    padding: 10px;
+    background-color: rgb(var(--color-blanco));
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    display: none; 
+}
+
+.nav__user_dropdown--active {
     display: block;
 }
+
+.nav__dropdown-info {
+    display: grid;
+    grid-template-areas: 
+        "image username"
+        "image email";
+    grid-template-columns: 1fr 2fr;
+    grid-template-rows: auto auto;
+    align-items: center;
+    column-gap: 12px;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.nav__dropdown-img {
+    grid-area: image;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    justify-self: center;
+    background-color: rgb(var(--color-acento-verde));
+    box-shadow: 0 0 0 5px rgb(var(--color-acento-verde));
+}
+
+.nav__dropdown_actions {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(0,0,0,0.08);
+}
+
+.nav__dropdown-username {
+    grid-area: username;
+    font-size: 1rem;
+    color: rgb(var(--color-oscuro));
+    font-weight: 600;
+}
+
+.nav__dropdown-email {
+    grid-area: email;
+}
+.nav__dropdown_action {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    color: inherit;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.nav__dropdown_actions--session {
+    color: rgb(var(--color-acento-verde));
+}
+.nav__dropdown_action:hover {
+    background-color: rgba(0,0,0,0.05);
+}
+
+.dropdown__action_name {
+    font-size: 0.95rem;
+    font-weight: 400;
+}
+
+.nav__dropdown_action i {
+    width: 18px;
+    height: 18px;
+}
+
+
 /* -------- DROPDOWN ENDS ---------- */
 
 /* -------- HERO SECTION ---------- */

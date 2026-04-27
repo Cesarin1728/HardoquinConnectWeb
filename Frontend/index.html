@@ -11,7 +11,7 @@
     <header class="header">
         <section class="navbar">
             <button class="navbar__toggle" aria-label="Abrir el menú de navegación">E</button>
-            <img src="Assets/logoimg2.png" alt="Logo de Hardoquin Connect" class="navbar__logo" width="50px" height="50px">
+            <img src="./Assets/logoimg2.png" alt="Logo de Hardoquin Connect" class="navbar__logo" width="50px" height="50px">
             <nav class="navbar__nav">
                 <ul class="nav__list">
                     <li class="nav__list_item">
@@ -23,20 +23,36 @@
                     <li class="nav__list_item">
                         <a href="#" class="nav__link">Tablón</a>
                     </li>
-                    <li class="nav__list_item nav__item--user-info">
-                        <button class="nav__user_info">
-                            <img src="Assets/ImagenesPerfil/usuarioimg0.png" alt="Imagen de Foto de Perfil del Usuario" class="nav__img_perfil">
-                            <strong class="nav__username">Username</strong>
+                    <li class="nav__list_item nav__list_item--user-info">
+                        <button class="nav__user">
+                            <img src="./Assets/ImagenesPerfil/usuarioimg0.png" alt="Imagen de Foto de Perfil del Usuario" class="nav__user_img-perfil">
+                            <strong class="nav__user-name">Username</strong>
+                            <i data-lucide="chevron-down" class="nav__user-icon"></i>
                         </button>
                         <div class="nav__user_dropdown">
-                            <div class="nav__dropdown_info">
-                                <img src="Assets/ImagenesPerfil/usuarioimg0.png" alt="Imagen de Foto de Perfil del Usuario" class="nav__dropdown_img">
-                                <strong class="nav__dropdown_username">Username</strong>
+                            <div class="nav__dropdown-info">
+                                <img src="./Assets/ImagenesPerfil/usuarioimg0.png" alt="Imagen de Foto de Perfil del Usuario" class="nav__dropdown-img">
+                                <strong class="nav__dropdown-username">Username</strong>
+                                <p class="nav__dropdown-email">Correo</p>
                             </div>
-                            <div class="nav__dropdown_actions">
-                                <button class="nav__dropdown_action" id="action-cerrar-sesion">
-                                    <strong class="dropdown__action_name">Cerrar Sesión</strong>
+                            <div class="nav__dropdown_actions nav__dropdown_actions--auth">
+                                <button class="nav__dropdown_action" id="action-galery">
+                                    <i data-lucide="layout-dashboard"></i>
+                                    <strong class="dropdown__action_name">Mi Galería</strong>
+                                </button>
+                                <button class="nav__dropdown_action" id="action-galery">
+                                    <i data-lucide="user"></i>
+                                    <strong class="dropdown__action_name">Mi Perfil</strong>
+                                </button>
+                            </div>
+                            <div class="nav__dropdown_actions nav__dropdown_actions--session">
+                                <button class="nav__dropdown_action" id="action-log-out">
                                     <i data-lucide="log-out"></i>
+                                    <strong class="dropdown__action_name">Cerrar Sesión</strong>
+                                </button>
+                                <button class="nav__dropdown_action" id="action-log-in">
+                                    <i data-lucide="log-in"></i>
+                                    <strong class="dropdown__action_name">Log In / Registrar</strong>
                                 </button>
                             </div>
                         </div>
@@ -50,7 +66,7 @@
                 <h2 class="hero__title">El suelo que </h2>
                 <h2 class="hero__title hero__title--segunda-linea">transforma <span>tu ciudad</span></h2>
                 <p class="hero__subtitle">Descubre como Hardoquin transforma el suelo urbano a través de simulaciones y ánalisis interactivos.</p>
-                <a href="Pages/sesionusuario.html" class="hero__button">Registrate Ya!</a>
+                <a href="./Pages/sesionusuario.html" class="hero__button">Registrate Ya!</a>
             </div>
         </section>
     </header>
@@ -64,7 +80,7 @@
                 </p>
             </header>
             <div class="solution__content">
-                <video class="solution__video" src="Assets/Videos/Video.mp4" muted playsinine loop></video>
+                <video class="solution__video" src="./Assets/Videos/Video.mp4" muted playsinine loop></video>
                 <div class="solution__info">
                     <article class="solution-card">
                         <h3 class="solution-card__title">+ del 50%</h3>
@@ -387,6 +403,6 @@
 
     </footer>
     <script src="https://unpkg.com/lucide@0.555.0"></script>
-    <script type="module" src="Js/main-landingPage.js"></script>
+    <script type="module" src="./Js/main-landingPage.js"></script>
 </body>
 </html>
