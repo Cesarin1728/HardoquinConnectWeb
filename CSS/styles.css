@@ -687,6 +687,7 @@
 }
 
 .faq__icon {
+    cursor: pointer;
     border-radius: 50%;
     width: 15px;
     height: auto;
@@ -713,6 +714,11 @@
 .faq__item--active .faq__icon-close {
     display: block;
 }
+
+.faq__item--active .faq__icon-open {
+    display: none;
+}
+
 .faq__answer {
     display: none;
     padding: 5px 10px;

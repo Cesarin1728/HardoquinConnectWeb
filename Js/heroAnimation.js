@@ -20,7 +20,7 @@ const ripples = {
     colorSecundario: "82, 183, 136",
 };
 
-function iniciarHero(){
+export function initHero(){
     const canvas = document.getElementById('hero__canvas');
     if(!canvas) return;
 
@@ -138,5 +138,3 @@ function iniciarHero(){
     dibujar();
 
 }
-
-iniciarHero();

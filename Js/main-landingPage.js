@@ -1,7 +1,8 @@
-import './heroAnimation.js';
-import './characteristicsTabs.js'
-import './solutionVideoObserver.js'
+import {initHero} from './heroAnimation.js';
+import {initUI} from './ui-landingPage.js';
 
 document.addEventListener("DOMContentLoaded", () => {
+    initHero();
+    initUI();
     lucide.createIcons();
 });
