@@ -199,8 +199,30 @@
 }
 
 .nav__dropdown_actions--session {
+    display: flex;
     color: rgb(var(--color-acento-verde));
 }
+
+#action-log-out {
+    display: none;
+}
+
+.nav__dropdown_actions--auth {
+    display: none;
+}
+
+.navbar__nav--authenticated .nav__dropdown_actions--auth {
+    display: block;
+}
+
+.navbar__nav--authenticated #action-log-out {
+    display: flex;
+}
+
+.navbar__nav--authenticated #action-log-in {
+    display: none;
+}
+
 .nav__dropdown_action:hover {
     background-color: rgba(var(--color-fondo-oscuro), 0.95);
 }
