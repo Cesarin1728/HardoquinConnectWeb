@@ -9,12 +9,12 @@
 </head>
 <body>
     <header class="header">
-        <section class="navbar">
-            <button class="navbar__toggle" aria-label="Abrir el menú de navegación">E</button>
+        <section id="main__navbar">
+            <!-- <button class="navbar__toggle" aria-label="Abrir el menú de navegación">E</button>
             <img src="./Assets/logoimg2.png" alt="Logo de Hardoquin Connect" class="navbar__logo" width="50px" height="50px">
             <nav class="navbar__nav">
                 <ul class="nav__list">
-                    <li class="nav__list_item">
+                    <li class="nav__list_item nav__list_item--active">
                         <a href="#" class="nav__link">Inicio</a>
                     </li>
                     <li class="nav__list_item">
@@ -36,30 +36,30 @@
                                 <p class="nav__dropdown-email">Correo</p>
                             </div>
                             <div class="nav__dropdown_actions nav__dropdown_actions--auth">
-                                <button class="nav__dropdown_action" id="action-galery">
+                                <a href="#" class="nav__dropdown_action" id="action-galery">
                                     <i data-lucide="layout-dashboard"></i>
                                     <strong class="dropdown__action_name">Mi Galería</strong>
-                                </button>
-                                <button class="nav__dropdown_action" id="action-galery">
+                                </a>
+                                <a href="#" class="nav__dropdown_action" id="action-galery">
                                     <i data-lucide="user"></i>
                                     <strong class="dropdown__action_name">Mi Perfil</strong>
-                                </button>
+                                </a>
                             </div>
                             <div class="nav__dropdown_actions nav__dropdown_actions--session">
                                 <button class="nav__dropdown_action" id="action-log-out">
                                     <i data-lucide="log-out"></i>
                                     <strong class="dropdown__action_name">Cerrar Sesión</strong>
                                 </button>
-                                <button class="nav__dropdown_action" id="action-log-in">
+                                <a href="./Pages/sesionusuario.html" class="nav__dropdown_action" id="action-log-in">
                                     <i data-lucide="log-in"></i>
                                     <strong class="dropdown__action_name">Log In / Registrar</strong>
-                                </button>
+                                </a>
                             </div>
                         </div>
                     </li>
                 </ul>
-            </nav>
-        </section>
+            </nav> -->
+        </section> 
         <section id="hero">
             <canvas id="hero__canvas"></canvas>
             <div class="hero__wrapper">
@@ -399,8 +399,21 @@
             </section>
         </section>
     </main>
-    <footer>
-
+    <footer id="footer">
+        <section class="footer__main-info">
+            <img src="./Assets/logoimg2.png" alt="Logo de Hardoquin Connect" class="main-info__img">
+            <p class="main-info__description">Bla bla bla</p>
+        </section>
+        <nav class="footer__nav"></nav>
+            <section class="footer__nav--Inicio">
+                <a href="./index.html" class="footer__nav_main-link">Inicio</a>
+                <a href="#solution" class="footer__nav footer__nav-secondary-link">Problemática y Solución</a>
+                <a href="#benefits" class="footer__nav footer__nav-secondary-link">Beneficios</a>
+                <a href="#characteristics" class="footer__nav footer__nav-secondary-link">Características</a>
+                <a href="#services" class="footer__nav footer__nav-secondary-link">Servicios</a>
+                <a href="#faqs" class="footer__nav footer__nav-secondary-link">FAQs</a>
+            </section>
+        </nav>
     </footer>
     <script src="https://unpkg.com/lucide@0.555.0"></script>
     <script type="module" src="./Js/main-landingPage.js"></script>
