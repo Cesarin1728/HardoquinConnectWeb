@@ -900,24 +900,45 @@
         top: 70px;
         left: 0;
         width: 100%;
-        background-color: rgb(var(--color-oscuro));
+        height: calc(100vh - 70px);
+        background-color: rgba(0, 0, 0, 0.9);
+        backdrop-filter: blur(8px);
         display: none;
-        padding: 18px;
+        padding: 20px;
+        z-index: 999;
     }
+
     .navbar__nav--active {
-        display: block;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
     }
 
     .nav__list {
+        width: 100%;
+        height: auto;
         flex-direction: column;
-        gap: 15px;
-        align-items: start;
+        gap: 28px;
+        align-items: center;
+        justify-content: flex-start;
     }
 
     .nav__list_item {
         width: 100%;
         padding: 12px;
         justify-content: center;
+        text-align: center;
+    }
+
+    .nav__link {
+        width: 100%;
+        text-align: center;
+    }
+
+    .nav__user {
+        margin-left: auto;
+        margin-right: auto;
     }
     
     #hero,

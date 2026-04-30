@@ -5,7 +5,6 @@ async function createNavbar(){
     const response = await fetch(url);
     const html = await response.text();
 
-    console.log(html);
     navbarContainer.innerHTML = html;
     lucide.createIcons();
 }
@@ -14,6 +13,8 @@ function setUpDropdownEvents(){
     const userBtn = document.querySelector('.nav__user');
     const userDropdown = document.querySelector('.nav__user_dropdown');
     const userLogOut = document.getElementById('action-log-out');
+
+    if (!userBtn || !userDropdown) return;
 
     userBtn.addEventListener('click', (e) =>{
         e.stopPropagation();
@@ -46,6 +47,25 @@ function setUpTabEvents(){
         })
     })
 }
+function setUpMobileMenuEvents(){
+    const toggleBtn = document.querySelector('.navbar__toggle');
+    const nav = document.querySelector('.navbar__nav');
+    const navLinks = document.querySelectorAll('.nav__link');
+
+    if (!toggleBtn || !nav) return;
+
+    toggleBtn.addEventListener('click', () => {
+        nav.classList.toggle('navbar__nav--active');
+        toggleBtn.classList.toggle('navbar__toggle--active');
+    })
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            nav.classList.remove('navbar__nav--active');
+            toggleBtn.classList.remove('navbar__toggle--active');
+        })
+    })
+}
 
 function updateNavbar(user){
     const navbar = document.querySelector('.navbar__nav');
@@ -55,6 +75,9 @@ function updateNavbar(user){
 
     const usernameDropdown = document.querySelector('.nav__dropdown-username');
     const userPictureDropDown = document.querySelector('.nav__dropdown-img');
+
+    if(!navbar || !usernameInfo || !userPicture || !usernameDropdown || !userPictureDropDown) return;
+    
     if(user === null){
         usernameInfo.textContent = 'Username';
         usernameDropdown.textContent = 'Username';
@@ -76,7 +99,7 @@ export async function initNavbar(){
     await createNavbar();
     setUpDropdownEvents();
     setUpTabEvents();
-
+    setUpMobileMenuEvents();
     const storedUser = sessionStorage.getItem("user");
     const user = storedUser ? JSON.parse(storedUser) : null;
 
