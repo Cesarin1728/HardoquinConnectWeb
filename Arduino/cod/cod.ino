@@ -1,16 +1,31 @@
+#include <WiFi.h>
+#include <HTTPClient.h>
+
+const char* ssid = "Totalplay-06B1";
+const char* password = "06B1E6F9gwkmp5H";
+const char* serverUrl = "http://192.168.100.93:3000/datos";
+
 #define TRIG_PIN 5
 #define ECHO_PIN 18
 
 const float RADIO        = 13.0;
 const float ALTURA_TOTAL = 35.0;
 const float PI_CONST     = 3.141592;
-const float AREA_BASE    = PI_CONST * RADIO * RADIO;  // 530.93 cm²
+const float AREA_BASE    = PI_CONST * RADIO * RADIO;
 
 void setup() {
   Serial.begin(9600);
   pinMode(TRIG_PIN, OUTPUT);
   pinMode(ECHO_PIN, INPUT);
-  Serial.println("Dist(cm) | Agua(cm) | Vol(L) | Lluvia(mm)");
+
+  // Conexión WiFi
+  WiFi.begin(ssid, password);
+  Serial.print("Conectando a WiFi");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("\n¡Conectado exitosamente!");
 }
 
 float medirDistancia() {
@@ -22,12 +37,10 @@ float medirDistancia() {
 
   long duracion = pulseIn(ECHO_PIN, HIGH, 30000);
   if (duracion == 0) return -1;
-
   return (duracion * 0.0343) / 2.0;
 }
 
 void loop() {
-  // Promedio de 10 lecturas
   float suma = 0;
   int validas = 0;
 
@@ -38,28 +51,36 @@ void loop() {
       validas++;
     }
     delay(10);
-  } //Tontuelo el que lo lea
-
-  if (validas == 0) {
-    Serial.println("ERROR: sin lecturas válidas.");
-    delay(1000);
-    return;
   }
 
-  float distancia  = suma / validas;
-  float alturaAgua = ALTURA_TOTAL - distancia;
-  if (alturaAgua < 0)            alturaAgua = 0;
-  if (alturaAgua > ALTURA_TOTAL) alturaAgua = ALTURA_TOTAL;
+  if (validas > 0 && WiFi.status() == WL_CONNECTED) {
+    float distancia  = suma / validas;
+    float alturaAgua = constrain(ALTURA_TOTAL - distancia, 0, ALTURA_TOTAL);
+    float volumenL   = (AREA_BASE * alturaAgua) / 1000.0;
+    float laminaMm   = alturaAgua * 10.0;
 
-  float volumenL  = (AREA_BASE * alturaAgua) / 1000.0;
-  float laminaMm  = alturaAgua * 10.0;
-  float porcentaje = (alturaAgua / ALTURA_TOTAL) * 100.0;
+    // --- ENVÍO AL SERVIDOR NODE.JS ---
+    HTTPClient http;
+    http.begin(serverUrl);
+    http.addHeader("Content-Type", "application/json");
 
-  Serial.print(distancia, 1);   Serial.print(" cm\t| ");
-  Serial.print(alturaAgua, 1);  Serial.print(" cm\t| ");
-  Serial.print(volumenL, 3);    Serial.print(" L\t| ");
-  Serial.print(laminaMm, 1);    Serial.print(" mm\t| ");
-  Serial.print(porcentaje, 1);  Serial.println(" %");
+    // Creamos el JSON con tus variables
+    String jsonPayload = "{\"distancia\":" + String(distancia) + 
+                         ",\"altura\":" + String(alturaAgua) + 
+                         ",\"volumen\":" + String(volumenL) + 
+                         ",\"lluvia\":" + String(laminaMm) + "}";
 
-  delay(1000);
+    int httpResponseCode = http.POST(jsonPayload);
+    
+    if (httpResponseCode > 0) {
+      Serial.print("Datos enviados. Respuesta: ");
+      Serial.println(httpResponseCode);
+    } else {
+      Serial.print("Error enviando POST: ");
+      Serial.println(http.errorToString(httpResponseCode).c_str());
+    }
+    http.end();
+  }
+
+  delay(2000); // Espera 2 segundos para la siguiente ráfaga de lecturas
 }

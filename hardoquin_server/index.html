@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Hardoquin Monitor</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; background: #f4f4f9; }
+        .card { background: white; padding: 20px; border-radius: 10px; display: inline-block; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .val { font-size: 2em; color: #007bff; }
+    </style>
+</head>
+<body>
+    <h1>Monitor Hardoquin</h1>
+    <div class="card">
+        <p>Distancia: <span id="dist" class="val">0</span> cm</p>
+        <p>Nivel Agua: <span id="alt" class="val">0</span> cm</p>
+        <p>Volumen: <span id="vol" class="val">0</span> L</p>
+        <p>Lluvia: <span id="lluv" class="val">0</span> mm</p>
+    </div>
+
+    <script>
+        setInterval(async () => {
+            try {
+                // Consultamos al servidor Node.js
+                const res = await fetch('http://localhost:3000/ver-datos');
+                const data = await res.json();
+                document.getElementById('dist').innerText = data.distancia.toFixed(1);
+                document.getElementById('alt').innerText = data.altura.toFixed(1);
+                document.getElementById('vol').innerText = data.volumen.toFixed(3);
+                document.getElementById('lluv').innerText = data.lluvia.toFixed(1);
+            } catch (e) { console.log("Esperando datos..."); }
+        }, 1000);
+    </script>
+</body>
+</html>
