@@ -21,6 +21,6 @@ app.get('/ver-datos', (req, res) => {
     res.json(datosSensor);
 });
 
-app.listen(port, () => {
-    console.log(`Servidor Hardoquin activo en http://localhost:${port}`);
+app.listen(port, '0.0.0.0', () => {
+    console.log(`Servidor activo en: http://192.168.1.140:${port}`);
 });

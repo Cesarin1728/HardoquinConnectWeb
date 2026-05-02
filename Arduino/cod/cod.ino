@@ -1,9 +1,9 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 
-const char* ssid = "Totalplay-06B1";
-const char* password = "06B1E6F9gwkmp5H";
-const char* serverUrl = "http://192.168.100.93:3000/datos";
+const char* ssid = "INFINITUM61B2";
+const char* password = "4uEXG4aDCJ";
+const char* serverUrl = "http://192.168.1.140:3000/datos";
 
 #define TRIG_PIN 5
 #define ECHO_PIN 18
