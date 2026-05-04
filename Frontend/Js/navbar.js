@@ -1,5 +1,5 @@
 async function createNavbar(){
-    const url = './Components/navbar.html';
+    const url = '/Frontend/Components/navbar.html';
     const navbarContainer = document.getElementById('main__navbar');
 
     const response = await fetch(url);
@@ -19,33 +19,34 @@ function setUpDropdownEvents(){
     userBtn.addEventListener('click', (e) =>{
         e.stopPropagation();
         userDropdown.classList.toggle('nav__user_dropdown--active');
-    })
+    });
 
     document.addEventListener('click', (e) => {
         const clickInside = userBtn.contains(e.target) || userDropdown.contains(e.target)
         if(!clickInside){
             userDropdown.classList.remove('nav__user_dropdown--active');
         }
-    })
+    });
+
     if(userLogOut){
         userLogOut.addEventListener('click', () => {
             sessionStorage.removeItem("user");
             userDropdown.classList.remove('nav__user_dropdown--active');
             updateNavbar(null)
-        })
+        });
     }
 }
 
 function setUpTabEvents(){
-    const navItems = document.querySelectorAll('.nav__list_item:not(.nav__list_item--user-info)');
+    const navItems = document.querySelectorAll('.nav__list_item[data-tab]');
     navItems.forEach(navItem => {
         navItem.addEventListener('click', () => {
             navItems.forEach(itm => {
                 itm.classList.remove('nav__list_item--active');
             })
             navItem.classList.add('nav__list_item--active');
-        })
-    })
+        });
+    });
 }
 function setUpMobileMenuEvents(){
     const toggleBtn = document.querySelector('.navbar__toggle');
@@ -82,8 +83,8 @@ function updateNavbar(user){
         usernameInfo.textContent = 'Username';
         usernameDropdown.textContent = 'Username';
 
-        userPicture.src = './Assets/ImagenesPerfil/usuarioimg0.png';
-        userPictureDropDown.src = './Assets/ImagenesPerfil/usuarioimg0.png';
+        userPicture.src = '/Frontend/Assets/ImagenesPerfil/usuarioimg0.png';
+        userPictureDropDown.src = '/Frontend/Assets/ImagenesPerfil/usuarioimg0.png';
         navbar.classList.remove('navbar__nav--authenticated');
         return
     }
@@ -91,8 +92,18 @@ function updateNavbar(user){
 
     usernameInfo.textContent = user.name;
     usernameDropdown.textContent = user.name;
-    userPicture.src = `./${user.img}`;
-    userPictureDropDown.src = `./${user.img}`;
+    userPicture.src = `/Frontend/${user.img}`;
+    userPictureDropDown.src = `/Fronted/${user.img}`;
+}
+
+export function activeTab(tab){
+    const tabs = document.querySelectorAll('.nav__list_item[data-tab]');
+    tabs.forEach(itm => {
+        itm.classList.remove('nav__list_item--active');
+        if(itm.dataset.tab === tab){
+            itm.classList.add('nav__list_item--active');
+        }
+    });
 }
 
 export async function initNavbar(){
