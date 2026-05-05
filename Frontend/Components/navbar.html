@@ -1,4 +1,6 @@
-<button class="navbar__toggle" aria-label="Abrir el menú de navegación">E</button>
+<button class="navbar__toggle" aria-label="Abrir el menú de navegación" aria-expanded="false">
+    <i data-lucide="menu"></i>
+</button>
 <img src="/Frontend/Assets/logoimg2.png" alt="Logo de Hardoquin Connect" class="navbar__logo" width="50px" height="50px">
 <nav class="navbar__nav">
     <ul class="nav__list">
@@ -24,13 +26,13 @@
                     <p class="nav__dropdown-email">Correo</p>
                 </div>
                 <div class="nav__dropdown_actions nav__dropdown_actions--auth">
-                    <a href="#" class="nav__dropdown_action" id="action-galery">
-                        <i data-lucide="layout-dashboard"></i>
-                        <strong class="dropdown__action_name">Mi Galería</strong>
-                    </a>
-                    <a href="#" class="nav__dropdown_action" id="action-galery">
+                    <a href="#" class="nav__dropdown_action" id="action-profile">
                         <i data-lucide="user"></i>
                         <strong class="dropdown__action_name">Mi Perfil</strong>
+                    </a>
+                    <a href="/Frontend/Pages/datosSimulacion.html" class="nav__dropdown_action" id="action-simulations">
+                        <i data-lucide="layout-dashboard"></i>
+                        <strong class="dropdown__action_name">Mis simulaciones</strong>
                     </a>
                 </div>
                 <div class="nav__dropdown_actions nav__dropdown_actions--session">
@@ -47,7 +49,3 @@
         </li>
     </ul>
 </nav>
-<script>
-    alert('Si funciona');
-    console.log(window.location.href);
-</script>

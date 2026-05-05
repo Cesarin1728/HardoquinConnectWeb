@@ -55,15 +55,19 @@ function setUpMobileMenuEvents(){
 
     if (!toggleBtn || !nav) return;
 
+    const setMobileMenuState = (isOpen) => {
+        nav.classList.toggle('navbar__nav--active', isOpen);
+        toggleBtn.classList.toggle('navbar__toggle--active', isOpen);
+        toggleBtn.setAttribute('aria-expanded', isOpen);
+    };
+
     toggleBtn.addEventListener('click', () => {
-        nav.classList.toggle('navbar__nav--active');
-        toggleBtn.classList.toggle('navbar__toggle--active');
+        setMobileMenuState(!nav.classList.contains('navbar__nav--active'));
     })
 
     navLinks.forEach(link => {
         link.addEventListener('click', () => {
-            nav.classList.remove('navbar__nav--active');
-            toggleBtn.classList.remove('navbar__toggle--active');
+            setMobileMenuState(false);
         })
     })
 }

@@ -11,8 +11,12 @@
 <body>
     <header class="header">
         <section id="main__navbar">
-            
-        </section> 
+            <button class="navbar__toggle" aria-label="Abrir menú">
+                <svg class="nav__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                    <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </section>
         <section id="hero">
             <canvas id="hero__canvas"></canvas>
             <div class="hero__wrapper">
@@ -130,6 +134,12 @@
                     </div>
                 </div>
                 <button class="benefits-slider__button" id="benefits-slider__next" aria-label="Ver siguiente beneficio">right</button>
+                <div class="benefits-indicator">
+                    <div class="benefits-indicator__bar active"></div>
+                    <div class="benefits-indicator__bar"></div>
+                    <div class="benefits-indicator__bar"></div>
+                    <div class="benefits-indicator__bar"></div>
+                </div>
             </div>
         </section>
         <section id="characteristics" class="section">
