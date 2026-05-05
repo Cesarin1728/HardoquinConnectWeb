@@ -1,10 +1,10 @@
 /**
  * CONFIGURACIÓN DE SUPABASE
  */
-const SUPABASE_URL = 'https://jxrgpqroeechjbbofbfd.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_iYJmQZxGd4GCDIWtqUWRew_llrsfDSH'; //Esto después no cambiamos, para que la gente no pueda ver esto
+// const SUPABASE_URL = 'https://jxrgpqroeechjbbofbfd.supabase.co';
+// const SUPABASE_ANON_KEY = 'sb_publishable_iYJmQZxGd4GCDIWtqUWRew_llrsfDSH'; //Esto después no cambiamos, para que la gente no pueda ver esto
 
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // --- ELEMENTOS DE INTERFAZ ---
 const contenedor = document.getElementById('panel-principal');
@@ -97,32 +97,51 @@ formLogin.addEventListener('submit', async (e) => {
     const email = document.getElementById('log-email').value.trim();
     const password = document.getElementById('log-password').value;
 
-    const { data, error } = await supabaseClient.rpc('login_usuario', {
-        p_correo: email,
-        p_clave: password
+    // const { data, error } = await supabaseClient.rpc('login_usuario', {
+    //     p_correo: email,
+    //     p_clave: password
+    // });
+
+    // if (error) {
+    //     alert('Error: ' + error.message);
+    //     return;
+    // }
+
+    // if (!data || data.length === 0) {
+    //     alert('Correo o contraseña incorrectos.');
+    //     return;
+    // }
+
+    // const usuario = data[0];
+
+    // const user = {
+    //     id: usuario.id,
+    //     name: usuario.username,
+    //     email: usuario.correo, 
+    //     img: usuario.foto
+    // };
+
+    const url = 'http://localhost:3000/api/usuarios/login';
+
+    console.log("➡️ Llamando a:", url);
+
+    const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            email,
+            password
+        })
     });
 
-    if (error) {
-        alert('Error: ' + error.message);
+    const data = await res.json();
+
+    if(!data.ok){
+        alert(data.message);
         return;
     }
-
-    if (!data || data.length === 0) {
-        alert('Correo o contraseña incorrectos.');
-        return;
-    }
-
-    const usuario = data[0];
-
-    const user = {
-        id: usuario.id,
-        name: usuario.username,
-        email: usuario.correo, 
-        img: usuario.foto
-    };
-
-    // Guardar sesión en sessionStorage
-    sessionStorage.setItem('user', JSON.stringify(user));
 
     window.location.href = '../index.html';
 
