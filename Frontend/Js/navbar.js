@@ -13,12 +13,25 @@ function setUpDropdownEvents(){
     const userBtn = document.querySelector('.nav__user');
     const userDropdown = document.querySelector('.nav__user_dropdown');
     const userLogOut = document.getElementById('action-log-out');
+    const toggleBtn = document.querySelector('.navbar__toggle');
+    const nav = document.querySelector('.navbar__nav');
 
     if (!userBtn || !userDropdown) return;
 
+    const closeMobileMenu = () => {
+        if (!toggleBtn || !nav) return;
+
+        nav.classList.remove('navbar__nav--active');
+        toggleBtn.classList.remove('navbar__toggle--active');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+    };
+
     userBtn.addEventListener('click', (e) =>{
         e.stopPropagation();
-        userDropdown.classList.toggle('nav__user_dropdown--active');
+
+        const shouldOpenDropdown = !userDropdown.classList.contains('nav__user_dropdown--active');
+        closeMobileMenu();
+        userDropdown.classList.toggle('nav__user_dropdown--active', shouldOpenDropdown);
     });
 
     document.addEventListener('click', (e) => {
@@ -52,10 +65,15 @@ function setUpMobileMenuEvents(){
     const toggleBtn = document.querySelector('.navbar__toggle');
     const nav = document.querySelector('.navbar__nav');
     const navLinks = document.querySelectorAll('.nav__link');
+    const userDropdown = document.querySelector('.nav__user_dropdown');
 
     if (!toggleBtn || !nav) return;
 
     const setMobileMenuState = (isOpen) => {
+        if (isOpen) {
+            userDropdown?.classList.remove('nav__user_dropdown--active');
+        }
+
         nav.classList.toggle('navbar__nav--active', isOpen);
         toggleBtn.classList.toggle('navbar__toggle--active', isOpen);
         toggleBtn.setAttribute('aria-expanded', isOpen);

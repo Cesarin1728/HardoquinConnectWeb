@@ -15,6 +15,17 @@ const linkIrALogin = document.getElementById('ir-a-login');
 const formRegistro = document.getElementById('form-registro');
 const formLogin = document.getElementById('form-login');
 
+function getApiBaseUrl() {
+    if (window.location.port === '4000') return '';
+
+    const localHosts = ['localhost', '127.0.0.1'];
+    const apiHost = localHosts.includes(window.location.hostname)
+        ? '127.0.0.1'
+        : window.location.hostname;
+
+    return `http://${apiHost}:4000`;
+}
+
 // --- LÓGICA DE SELECCIÓN DE AVATAR ---
 let rutaFotoSeleccionada = 'Assets/ImagenesPerfil/usuarioimg0.png'; // Ruta por defecto
 const avatares = document.querySelectorAll('.avatar-opcion');
@@ -64,7 +75,7 @@ formRegistro.addEventListener('submit', async (e) => {
     const password = document.getElementById('reg-password').value;
     const username = document.getElementById('reg-username').value.trim();
 
-    const apiBaseUrl = window.location.port === '4000' ? '' : 'http://127.0.0.1:4000';
+    const apiBaseUrl = getApiBaseUrl();
     const res = await fetch(`${apiBaseUrl}/api/usuarios/registro`, {
         method: 'POST',
         headers: {
@@ -130,7 +141,7 @@ formLogin.addEventListener('submit', async (e) => {
     //     img: usuario.foto
     // };
 
-    const apiBaseUrl = window.location.port === '4000' ? '' : 'http://127.0.0.1:4000';
+    const apiBaseUrl = getApiBaseUrl();
     const url = `${apiBaseUrl}/api/usuarios/login`;
 
     console.log("➡️ Llamando a:", url);
@@ -148,7 +159,7 @@ formLogin.addEventListener('submit', async (e) => {
             })
         });
     } catch (error) {
-        alert('No se pudo conectar con el servidor. Revisa que el backend este corriendo en el puerto 4000.');
+        alert(`No se pudo conectar con el servidor en ${apiBaseUrl || 'este mismo sitio'}. Revisa que el backend este corriendo en el puerto 4000.`);
         return;
     }
 

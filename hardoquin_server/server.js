@@ -10,15 +10,37 @@ console.log("📁 SERVER.JS ACTIVO:", __filename);
 const usuariosRoutes = require('./routes/usuarios');
 console.log("USUARIOS ROUTES:", usuariosRoutes);
 
+const allowedOrigins = [
+    'http://127.0.0.1:3000',
+    'http://localhost:3000',
+    'http://127.0.0.1:5500',
+    'http://localhost:5500',
+    `http://127.0.0.1:${port}`,
+    `http://localhost:${port}`
+];
+
+function isLocalNetworkOrigin(origin) {
+    if (!origin) return true;
+
+    try {
+        const { hostname, protocol } = new URL(origin);
+        const isPrivateIp = /^(192\.168\.|10\.|172\.(1[6-9]|2\d|3[0-1])\.)/.test(hostname);
+
+        return protocol === 'http:' && isPrivateIp;
+    } catch (error) {
+        return false;
+    }
+}
+
 app.use(cors({
-    origin: [
-        'http://127.0.0.1:3000',
-        'http://localhost:3000',
-        'http://127.0.0.1:5500',
-        'http://localhost:5500',
-        `http://127.0.0.1:${port}`,
-        `http://localhost:${port}`
-    ]
+    origin(origin, callback) {
+        if (allowedOrigins.includes(origin) || isLocalNetworkOrigin(origin)) {
+            callback(null, true);
+            return;
+        }
+
+        callback(new Error('Origen no permitido por CORS'));
+    }
 }));
 app.use(bodyParser.json());
 app.use(express.json());
