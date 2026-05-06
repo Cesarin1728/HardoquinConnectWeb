@@ -573,8 +573,9 @@
     #hero,
     .hero__wrapper {
         padding: 95px 20px 40px;
-        height: auto;
-        min-height: 40vh;
+        height: 100vh;
+        display: flex;
+        align-items: center;
     }
 
     .hero__title {
