@@ -3,14 +3,23 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 4000;
 
 console.log("📁 SERVER.JS ACTIVO:", __filename);
 
 const usuariosRoutes = require('./routes/usuarios');
 console.log("USUARIOS ROUTES:", usuariosRoutes);
 
-app.use(cors());
+app.use(cors({
+    origin: [
+        'http://127.0.0.1:3000',
+        'http://localhost:3000',
+        'http://127.0.0.1:5500',
+        'http://localhost:5500',
+        `http://127.0.0.1:${port}`,
+        `http://localhost:${port}`
+    ]
+}));
 app.use(bodyParser.json());
 app.use(express.json());
 
@@ -45,5 +54,5 @@ app.use((req, res, next) => {
 
 
 app.listen(port, '0.0.0.0', () => {
-    console.log(`Servidor activo en: http://192.168.1.140:${port}`);
+    console.log(`Servidor activo en: http://localhost:${port}`);
 });

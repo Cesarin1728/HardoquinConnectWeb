@@ -97,7 +97,7 @@ function updateNavbar(user){
     usernameInfo.textContent = user.name;
     usernameDropdown.textContent = user.name;
     userPicture.src = `/Frontend/${user.img}`;
-    userPictureDropDown.src = `/Fronted/${user.img}`;
+    userPictureDropDown.src = `/Frontend/${user.img}`;
 }
 
 export function activeTab(tab){

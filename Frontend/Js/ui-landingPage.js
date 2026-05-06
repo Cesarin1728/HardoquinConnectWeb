@@ -36,7 +36,7 @@ function initTabs() {
 function initVideoObserver() {
     const video = document.querySelector('.solution__video');
 
-    if (!video) return;
+    if (!(video instanceof HTMLVideoElement)) return;
 
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {

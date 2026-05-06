@@ -64,15 +64,24 @@ formRegistro.addEventListener('submit', async (e) => {
     const password = document.getElementById('reg-password').value;
     const username = document.getElementById('reg-username').value.trim();
 
-    const { error } = await supabaseClient.rpc('registrar_usuario', {
-        p_username: username,
-        p_clave: password,
-        p_correo: email,
-        p_foto: rutaFotoSeleccionada // Se envía la ruta de la imagen seleccionada
+    const apiBaseUrl = window.location.port === '4000' ? '' : 'http://127.0.0.1:4000';
+    const res = await fetch(`${apiBaseUrl}/api/usuarios/registro`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            email,
+            password,
+            username,
+            foto: rutaFotoSeleccionada
+        })
     });
 
-    if (error) {
-        alert('Error: ' + error.message);
+    const data = await res.json();
+
+    if (!data.ok) {
+        alert(data.message);
         return;
     }
 
@@ -121,20 +130,27 @@ formLogin.addEventListener('submit', async (e) => {
     //     img: usuario.foto
     // };
 
-    const url = 'http://localhost:3000/api/usuarios/login';
+    const apiBaseUrl = window.location.port === '4000' ? '' : 'http://127.0.0.1:4000';
+    const url = `${apiBaseUrl}/api/usuarios/login`;
 
     console.log("➡️ Llamando a:", url);
 
-    const res = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            email,
-            password
-        })
-    });
+    let res;
+    try {
+        res = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email,
+                password
+            })
+        });
+    } catch (error) {
+        alert('No se pudo conectar con el servidor. Revisa que el backend este corriendo en el puerto 4000.');
+        return;
+    }
 
     const data = await res.json();
 
@@ -142,6 +158,8 @@ formLogin.addEventListener('submit', async (e) => {
         alert(data.message);
         return;
     }
+
+    sessionStorage.setItem('user', JSON.stringify(data.user));
 
     window.location.href = '../index.html';
 
