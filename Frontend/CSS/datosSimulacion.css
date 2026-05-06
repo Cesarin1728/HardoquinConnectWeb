@@ -1,0 +1,46 @@
+main.section {
+    padding-top: 70px;
+    display: grid;
+    grid-template-areas: "animation form";
+    grid-template-columns: 1fr 1.2fr;
+    gap: 15px;
+}
+
+#animation, 
+#request-data {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+#animation {
+    grid-area: animation;
+    background-color: aqua;
+    height: 100%;
+}
+
+#request-data {
+    grid-area: form;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+}
+
+.request-data__form {
+    display: flex;
+    flex-direction: column;
+}
+
+.request-data__form input {
+    width: 60%;
+}
+
+.request-data__help-icon {
+    color: rgb(var(--color-acento-azul));
+    width: 25px;
+    height: auto;
+    aspect-ratio: 1;
+    background-color: rgba(var(--color-acento-azul), 0.25);
+    padding: 3px;
+    border-radius: 50%;
+    border: 1px solid rgb(var(--color-acento-azul));
+}

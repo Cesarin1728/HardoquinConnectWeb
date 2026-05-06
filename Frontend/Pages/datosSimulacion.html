@@ -6,6 +6,7 @@
     <title>Solicitar Datos para Simulación</title>
     <link rel="stylesheet" href="../CSS/main.css">
     <link rel="stylesheet" href="../CSS/components.css">
+    <link rel="stylesheet" href="../CSS/datosSimulacion.css">
 </head>
 <body>
     <header class="header">
@@ -13,11 +14,49 @@
 
         </section>
     </header>
-    <main>
+    <main class="section">
         <section id="animation">
 
         </section>
-        <section id="request-data"></section>
+        <section id="request-data" >
+            <header class="section-header">
+                <strong class="section-header__intro">NUEVA SIMULACIÓN</strong>
+                <h2 class="section-header__title">Datos para la simulación</h2>
+                <p class="section-header__description">Ingresa los parámetros de tu proyecto para modelar el comportamiento hídirco del Hardoquin</p>
+            </header>
+            <form class="request-data__form">
+                <div class="request-data__field">
+                    <label for="area-input" class="request-data__label">Área a cubrir</label>
+                    <span class="request-data__help">
+                        <i data-lucide="circle-question-mark" class="request-data__help-icon"></i>
+                        <div class="request-data__tooltip">
+                            Información de ayuda aquí
+                        </div>
+                    </span>
+                    <input type="number" name="area" id="area-input">
+                </div>
+                <div class="request-data__field">
+                    <label for="rain-level-input" class="request-data__label">Nivel de lluvia</label>
+                    <span class="request-data__help">
+                        <i data-lucide="circle-question-mark" class="request-data__help-icon"></i>
+                        <div class="request-data__tooltip">
+                            Información de ayuda aquí
+                        </div>
+                    </span>
+                    <input type="range" name="rain-level" id="rain-level-input" value="0" step="5" min="0" max="100">
+                </div>
+                <div class="request-data__field">
+                    <label for="transit-level-input" class="request-data__label">Nivel de tránsito</label>
+                    <span class="request-data__help">
+                        <i data-lucide="circle-question-mark" class="request-data__help-icon"></i>
+                        <div class="request-data__tooltip">
+                            Información de ayuda aquí
+                        </div>
+                    </span>
+                    <input type="range" name="transit-level" id="transit-level-input" value="0" step="5" min="0" max="100">
+                </div>
+            </form>
+        </section>
     </main>
     <script src="https://unpkg.com/lucide@0.555.0"></script>
     <script type="module" src="../Js/main-datosSimulacion.js"></script>
