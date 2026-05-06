@@ -35,7 +35,10 @@
                             </div>
                         </span>
                     </div>
-                    <input type="number" name="area" id="area-input">
+                    <div class="request-data__number-wrapper">
+                        <input type="number" name="area" id="area-input">
+                        <span class="request-data__unit">m²</span>
+                    </div>
                 </div>
                 <div class="request-data__field">
                     <div class="request-data__label-group">
@@ -46,6 +49,7 @@
                                 Intensidad de lluvia estimada. Usa Hardoquin RainSense para mayor precisión.
                             </div>
                         </span>
+                        <strong class="request-data__value">0%</strong>
                     </div>
                     <input type="range" name="rain-level" id="rain-level-input" value="0" step="5" min="0" max="100">
                 </div>
@@ -58,6 +62,7 @@
                                 Intensidad de tránsito esperada en la zona. Considera el flujo de personas y vehículos.
                             </div>
                         </span>
+                        <strong class="request-data__value">0%</strong>
                     </div>
                     <input type="range" name="transit-level" id="transit-level-input" value="0" step="5" min="0" max="100">
                 </div>

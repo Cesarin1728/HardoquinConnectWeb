@@ -469,6 +469,8 @@
     align-items: start;
     justify-items: center;
     gap: 60px;
+    height: auto;
+    min-height: 0;
 }
 
 #faqs header, 
