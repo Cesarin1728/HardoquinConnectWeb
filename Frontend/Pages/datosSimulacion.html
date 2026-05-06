@@ -26,33 +26,39 @@
             </header>
             <form class="request-data__form">
                 <div class="request-data__field">
-                    <label for="area-input" class="request-data__label">Área a cubrir</label>
-                    <span class="request-data__help">
-                        <i data-lucide="circle-question-mark" class="request-data__help-icon"></i>
-                        <div class="request-data__tooltip">
-                            Información de ayuda aquí
-                        </div>
-                    </span>
+                    <div class="request-data__label-group">
+                        <label for="area-input" class="request-data__label">Área a cubrir</label>
+                        <span class="request-data__help">
+                            <i data-lucide="circle-question-mark" class="request-data__help-icon"></i>
+                            <div class="request-data__tooltip">
+                                Superficie total en metros cuadrados que planeas cubrir con adoquín Hardoquin.
+                            </div>
+                        </span>
+                    </div>
                     <input type="number" name="area" id="area-input">
                 </div>
                 <div class="request-data__field">
-                    <label for="rain-level-input" class="request-data__label">Nivel de lluvia</label>
-                    <span class="request-data__help">
-                        <i data-lucide="circle-question-mark" class="request-data__help-icon"></i>
-                        <div class="request-data__tooltip">
-                            Información de ayuda aquí
-                        </div>
-                    </span>
+                    <div class="request-data__label-group">
+                        <label for="rain-level-input" class="request-data__label">Nivel de lluvia</label>
+                        <span class="request-data__help">
+                            <i data-lucide="circle-question-mark" class="request-data__help-icon"></i>
+                            <div class="request-data__tooltip">
+                                Intensidad de lluvia estimada. Usa Hardoquin RainSense para mayor precisión.
+                            </div>
+                        </span>
+                    </div>
                     <input type="range" name="rain-level" id="rain-level-input" value="0" step="5" min="0" max="100">
                 </div>
                 <div class="request-data__field">
-                    <label for="transit-level-input" class="request-data__label">Nivel de tránsito</label>
-                    <span class="request-data__help">
-                        <i data-lucide="circle-question-mark" class="request-data__help-icon"></i>
-                        <div class="request-data__tooltip">
-                            Información de ayuda aquí
-                        </div>
-                    </span>
+                    <div class="request-data__label-group">
+                        <label for="transit-level-input" class="request-data__label">Nivel de tránsito</label>
+                        <span class="request-data__help">
+                            <i data-lucide="circle-question-mark" class="request-data__help-icon"></i>
+                            <div class="request-data__tooltip">
+                                Intensidad de tránsito esperada en la zona. Considera el flujo de personas y vehículos.
+                            </div>
+                        </span>
+                    </div>
                     <input type="range" name="transit-level" id="transit-level-input" value="0" step="5" min="0" max="100">
                 </div>
             </form>
