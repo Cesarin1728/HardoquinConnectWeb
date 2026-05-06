@@ -51,16 +51,17 @@ function setUpDropdownEvents(){
 }
 
 function setUpTabEvents(){
-    const navItems = document.querySelectorAll('.nav__list_item[data-tab]');
+    const navItems = document.querySelectorAll('.nav__link');
     navItems.forEach(navItem => {
         navItem.addEventListener('click', () => {
             navItems.forEach(itm => {
-                itm.classList.remove('nav__list_item--active');
+                itm.classList.remove('nav__link--active');
             })
-            navItem.classList.add('nav__list_item--active');
+            navItem.classList.add('nav__link--active');
         });
     });
 }
+
 function setUpMobileMenuEvents(){
     const toggleBtn = document.querySelector('.navbar__toggle');
     const nav = document.querySelector('.navbar__nav');
@@ -119,11 +120,11 @@ function updateNavbar(user){
 }
 
 export function activeTab(tab){
-    const tabs = document.querySelectorAll('.nav__list_item[data-tab]');
+    const tabs = document.querySelectorAll('.nav__link');
     tabs.forEach(itm => {
-        itm.classList.remove('nav__list_item--active');
+        itm.classList.remove('nav__link--active');
         if(itm.dataset.tab === tab){
-            itm.classList.add('nav__list_item--active');
+            itm.classList.add('nav__link--active');
         }
     });
 }
