@@ -13,11 +13,10 @@ const float ALTURA_TOTAL = 14.0;
 const float PI_CONST     = 3.141592;
 const float AREA_BASE    = PI_CONST * RADIO * RADIO;
 
-// --- VARIABLES PARA NIVEL DE LLUVIA ---
 float alturaAnterior = 0;
 unsigned long tiempoAnterior = 0;
 int nivelLluvia1a10 = 0;
-const unsigned long intervaloMedicion = 60000; // Calcular intensidad cada 60 seg (1 min)
+const unsigned long intervaloMedicion = 60000;
 
 void setup() {
   Serial.begin(9600);
@@ -64,9 +63,9 @@ void loop() {
     unsigned long tiempoActual = millis(); //milis() viene junto a las boards que descargamos de ESP32, si no lo tienen no funciona
     if (tiempoActual - tiempoAnterior >= intervaloMedicion) {
         float deltaMm = (alturaAgua - alturaAnterior) * 10.0; // cm a mm
-        if (deltaMm < 0) deltaMm = 0; // Si el nivel bajó, asumimos que se vació la cubeta
+        if (deltaMm < 0) deltaMm = 0; // Si el nivel bajó, es porque la cubeta se vacióß
 
-        // Calculamos intensidad proyectada a 1 hora (mm/h)
+        // Calculamos intensidad en a 1 hora (mm/h)
         float intensidadMmH = deltaMm * (3600000.0 / (tiempoActual - tiempoAnterior));
         
         // Mapeo: 0 mm/h = Nivel 0 | 50 mm/h (tormenta extrema) = Nivel 10
