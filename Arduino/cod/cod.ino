@@ -3,29 +3,34 @@
 
 const char* ssid = "INFINITUM61B2";
 const char* password = "4uEXG4aDCJ";
-const char* serverUrl = "http://192.168.1.140:3000/datos";
+const char* serverUrl = "http://192.168.1.81:3000/datos";
 
 #define TRIG_PIN 5
 #define ECHO_PIN 18
 
-const float RADIO        = 13.0;
-const float ALTURA_TOTAL = 35.0;
+const float RADIO        = 9.75;
+const float ALTURA_TOTAL = 14.0;
 const float PI_CONST     = 3.141592;
 const float AREA_BASE    = PI_CONST * RADIO * RADIO;
+
+// --- VARIABLES PARA NIVEL DE LLUVIA ---
+float alturaAnterior = 0;
+unsigned long tiempoAnterior = 0;
+int nivelLluvia1a10 = 0;
+const unsigned long intervaloMedicion = 60000; // Calcular intensidad cada 60 seg (1 min)
 
 void setup() {
   Serial.begin(9600);
   pinMode(TRIG_PIN, OUTPUT);
   pinMode(ECHO_PIN, INPUT);
 
-  // Conexión WiFi
   WiFi.begin(ssid, password);
   Serial.print("Conectando a WiFi");
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
   }
-  Serial.println("\n¡Conectado exitosamente!");
+  Serial.println("\nConectado exitosamente!");
 }
 
 float medirDistancia() {
@@ -34,7 +39,6 @@ float medirDistancia() {
   digitalWrite(TRIG_PIN, HIGH);
   delayMicroseconds(10);
   digitalWrite(TRIG_PIN, LOW);
-
   long duracion = pulseIn(ECHO_PIN, HIGH, 30000);
   if (duracion == 0) return -1;
   return (duracion * 0.0343) / 2.0;
@@ -46,10 +50,7 @@ void loop() {
 
   for (int i = 0; i < 10; i++) {
     float d = medirDistancia();
-    if (d > 0) {
-      suma += d;
-      validas++;
-    }
+    if (d > 0) { suma += d; validas++; }
     delay(10);
   }
 
@@ -59,28 +60,30 @@ void loop() {
     float volumenL   = (AREA_BASE * alturaAgua) / 1000.0;
     float laminaMm   = alturaAgua * 10.0;
 
-    // --- ENVÍO AL SERVIDOR NODE.JS ---
+    //CÁLCULO DE INTENSIDAD
+    unsigned long tiempoActual = millis(); //milis() viene junto a las boards que descargamos de ESP32, si no lo tienen no funciona
+    if (tiempoActual - tiempoAnterior >= intervaloMedicion) {
+        float deltaMm = (alturaAgua - alturaAnterior) * 10.0; // cm a mm
+        if (deltaMm < 0) deltaMm = 0; // Si el nivel bajó, asumimos que se vació la cubeta
+
+        // Calculamos intensidad proyectada a 1 hora (mm/h)
+        float intensidadMmH = deltaMm * (3600000.0 / (tiempoActual - tiempoAnterior));
+        
+        // Mapeo: 0 mm/h = Nivel 0 | 50 mm/h (tormenta extrema) = Nivel 10
+        nivelLluvia1a10 = constrain(map(intensidadMmH, 0, 50, 0, 10), 0, 10);
+        
+        alturaAnterior = alturaAgua;
+        tiempoAnterior = tiempoActual;
+    }
+
     HTTPClient http;
     http.begin(serverUrl);
     http.addHeader("Content-Type", "application/json");
 
-    // Creamos el JSON con tus variables
-    String jsonPayload = "{\"distancia\":" + String(distancia) + 
-                         ",\"altura\":" + String(alturaAgua) + 
-                         ",\"volumen\":" + String(volumenL) + 
-                         ",\"lluvia\":" + String(laminaMm) + "}";
+    String jsonPayload = "{\"distancia\":" + String(distancia) + ",\"altura\":" + String(alturaAgua) + ",\"volumen\":" + String(volumenL) + ",\"lluvia\":" + String(laminaMm) + ",\"nivel\":" + String(nivelLluvia1a10 * 10) + "}";
 
     int httpResponseCode = http.POST(jsonPayload);
-    
-    if (httpResponseCode > 0) {
-      Serial.print("Datos enviados. Respuesta: ");
-      Serial.println(httpResponseCode);
-    } else {
-      Serial.print("Error enviando POST: ");
-      Serial.println(http.errorToString(httpResponseCode).c_str());
-    }
     http.end();
   }
-
-  delay(2000); // Espera 2 segundos para la siguiente ráfaga de lecturas
+  delay(2000);
 }
