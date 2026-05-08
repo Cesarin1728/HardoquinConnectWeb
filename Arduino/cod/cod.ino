@@ -1,9 +1,9 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 
-const char* ssid = "INFINITUM61B2";
-const char* password = "4uEXG4aDCJ";
-const char* serverUrl = "http://192.168.1.81:3000/datos";
+const char* ssid = "Alex’s iPhone";
+const char* password = "123456789";
+const char* serverUrl = "http://172.20.10.7:3000/datos";
 
 #define TRIG_PIN 5
 #define ECHO_PIN 18
@@ -29,7 +29,7 @@ void setup() {
     delay(500);
     Serial.print(".");
   }
-  Serial.println("\nConectado exitosamente!");
+  Serial.println("\nConectado exitosamente a " + String(ssid));
 }
 
 float medirDistancia() {

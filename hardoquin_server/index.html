@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Hardoquin Monitor</title>
+    <title>RainSense</title>
     <style>
         body { font-family: sans-serif; text-align: center; background: #f4f4f9; }
         .card { background: white; padding: 20px; border-radius: 10px; display: inline-block; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
@@ -10,20 +10,20 @@
     </style>
 </head>
 <body>
-    <h1>Monitor Hardoquin</h1>
+    <h1>Monitor RainSense</h1>
     <div class="card">
         <p>Distancia: <span id="dist" class="val">0</span> cm</p>
         <p>Nivel Agua: <span id="alt" class="val">0</span> cm</p>
         <p>Volumen: <span id="vol" class="val">0</span> L</p>
         <p>Lluvia Acumulada: <span id="lluv" class="val">0</span> mm</p>
         <hr>
-        <p>Intensidad de Lluvia: <span id="nivel" class="val">0</span> / 10</p>
+        <p>Intensidad de Lluvia: <span id="nivel" class="val">0</span> %</p>
     </div>
 
     <script>
         setInterval(async () => {
             try {
-                const res = await fetch('http://192.168.1.81:3000/ver-datos');
+                const res = await fetch('http://172.20.10.9:3000/ver-datos');
                 const data = await res.json();
                 document.getElementById('dist').innerText = data.distancia.toFixed(1);
                 document.getElementById('alt').innerText = data.altura.toFixed(1);
