@@ -620,3 +620,25 @@
 }
 
 /* -------- REUTILIZABLE ENDS ---------- */
+
+/* -------- REUTILIZABLE ENDS ---------- */
+
+.btn--primary {
+    background-color: transparent;
+    color: rgb(var(--color-acento-azul));
+    font-weight: bold;
+    max-width: 200px;
+    text-align: center;
+    outline: none;
+    border: 2px solid rgb(var(--color-acento-azul));
+    padding-block: 15px;
+    padding-inline: 20px;
+    border-radius: 25px;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.btn--primary:hover {
+    background-color: rgb(var(--color-acento-azul));
+    color: rgb(var(--color-blanco));
+}
+/* -------- REUTILIZABLE ENDS ---------- */
