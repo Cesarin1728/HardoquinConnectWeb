@@ -555,6 +555,205 @@
 
 /* -------- RESPONSIVE NAVBAR ENDS ---------- */
 
+/* -------- FOOTER SECTION ---------- */
+
+#footer.footer {
+    display: block;
+}
+
+.footer {
+    width: 100%;
+    padding: 76px clamp(28px, 6vw, 86px) 80px;
+    background-color: rgb(var(--color-oscuro));
+    color: rgb(var(--color-blanco));
+}
+
+.footer__content {
+    display: grid;
+    grid-template-columns: minmax(260px, 1.35fr) repeat(4, minmax(145px, 0.85fr));
+    gap: clamp(28px, 4.6vw, 72px);
+    align-items: start;
+}
+
+.footer__brand,
+.footer__column,
+.footer__contact {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.footer__brand {
+    gap: 24px;
+}
+
+.footer__logo {
+    width: min(310px, 100%);
+    height: 86px;
+    object-fit: contain;
+    object-position: left center;
+}
+
+.footer__description,
+.footer__link,
+.footer__copyright {
+    color: rgba(var(--color-fondo-oscuro), 0.72);
+    font-size: 1.25rem;
+    line-height: 1.55;
+    font-weight: 400;
+}
+
+.footer__description {
+    max-width: 320px;
+}
+
+.footer__socials {
+    display: flex;
+    gap: 16px;
+    margin-top: 8px;
+}
+
+.footer__social-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    border: 1px solid rgba(var(--color-fondo-oscuro), 0.14);
+    background-color: rgba(var(--color-fondo-oscuro), 0.08);
+    color: rgba(var(--color-fondo-oscuro), 0.78);
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.footer__social-link:hover,
+.footer__link:hover {
+    color: rgb(var(--color-blanco));
+}
+
+.footer__social-link:hover {
+    transform: translateY(-2px);
+    border-color: rgba(var(--color-acento-verde), 0.55);
+}
+
+.footer__title,
+.footer__title-link {
+    margin-bottom: 20px;
+    color: rgb(var(--color-acento-verde));
+    font-size: 1.2rem;
+    line-height: 1.2;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.footer__title-link {
+    position: relative;
+    display: inline-flex;
+    text-decoration: none;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.footer__title-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -8px;
+    width: 100%;
+    height: 2px;
+    border-radius: 999px;
+    background-color: rgb(var(--color-blanco));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.2s ease;
+}
+
+.footer__title-link:hover {
+    color: rgb(var(--color-blanco));
+    transform: translateY(-2px);
+}
+
+.footer__title-link:hover::after {
+    transform: scaleX(1);
+}
+
+.footer__column {
+    gap: 12px;
+}
+
+.footer__link {
+    display: inline-flex;
+    font-weight: 400;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.footer__link--sub {
+    color: rgba(var(--color-fondo-oscuro), 0.58);
+}
+
+.footer__contact {
+    margin-top: 0;
+}
+
+.footer__bottom {
+    display: flex;
+    align-items: center;
+    margin-top: 58px;
+    padding-top: 30px;
+    border-top: 1px solid rgba(var(--color-fondo-oscuro), 0.12);
+}
+
+.footer__copyright {
+    color: rgba(var(--color-fondo-oscuro), 0.36);
+}
+
+@media (max-width: 980px) {
+    .footer__content {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .footer__brand {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 710px) {
+    .footer__content {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 36px 24px;
+    }
+
+    .footer__description,
+    .footer__link,
+    .footer__copyright {
+        font-size: 1rem;
+    }
+
+    .footer {
+        padding: 54px 24px 58px;
+    }
+}
+
+@media (max-width: 480px) {
+    .footer__content {
+        grid-template-columns: 1fr;
+    }
+
+    .footer__logo {
+        width: min(280px, 100%);
+    }
+
+    .footer__bottom {
+        margin-top: 42px;
+    }
+}
+
+/* -------- FOOTER ENDS ---------- */
+
 
 
 /* -------- REUTILIZABLE SECTION ---------- */
