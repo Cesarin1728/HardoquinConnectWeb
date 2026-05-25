@@ -274,7 +274,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                         stacked: true,
                         suggestedMax: 4000,
                         grid: { color: "rgba(15,23,42,0.08)" },
-                        ticks: { color: "#475569", stepSize: 200 },
+                        ticks: { 
+                            color: "#475569", 
+                            stepSize: 200 
+                        },
                         title: { 
                             display: true, 
                             text: "Litros (L)", 

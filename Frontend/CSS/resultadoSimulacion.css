@@ -3,7 +3,7 @@ main {
     max-width: 1200px;
     margin: 0 auto;
     display: grid;
-    gap: 24px;
+    gap: 34px;
 }
 
 body {
@@ -45,6 +45,8 @@ body {
     display: grid;
     gap: 12px;
     justify-items: center;
+    background-color: #4D96FF53;
+    border: 2.5px solid #4D96FF98;
 }
 
 .results__data-title,
