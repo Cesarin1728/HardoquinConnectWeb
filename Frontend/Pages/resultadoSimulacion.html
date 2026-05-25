@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultado Simulación</title>
+    <link rel="stylesheet" href="../CSS/main.css">
+    <link rel="stylesheet" href="../CSS/components.css">
+    <link rel="stylesheet" href="../CSS/resultadoSimulacion.css">
+</head>
+<body>
+    <header class="header">
+        <section id="main__navbar">
+
+        </section>
+    </header>
+    <main>
+        <section class="results__data">
+            <article class="results__data-wrapper">
+                <h2 class="results__data-title results__data-title--area">Área a cubrir</h2>
+                <strong class="results__data-value results__data-value--area">#</strong>
+            </article>
+            <article class="results__data-wrapper">
+                <h2 class="results__data-title results__data-title--rainfall">Nivel de lluvia</h2>
+                <strong class="results__data-value results__data-value--rainfall">#</strong>
+                
+            </article>
+            <article class="results__data-wrapper">
+                <h2 class="results__data-title results__data-title--traffic">Nivel de tránsito</h2>
+                <strong class="results__data-value results__data-value--traffic">#</strong>
+                
+            </article>
+        </section>
+        <section class="results__select-material">
+            <p>Seleccione el material con el que quiere comparar Hardoquin:</p>
+            <select name="select-material" id="select-material">
+                <option value="1">Adoquín Tradicional</option>
+                <option value="2">Concreto</option>
+                <option value="3">Asfalto</option>
+            </select>
+        </section>
+        <section class="comparison__visual">
+            <article class="comparison__item">
+                <h3 class="comparison__label comparison__label--hardoquin">Hardoquin</h3>
+                <div class="comparison__chart">
+                    <canvas id="chart-hardoquin-permeability"></canvas>
+                </div>
+                <p class="comparison__description" data-material="hardoquin"></p>
+            </article>
+            <article class="comparison__item">
+                <h3 class="comparison__label comparison__label--alternate" data-alternate-material>Adoquín tradicional</h3>
+                <div class="comparison__chart">
+                    <canvas id="chart-alternate-permeability"></canvas>
+                </div>
+                <p class="comparison__description" data-material="alternate"></p>
+            </article>
+        </section>
+        <section class="comparison__result">
+            <header class="comparison__result-header">
+                <h3 class="comparison__badge">Resultado comparativo</h3>
+            </header>
+            <p class="comparison__text" id="comparison-text"></p>
+            <span class="comparison__highlight" id="comparison-difference"></span>
+        </section>
+        <section class="analysis__metrics">
+            <article class="analysis__chart">
+                <h3 class="analysis__title">Vida útil según nivel de tránsito</h3>
+                <p class="analysis__subtitle">Años estimados de funcionamiento óptimo</p>
+                <div class="analysis__figure">
+                    <canvas id="chart-lifespan"></canvas>
+                </div>
+            </article>
+            <article class="analysis__chart">
+                <h3 class="analysis__title">Agua gestionada en tu área</h3>
+                <p class="analysis__subtitle">Por evento de lluvia moderada</p>
+                <div class="analysis__figure">
+                    <canvas id="chart-water-managed"></canvas>
+                </div>      
+            </article>
+        </section>
+        <section class="costs__comparison">
+            <article class="cost__item">
+                <h4 class="cost__material cost__material--hardoquin">Hardoquin - instalación inicial</h4>
+                <strong class="cost__price" id="cost-hardoquin"></strong>
+                <p class="cost__details" id="cost-hardoquin-details"></p>
+            </article>
+            <article class="cost__item">
+                <h4 class="cost__material cost__material--alternate" data-alternate-material-cost>Adoquín tradicional - instalación inicial</h4>
+                <strong class="cost__price" id="cost-alternate"></strong>
+                <p class="cost__details" id="cost-alternate-details"></p>
+            </article>
+        </section>
+        <aside class="savings__highlight">
+            <p class="savings__subtitle">Con Hardoquin ahorras en la instalación inicial</p>
+            <strong class="savings__amount" id="savings-amount"></strong>
+            <p class="savings__context" id="savings-context"></p>
+        </aside>
+    </main>
+    <script src="https://unpkg.com/lucide@0.555.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="../Js/main-resultadoSimulacion.js"></script>
+</body>
