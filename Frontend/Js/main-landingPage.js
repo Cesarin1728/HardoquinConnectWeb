@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     activeTab('inicio');
     lucide.createIcons();
 
-    //Beneficios puntos indicadores 
     const track = document.querySelector('.benefits-slider__track');
     const dots = document.querySelectorAll('.benefits-indicator__bar');
 
