@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tablón Comunitario</title>
     <link rel="stylesheet" href="../CSS/main.css">
     <link rel="stylesheet" href="../CSS/components.css">
+    <link rel="stylesheet" href="../CSS/tablon.css">
 </head>
 <body>
     <header>
@@ -13,6 +14,100 @@
 
         </section>
     </header>
+
+    <dialog class="post-modal" id="new-post-modal" aria-labelledby="new-post-title">
+        <form class="post-modal__panel" id="new-post-form" method="dialog">
+            <header class="post-modal__header">
+                <h2 class="post-modal__title" id="new-post-title">Nueva publicación</h2>
+                <button class="post-modal__close" type="button" data-close-modal aria-label="Cerrar formulario">
+                    <i data-lucide="x" aria-hidden="true"></i>
+                </button>
+            </header>
+
+            <label class="post-modal__label" for="post-title">Título</label>
+            <input class="post-modal__input" id="post-title" name="title" placeholder="¿Sobre qué quieres compartir?" required>
+
+            <label class="post-modal__label" for="post-category">Categoría</label>
+            <select class="post-modal__select" id="post-category" name="category" required>
+                <option value="experiencia">Experiencia</option>
+                <option value="duda">Duda técnica</option>
+                <option value="uso">Caso de uso</option>
+                <option value="general">General</option>
+            </select>
+
+            <label class="post-modal__label" for="post-message">Mensaje</label>
+            <textarea class="post-modal__textarea" id="post-message" name="message" placeholder="Comparte con la comunidad..." required></textarea>
+
+            <footer class="post-modal__actions">
+                <button class="post-modal__cancel" type="button" data-close-modal>Cancelar</button>
+                <button class="post-modal__submit" type="submit">Publicar</button>
+            </footer>
+        </form>
+    </dialog>
+
+    <main class="board-page">
+        <aside class="board-sidebar" aria-labelledby="category-title">
+            <section class="board-sidebar__section">
+                <h2 class="board-sidebar__label" id="category-title">Categorías</h2>
+                <nav class="category-nav" aria-label="Filtrar publicaciones por categoría">
+                    <button class="category-nav__button category-nav__button--active" type="button" data-category="all">
+                        <span class="category-nav__dot category-nav__dot--all" aria-hidden="true"></span>
+                        Todas
+                        <span class="category-nav__count" id="count-all">0</span>
+                    </button>
+                    <button class="category-nav__button" type="button" data-category="experiencia">
+                        <span class="category-nav__dot category-nav__dot--experience" aria-hidden="true"></span>
+                        Experiencia
+                        <span class="category-nav__count" id="count-experiencia">0</span>
+                    </button>
+                    <button class="category-nav__button" type="button" data-category="duda">
+                        <span class="category-nav__dot category-nav__dot--question" aria-hidden="true"></span>
+                        Duda técnica
+                        <span class="category-nav__count" id="count-duda">0</span>
+                    </button>
+                    <button class="category-nav__button" type="button" data-category="uso">
+                        <span class="category-nav__dot category-nav__dot--case" aria-hidden="true"></span>
+                        Caso de uso
+                        <span class="category-nav__count" id="count-uso">0</span>
+                    </button>
+                    <button class="category-nav__button" type="button" data-category="general">
+                        <span class="category-nav__dot category-nav__dot--general" aria-hidden="true"></span>
+                        General
+                        <span class="category-nav__count" id="count-general">0</span>
+                    </button>
+                </nav>
+            </section>
+        </aside>
+
+        <section class="board-content" aria-labelledby="board-title">
+            <header class="board-header">
+                <section class="board-header__copy">
+                    <h1 class="board-header__title" id="board-title">Tablón comunitario</h1>
+                    <p class="board-header__subtitle">Comparte experiencias, resuelve dudas y conecta con la comunidad</p>
+                </section>
+
+                <form class="board-tools" role="search">
+                    <label class="sr-only" for="board-search">Buscar publicación</label>
+                    <input class="board-tools__search" id="board-search" type="search" placeholder="Buscar...">
+
+                    <label class="sr-only" for="board-sort">Ordenar publicaciones</label>
+                    <select class="board-tools__select" id="board-sort">
+                        <option value="recent">Más recientes</option>
+                        <option value="popular">Más populares</option>
+                        <option value="replies">Más respuestas</option>
+                    </select>
+
+                    <button class="board-tools__new" type="button" data-open-modal>
+                        <i data-lucide="plus" aria-hidden="true"></i>
+                        Nueva publicación
+                    </button>
+                </form>
+            </header>
+
+            <section class="post-list" id="post-list" aria-live="polite" aria-label="Publicaciones comunitarias"></section>
+        </section>
+    </main>
+
     <script src="https://unpkg.com/lucide@0.555.0"></script>
     <script type="module" src="../Js/main-tablon.js"></script>
 </body>
