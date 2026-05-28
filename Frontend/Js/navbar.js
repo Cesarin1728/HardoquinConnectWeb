@@ -54,6 +54,13 @@ function setUpTabEvents(){
     const navItems = document.querySelectorAll('.nav__link');
     navItems.forEach(navItem => {
         navItem.addEventListener('click', () => {
+            const nav = document.querySelector('.navbar__nav');
+            const isMobileSubmenuToggle = window.matchMedia('(max-width: 710px)').matches
+                && nav?.classList.contains('navbar__nav--active')
+                && navItem.closest('.nav__list_item--has-submenu');
+
+            if (isMobileSubmenuToggle) return;
+
             navItems.forEach(itm => {
                 itm.classList.remove('nav__link--active');
             })
@@ -65,14 +72,24 @@ function setUpTabEvents(){
 function setUpMobileMenuEvents(){
     const toggleBtn = document.querySelector('.navbar__toggle');
     const nav = document.querySelector('.navbar__nav');
-    const navLinks = document.querySelectorAll('.nav__link');
+    const navLinks = document.querySelectorAll('.nav__link, .nav__submenu-link');
     const userDropdown = document.querySelector('.nav__user_dropdown');
+    const submenuItems = document.querySelectorAll('.nav__list_item--has-submenu');
 
     if (!toggleBtn || !nav) return;
+
+    const closeSubmenus = () => {
+        submenuItems.forEach((item) => {
+            item.classList.remove('nav__list_item--submenu-open');
+            item.querySelector('.nav__link')?.setAttribute('aria-expanded', 'false');
+        });
+    };
 
     const setMobileMenuState = (isOpen) => {
         if (isOpen) {
             userDropdown?.classList.remove('nav__user_dropdown--active');
+        } else {
+            closeSubmenus();
         }
 
         nav.classList.toggle('navbar__nav--active', isOpen);
@@ -84,8 +101,23 @@ function setUpMobileMenuEvents(){
         setMobileMenuState(!nav.classList.contains('navbar__nav--active'));
     })
 
+    submenuItems.forEach((item) => {
+        const parentLink = item.querySelector('.nav__link');
+
+        parentLink?.addEventListener('click', (event) => {
+            if (!window.matchMedia('(max-width: 710px)').matches || !nav.classList.contains('navbar__nav--active')) return;
+
+            event.preventDefault();
+            const shouldOpen = !item.classList.contains('nav__list_item--submenu-open');
+            closeSubmenus();
+            item.classList.toggle('nav__list_item--submenu-open', shouldOpen);
+            parentLink.setAttribute('aria-expanded', String(shouldOpen));
+        });
+    });
+
     navLinks.forEach(link => {
-        link.addEventListener('click', () => {
+        link.addEventListener('click', (event) => {
+            if (event.defaultPrevented) return;
             setMobileMenuState(false);
         })
     })

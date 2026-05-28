@@ -48,6 +48,10 @@
     align-items: center;
 }
 
+.nav__list_item--has-submenu {
+    position: relative;
+}
+
 /* .nav__list_item:not(:has(.nav__user)).nav__list_item--active {
     border-bottom-color: rgb(var(--color-acento-verde));
     background-size: 100% 37%;
@@ -93,6 +97,101 @@
 .nav__link--active {
     border-bottom-color: rgb(var(--color-acento-verde));
     background-size: 100% 37%;
+}
+
+.nav__link-icon {
+    display: none;
+}
+
+.nav__submenu {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    z-index: 20;
+    display: grid;
+    gap: 8px;
+    width: 270px;
+    padding: 10px;
+    border: 1px solid rgba(var(--color-fondo-oscuro), 0.78);
+    border-radius: 14px;
+    background-color: rgb(var(--color-blanco));
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.16);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.18s ease;
+}
+
+.nav__list_item--has-submenu:hover .nav__submenu,
+.nav__list_item--has-submenu:focus-within .nav__submenu {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.nav__submenu-link {
+    display: grid;
+    grid-template-columns: 36px minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-height: 58px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    color: rgb(var(--color-oscuro));
+    text-decoration: none;
+    transform: none;
+    transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+.nav__submenu-link:hover,
+.nav__submenu-link:focus,
+.nav__submenu-link:active {
+    background-color: rgba(var(--color-fondo-oscuro), 0.72);
+    transform: none;
+}
+
+.nav__submenu-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    flex: 0 0 auto;
+}
+
+.nav__submenu-icon--new {
+    background-color: rgba(var(--color-acento-verde), 0.14);
+    color: rgb(var(--color-acento-verde));
+}
+
+.nav__submenu-icon--gallery {
+    background-color: rgba(var(--color-acento-azul), 0.12);
+    color: rgb(var(--color-acento-azul));
+}
+
+.nav__submenu-icon i,
+.nav__submenu-icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+.nav__submenu-copy {
+    display: grid;
+    gap: 1px;
+    min-width: 0;
+    text-align: left;
+}
+
+.nav__submenu-copy strong {
+    font-size: 0.86rem;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.nav__submenu-copy small {
+    color: rgba(var(--color-texto), 0.72);
+    font-size: 0.72rem;
+    line-height: 1.2;
 }
 
 .nav__list_item--user-info {
@@ -399,23 +498,75 @@
 
     .navbar__nav--active .nav__list_item:not(:has(.nav__user)) {
         display: flex;
+        flex-direction: column;
+        align-items: stretch;
         width: 100%;
-        min-height: 52px;
+        min-height: auto;
         padding: 0;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-    }
-
-    .navbar__nav--active .nav__list_item:not(:has(.nav__user)):last-of-type {
         border-bottom: 0;
     }
 
+    .navbar__nav--active .nav__list_item:not(:has(.nav__user)) + .nav__list_item:not(:has(.nav__user)) {
+        margin-top: 8px;
+    }
+
     .nav__link {
+        display: grid;
+        grid-template-columns: 36px minmax(0, 1fr) auto;
+        align-items: center;
+        column-gap: 10px;
         width: 100%;
+        min-height: 54px;
         height: auto;
-        justify-content: space-between;
+        padding: 9px 10px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        background-color: rgba(255, 255, 255, 0.06);
         text-align: left;
         font-size: 1rem;
         font-weight: 600;
+        transform: none;
+    }
+
+    .nav__link-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        flex: 0 0 auto;
+    }
+
+    .nav__link-icon svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .nav__link-icon--home {
+        background-color: rgba(var(--color-acento-verde), 0.14);
+        color: rgb(var(--color-acento-verde));
+    }
+
+    .nav__link-icon--simulation {
+        background-color: rgba(var(--color-acento-azul), 0.14);
+        color: rgb(var(--color-acento-azul));
+    }
+
+    .nav__link-icon--board {
+        background-color: rgba(var(--color-claro), 0.16);
+        color: rgb(var(--color-claro));
+    }
+
+    .nav__link-text {
+        min-width: 0;
+    }
+
+    .nav__link:hover,
+    .nav__link:focus,
+    .nav__link:active {
+        background-color: rgba(255, 255, 255, 0.1);
+        transform: none;
     }
 
     .navbar__nav--active .nav__link::after {
@@ -423,6 +574,70 @@
         color: rgba(255, 255, 255, 0.45);
         font-size: 1.2rem;
         font-weight: 400;
+        grid-column: 3;
+        justify-self: end;
+    }
+
+    .navbar__nav--active .nav__list_item--submenu-open > .nav__link::after {
+        transform: rotate(90deg);
+    }
+
+    .nav__submenu {
+        position: static;
+        display: none;
+        width: calc(100% - 22px);
+        gap: 8px;
+        margin-top: 8px;
+        margin-left: 22px;
+        padding: 0 0 2px;
+        border: 0;
+        border-radius: 0;
+        background-color: transparent;
+        box-shadow: none;
+        opacity: 1;
+        pointer-events: auto;
+        transform: none;
+    }
+
+    .navbar__nav--active .nav__list_item--submenu-open .nav__submenu {
+        display: grid;
+    }
+
+    .nav__submenu-link {
+        display: grid;
+        grid-template-columns: 36px minmax(0, 1fr);
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        min-height: 54px;
+        padding: 9px 10px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        background-color: rgba(255, 255, 255, 0.06);
+        color: rgb(var(--color-blanco));
+        transform: none;
+    }
+
+    .nav__submenu-link::before {
+        content: none;
+    }
+
+    .nav__submenu-link:hover,
+    .nav__submenu-link:active,
+    .nav__submenu-link:focus {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: rgb(var(--color-blanco));
+        transform: none;
+    }
+
+    .nav__submenu-copy strong {
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    .nav__submenu-copy small {
+        color: rgba(255, 255, 255, 0.58);
+        font-size: 0.72rem;
     }
 
     .nav__user {

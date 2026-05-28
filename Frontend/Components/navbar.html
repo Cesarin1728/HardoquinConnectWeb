@@ -5,13 +5,42 @@
 <nav class="navbar__nav">
     <ul class="nav__list">
         <li class="nav__list_item">
-            <a href="/Frontend/index.html" data-tab="inicio" class="nav__link">Inicio</a>
+            <a href="/Frontend/index.html" data-tab="inicio" class="nav__link">
+                <span class="nav__link-icon nav__link-icon--home"><i data-lucide="house"></i></span>
+                <span class="nav__link-text">Inicio</span>
+            </a>
+        </li>
+        <li class="nav__list_item nav__list_item--has-submenu">
+            <a href="/Frontend/Pages/datosSimulacion.html" data-tab="simulaciones" class="nav__link" aria-expanded="false">
+                <span class="nav__link-icon nav__link-icon--simulation"><i data-lucide="droplets"></i></span>
+                <span class="nav__link-text">Simulaciones</span>
+            </a>
+            <section class="nav__submenu" aria-label="Opciones de simulaciones">
+                <a href="/Frontend/Pages/datosSimulacion.html" class="nav__submenu-link">
+                    <span class="nav__submenu-icon nav__submenu-icon--new">
+                        <i data-lucide="sparkles"></i>
+                    </span>
+                    <span class="nav__submenu-copy">
+                        <strong>Crear nueva simulación</strong>
+                        <small>Modela tu proyecto</small>
+                    </span>
+                </a>
+                <a href="/Frontend/Pages/galeriaSimulaciones.html" class="nav__submenu-link">
+                    <span class="nav__submenu-icon nav__submenu-icon--gallery">
+                        <i data-lucide="folder-heart"></i>
+                    </span>
+                    <span class="nav__submenu-copy">
+                        <strong>Mis simulaciones</strong>
+                        <small>Consulta tus escenarios</small>
+                    </span>
+                </a>
+            </section>
         </li>
         <li class="nav__list_item">
-            <a href="/Frontend/Pages/datosSimulacion.html" data-tab="simulaciones" class="nav__link">Simulaciones</a>
-        </li>
-        <li class="nav__list_item">
-            <a href="/Frontend/Pages/tablon.html" data-tab="tablon" class="nav__link">Tablón</a>
+            <a href="/Frontend/Pages/tablon.html" data-tab="tablon" class="nav__link">
+                <span class="nav__link-icon nav__link-icon--board"><i data-lucide="messages-square"></i></span>
+                <span class="nav__link-text">Tablón</span>
+            </a>
         </li>
         <li class="nav__list_item nav__list_item--user-info">
             <button class="nav__user">
