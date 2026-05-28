@@ -1,10 +1,12 @@
 import { initNavbar } from "./navbar.js";
 import { activeTab } from "./navbar.js";
+import { initFooter } from "./footer.js";
 import { createWave } from "./simulaciones/simulationCards.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
 
     await initNavbar();
+    await initFooter();
     activeTab("simulaciones");
 
     const waveCanvases = document.querySelectorAll(".sim-card__wave");

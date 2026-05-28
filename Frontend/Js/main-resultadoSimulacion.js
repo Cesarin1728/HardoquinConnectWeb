@@ -1,9 +1,11 @@
 import { initNavbar, activeTab } from "./navbar.js";
+import { initFooter } from "./footer.js";
 import { calculateWaterData, calculateLifespanByTransit, calculateTotalCost, calculateCostDifference, calculateWaterDifference, round2, formatNumberWithCommas, formatMaterialLabel } from "./simulaciones/calculations.js";
 import { centerTextPlugin, createDoughnutChart, createLifespanChart, createWaterManagementChart } from "./simulaciones/charts.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
     await initNavbar();
+    await initFooter();
     activeTab("simulaciones");
 
     const area = 50, nivelLluvia = 55, litrosBasePorMetro = 120, transitLevel = 45;

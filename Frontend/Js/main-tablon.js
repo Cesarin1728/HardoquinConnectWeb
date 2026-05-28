@@ -1,5 +1,6 @@
 import { initNavbar } from "./navbar.js";
 import { activeTab } from "./navbar.js";
+import { initFooter } from "./footer.js";
 
 const categories = {
     all: { label: 'Todas', color: '#028090' },
@@ -527,6 +528,7 @@ function setUpBoardEvents() {
 
 document.addEventListener('DOMContentLoaded', async () => {
     await initNavbar();
+    await initFooter();
     activeTab('tablon');
     setUpBoardEvents();
     renderPosts();

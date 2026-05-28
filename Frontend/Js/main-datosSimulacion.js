@@ -1,5 +1,6 @@
 import { initNavbar } from "./navbar.js"; 
 import { activeTab } from "./navbar.js";
+import { initFooter } from "./footer.js";
 
 const ranges = document.querySelectorAll('input[type="range"]');
 const rainLevels = [
@@ -117,6 +118,6 @@ btnRainSense.addEventListener('click', () => {
 
 document.addEventListener("DOMContentLoaded", async () =>{
     await initNavbar();
+    await initFooter();
     activeTab('simulaciones');
 });
-
