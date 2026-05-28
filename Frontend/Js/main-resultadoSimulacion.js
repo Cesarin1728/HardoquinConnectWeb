@@ -54,6 +54,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     alternateCostElement.textContent = `$${formatNumberWithCommas(alternateCost)}`;
     hardoquinCostDetails.textContent = `${area}m² • $${hardoquin.costoM2}/m²`;
     alternateCostDetails.textContent = `${area}m² • $${initialAlternate.costoM2}/m²`;
+    const savingsAmount = calculateCostDifference(hardoquinCost, alternateCost);
+    savingsAmountElement.textContent = `$${formatNumberWithCommas(savingsAmount)}`;
+    savingsContextElement.textContent = `vs ${initialAlternate.nombre} en ${area}m²`;
 
     // Comparison text
     const { litrosFiltrados: litrosFiltradosAlternate } = calculateWaterData(initialAlternate.permeabilidad, area, litrosBasePorMetro, nivelLluvia);
