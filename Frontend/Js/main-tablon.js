@@ -11,6 +11,7 @@ const categories = {
 
 let activeCategory = 'all';
 let nextPostId = 7;
+let pendingDeleteTarget = null;
 
 const posts = [
     {
@@ -105,6 +106,7 @@ const getElements = () => ({
     search: document.getElementById('board-search'),
     sort: document.getElementById('board-sort'),
     modal: document.getElementById('new-post-modal'),
+    deleteModal: document.getElementById('delete-post-modal'),
     newPostForm: document.getElementById('new-post-form')
 });
 
@@ -155,18 +157,37 @@ function updateCounts() {
 }
 
 function renderReplies(post) {
-    const replies = post.replies.map((reply) => `
+    const replies = post.replies.map((reply, replyIndex) => {
+        const menuId = `reply-menu-${post.id}-${replyIndex}`;
+
+        return `
         <li class="reply">
             <span class="avatar reply__avatar" style="background-color: ${reply.avatar};">${escapeHtml(reply.initials)}</span>
             <article class="reply__bubble">
-                <header>
-                    <strong class="reply__author">${escapeHtml(reply.user)}</strong>
-                    <time class="reply__time">${escapeHtml(reply.time)}</time>
+                <header class="reply__header">
+                    <section class="reply__meta">
+                        <strong class="reply__author">${escapeHtml(reply.user)}</strong>
+                        <time class="reply__time">${escapeHtml(reply.time)}</time>
+                    </section>
+                    <section class="post-menu reply__menu">
+                        <button class="post-menu__trigger" type="button" data-toggle-menu="${menuId}" aria-expanded="false" aria-controls="${menuId}" aria-label="Opciones de respuesta">
+                            <i data-lucide="ellipsis" aria-hidden="true"></i>
+                        </button>
+                        <menu class="post-menu__list" id="${menuId}">
+                            <li>
+                                <button class="post-menu__item post-menu__item--danger" type="button" data-delete-reply data-post-id="${post.id}" data-reply-index="${replyIndex}">
+                                    <i data-lucide="trash-2" aria-hidden="true"></i>
+                                    Eliminar
+                                </button>
+                            </li>
+                        </menu>
+                    </section>
                 </header>
                 <p class="reply__text">${escapeHtml(reply.text)}</p>
             </article>
         </li>
-    `).join('');
+        `;
+    }).join('');
 
     return `
         <section class="reply-section" id="reply-section-${post.id}" aria-label="Respuestas de ${escapeHtml(post.title)}">
@@ -202,7 +223,7 @@ function renderPost(post, openReplyIds) {
                 <section class="community-post__controls">
                     <span class="community-post__category" style="${getCategoryStyle(post.category)}">${escapeHtml(category.label)}</span>
                     <section class="post-menu">
-                        <button class="post-menu__trigger" type="button" data-toggle-menu="${post.id}" aria-expanded="false" aria-controls="${menuId}" aria-label="Opciones de publicación">
+                        <button class="post-menu__trigger" type="button" data-toggle-menu="${menuId}" aria-expanded="false" aria-controls="${menuId}" aria-label="Opciones de publicación">
                             <i data-lucide="ellipsis" aria-hidden="true"></i>
                         </button>
                         <menu class="post-menu__list" id="${menuId}">
@@ -218,7 +239,7 @@ function renderPost(post, openReplyIds) {
             </header>
 
             <section class="community-post__body">
-                <h2 class="community-post__title">${escapeHtml(post.title)}</h2>
+                ${post.title ? `<h2 class="community-post__title">${escapeHtml(post.title)}</h2>` : ''}
                 <p class="community-post__text">${escapeHtml(post.text)}</p>
             </section>
 
@@ -304,8 +325,8 @@ function closePostMenus() {
     });
 }
 
-function togglePostMenu(postId) {
-    const menu = document.querySelector(`[data-toggle-menu="${postId}"]`)?.closest('.post-menu');
+function togglePostMenu(menuId) {
+    const menu = document.querySelector(`[data-toggle-menu="${menuId}"]`)?.closest('.post-menu');
     if (!menu) return;
 
     const shouldOpen = !menu.classList.contains('post-menu--open');
@@ -314,15 +335,51 @@ function togglePostMenu(postId) {
     menu.querySelector('.post-menu__trigger')?.setAttribute('aria-expanded', String(shouldOpen));
 }
 
-function deletePost(postId) {
-    const index = posts.findIndex((item) => item.id === Number(postId));
-    if (index === -1) return;
+function openDeleteModal(postId) {
+    const { deleteModal } = getElements();
+    const post = posts.find((item) => item.id === Number(postId));
+    if (!post) return;
 
-    const shouldDelete = confirm(`¿Estás seguro de que quieres eliminar "${posts[index].title}"?`);
-    if (!shouldDelete) return;
-
-    posts.splice(index, 1);
+    pendingDeleteTarget = { type: 'post', postId: post.id };
     closePostMenus();
+    deleteModal.showModal();
+}
+
+function openDeleteReplyModal(postId, replyIndex) {
+    const { deleteModal } = getElements();
+    const post = posts.find((item) => item.id === Number(postId));
+    const index = Number(replyIndex);
+
+    if (!post || !post.replies[index]) return;
+
+    pendingDeleteTarget = { type: 'reply', postId: post.id, replyIndex: index };
+    closePostMenus();
+    deleteModal.showModal();
+}
+
+function closeDeleteModal() {
+    const { deleteModal } = getElements();
+    pendingDeleteTarget = null;
+    deleteModal.close();
+}
+
+function confirmDelete() {
+    if (!pendingDeleteTarget) {
+        closeDeleteModal();
+        return;
+    }
+
+    if (pendingDeleteTarget.type === 'post') {
+        const index = posts.findIndex((item) => item.id === pendingDeleteTarget.postId);
+        if (index !== -1) posts.splice(index, 1);
+    }
+
+    if (pendingDeleteTarget.type === 'reply') {
+        const post = posts.find((item) => item.id === pendingDeleteTarget.postId);
+        post?.replies.splice(pendingDeleteTarget.replyIndex, 1);
+    }
+
+    closeDeleteModal();
     renderPosts();
 }
 
@@ -364,7 +421,7 @@ function submitPost(form) {
     const text = String(formData.get('message')).trim();
     const category = String(formData.get('category'));
 
-    if (!title || !text) return;
+    if (!text) return;
 
     posts.unshift({
         id: nextPostId++,
@@ -386,7 +443,7 @@ function submitPost(form) {
 }
 
 function setUpBoardEvents() {
-    const { postList, search, sort, modal, newPostForm } = getElements();
+    const { postList, search, sort, modal, deleteModal, newPostForm } = getElements();
 
     document.querySelectorAll('.category-nav__button').forEach((button) => {
         button.addEventListener('click', () => setActiveCategory(button.dataset.category));
@@ -402,6 +459,15 @@ function setUpBoardEvents() {
         if (event.target === modal) closeModal();
     });
 
+    deleteModal.addEventListener('click', (event) => {
+        if (event.target === deleteModal) closeDeleteModal();
+    });
+
+    document.querySelector('[data-confirm-delete-post]').addEventListener('click', confirmDelete);
+    document.querySelectorAll('[data-close-delete-modal]').forEach((button) => {
+        button.addEventListener('click', closeDeleteModal);
+    });
+
     newPostForm.addEventListener('submit', (event) => {
         event.preventDefault();
         submitPost(newPostForm);
@@ -410,6 +476,7 @@ function setUpBoardEvents() {
     postList.addEventListener('click', (event) => {
         const menuButton = event.target.closest('[data-toggle-menu]');
         const deleteButton = event.target.closest('[data-delete-post]');
+        const deleteReplyButton = event.target.closest('[data-delete-reply]');
         const replyButton = event.target.closest('[data-toggle-replies]');
         const likeButton = event.target.closest('[data-like-post]');
 
@@ -421,7 +488,13 @@ function setUpBoardEvents() {
 
         if (deleteButton) {
             event.stopPropagation();
-            deletePost(deleteButton.dataset.deletePost);
+            openDeleteModal(deleteButton.dataset.deletePost);
+            return;
+        }
+
+        if (deleteReplyButton) {
+            event.stopPropagation();
+            openDeleteReplyModal(deleteReplyButton.dataset.postId, deleteReplyButton.dataset.replyIndex);
             return;
         }
 
