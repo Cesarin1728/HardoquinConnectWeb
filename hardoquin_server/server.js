@@ -22,5 +22,5 @@ app.get('/ver-datos', (req, res) => {
 });
 
 app.listen(port, '0.0.0.0', () => {
-    console.log(`Servidor activo en: http://172.20.10.9:${port}`);
+    console.log(`Servidor activo en: http://192.168.137.174:${port}`);
 });

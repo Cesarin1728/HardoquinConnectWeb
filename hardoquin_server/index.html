@@ -23,7 +23,7 @@
     <script>
         setInterval(async () => {
             try {
-                const res = await fetch('http://172.20.10.9:3000/ver-datos');
+                const res = await fetch('http://192.168.137.174:3000/ver-datos');
                 const data = await res.json();
                 document.getElementById('dist').innerText = data.distancia.toFixed(1);
                 document.getElementById('alt').innerText = data.altura.toFixed(1);

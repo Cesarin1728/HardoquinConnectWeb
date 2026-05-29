@@ -1,9 +1,9 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 
-const char* ssid = "Alex’s iPhone";
-const char* password = "123456789";
-const char* serverUrl = "http://172.20.10.7:3000/datos";
+const char* ssid = "REDES";
+const char* password = "12345678";
+const char* serverUrl = "http://192.168.137.174:3000/datos";
 
 #define TRIG_PIN 5
 #define ECHO_PIN 18
@@ -59,18 +59,12 @@ void loop() {
     float volumenL   = (AREA_BASE * alturaAgua) / 1000.0;
     float laminaMm   = alturaAgua * 10.0;
 
-    //CÁLCULO DE INTENSIDAD
-    unsigned long tiempoActual = millis(); //milis() viene junto a las boards que descargamos de ESP32, si no lo tienen no funciona
+    unsigned long tiempoActual = millis();
     if (tiempoActual - tiempoAnterior >= intervaloMedicion) {
-        float deltaMm = (alturaAgua - alturaAnterior) * 10.0; // cm a mm
-        if (deltaMm < 0) deltaMm = 0; // Si el nivel bajó, es porque la cubeta se vacióß
-
-        // Calculamos intensidad en a 1 hora (mm/h)
+        float deltaMm = (alturaAgua - alturaAnterior) * 10.0;
+        if (deltaMm < 0) deltaMm = 0;
         float intensidadMmH = deltaMm * (3600000.0 / (tiempoActual - tiempoAnterior));
-        
-        // Mapeo: 0 mm/h = Nivel 0 | 50 mm/h (tormenta extrema) = Nivel 10
         nivelLluvia1a10 = constrain(map(intensidadMmH, 0, 50, 0, 10), 0, 10);
-        
         alturaAnterior = alturaAgua;
         tiempoAnterior = tiempoActual;
     }
@@ -83,6 +77,13 @@ void loop() {
 
     int httpResponseCode = http.POST(jsonPayload);
     http.end();
+
+    Serial.println("--------------------------------------------------------------------------");
+    Serial.println("Distancia: " + String(distancia));
+    Serial.println("Altura: " + String(alturaAgua));
+    Serial.println("Volumen: " + String(volumenL));
+    Serial.println("Lámina: " + String(laminaMm));
+    Serial.println("Respuesta HTTP: " + String(httpResponseCode));
   }
   delay(2000);
 }
