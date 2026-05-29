@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     activeTab("simulaciones");
 
     const waveCanvases = document.querySelectorAll(".sim-card__wave");
-    
 
     waveCanvases.forEach((canvas, index) => {
         const initialLevel = 45 + (index * 6);

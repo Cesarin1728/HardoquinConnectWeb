@@ -80,21 +80,6 @@ export function createWave(canvas, options = {}) {
             }
         };
     };
-<article class="sim-card">
-                    <figure class="sim-card__visual" aria-hidden="true">
-                        <canvas class="sim-card__wave" aria-hidden="true"></canvas>
-                        <span class="sim-card__badge sim-card__badge--with-hq">con HQ: 94%</span>
-                        <span class="sim-card__badge sim-card__badge--no-hq">sin HQ: 82%</span>
-                    </figure>
-                    <h3 class="sim-card__title">Estacionamiento empresa norte</h3>
-                    <footer class="sim-card__meta">
-                        <time class="sim-card__time" datetime="2026-05-23">
-                            <span class="sim-card__time-icon" data-lucide="clock"></span>
-                            hace 2 días
-                        </time>
-                        <span class="sim-card__area">500 m²</span>
-                    </footer>
-                </article>
 
 export function createCard(simulacionInfo) {
 
