@@ -36,7 +36,7 @@
                         </span>
                     </div>
                     <div class="request-data__number-wrapper">
-                        <input type="number" name="area" id="area-input">
+                        <input type="number" name="area" id="area-input" value="500" step="5">
                         <span class="request-data__unit">m²</span>
                     </div>
                 </div>
@@ -52,6 +52,14 @@
                         <strong class="request-data__value">0%</strong>
                     </div>
                     <input type="range" name="rain-level" id="rain-level-input" value="0" step="5" min="0" max="100">
+                    <div class="request-data__range_help" id="request-data__range-help--rain">
+                        <strong data-level="llovizna" class="request-data__range_help-value request-data__range_help-value--active">Llovizna</strong>
+                        <strong data-level="leve" class="request-data__range_help-value">Leve</strong>
+                        <strong data-level="moderado" class="request-data__range_help-value">Moderado</strong>
+                        <strong data-level="intensa" class="request-data__range_help-value">Intensa</strong>
+                        <strong data-level="extrema" class="request-data__range_help-value">Extrema</strong>
+                    </div>
+                    <button type="button" class="btn--primary request-data__btn--rain-sense">Conectar RainSense</button>
                 </div>
                 <div class="request-data__field">
                     <div class="request-data__label-group">
@@ -65,10 +73,18 @@
                         <strong class="request-data__value">0%</strong>
                     </div>
                     <input type="range" name="transit-level" id="transit-level-input" value="0" step="5" min="0" max="100">
+                    <div class="request-data__range_help" id="request-data__range-help--transit">
+                        <strong data-level="leve" class="request-data__range_help-value request-data__range_help-value--active">Leve</strong>
+                        <strong data-level="bajo" class="request-data__range_help-value">Bajo</strong>
+                        <strong data-level="medio" class="request-data__range_help-value">Medio</strong>
+                        <strong data-level="alto" class="request-data__range_help-value">Alto</strong>
+                    </div>
                 </div>
+                <button type="submit" class="btn--primary request-data__btn--submit">Crear Resultados</button>
             </form>
         </section>
     </main>
+    <footer id="main__footer" class="footer"></footer>
     <script src="https://unpkg.com/lucide@0.555.0"></script>
     <script type="module" src="../Js/main-datosSimulacion.js"></script>
 </body>

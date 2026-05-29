@@ -1,16 +1,17 @@
-import {initHero} from './heroAnimation.js';
-import {initUI} from './ui-landingPage.js';
+import {initHero} from './landing page/heroAnimation.js';
+import {initUI} from './landing page/ui-landingPage.js';
 import { initNavbar } from './navbar.js';
 import { activeTab } from './navbar.js';
+import { initFooter } from './footer.js';
 
 document.addEventListener("DOMContentLoaded", async () => {
     initHero();
     initUI();
     await initNavbar();
+    await initFooter();
     activeTab('inicio');
     lucide.createIcons();
 
-    //Beneficios puntos indicadores 
     const track = document.querySelector('.benefits-slider__track');
     const dots = document.querySelectorAll('.benefits-indicator__bar');
 

@@ -33,28 +33,7 @@ function initTabs() {
     });
 }
 
-function initVideoObserver() {
-    const video = document.querySelector('.solution__video');
-
-    if (!(video instanceof HTMLVideoElement)) return;
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                video.play();
-            } else {
-                video.pause();
-            }
-        });
-    }, {
-        threshold: 0.5
-    });
-
-    observer.observe(video);
-}
-
 export function initUI(){
     initFAQs();
     initTabs();
-    initVideoObserver();
 }
