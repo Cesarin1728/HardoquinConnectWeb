@@ -264,6 +264,18 @@
     font-size: 0.68rem;
 }
 
+.avatar--photo {
+    overflow: hidden;
+    background-color: #e2e8f0;
+}
+
+.avatar--photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
 .community-post__meta {
     min-width: 0;
     flex: 1;

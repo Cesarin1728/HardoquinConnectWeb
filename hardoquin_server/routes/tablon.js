@@ -4,6 +4,15 @@ const { getRelativeTime, handleError, requireFields, toNumber } = require('./hel
 
 const router = express.Router();
 const DEFAULT_PROFILE_PHOTO = 'Assets/ImagenesPerfil/usuarioimg0.png';
+const CATEGORY_ALIASES = {
+    duda: 'duda-tecnica',
+    uso: 'caso-uso'
+};
+
+function normalizeCategory(category) {
+    const value = (category || '').toString().trim();
+    return CATEGORY_ALIASES[value] || value;
+}
 
 function formatUser(user) {
     return {
@@ -65,7 +74,7 @@ function getPostWhere(query) {
     const where = {};
 
     if (category && category !== 'all') {
-        where.category = category;
+        where.category = normalizeCategory(category);
     }
 
     if (search) {
@@ -191,7 +200,7 @@ router.post('/', async (req, res) => {
             data: {
                 title: req.body.title ? req.body.title.trim() : null,
                 message: req.body.message.trim(),
-                category: req.body.category.trim(),
+                category: normalizeCategory(req.body.category),
                 user_id: userId
             },
             include: getPostInclude()
@@ -229,7 +238,11 @@ router.delete('/:id', async (req, res) => {
         const id = toNumber(req.params.id);
         if (!id) return res.status(400).json({ ok: false, message: 'ID invalido.' });
 
-        const deletedPost = await prisma.posts.deleteMany({ where: { id } });
+        const deletedPost = await prisma.$transaction(async (tx) => {
+            await tx.likes.deleteMany({ where: { post_id: id } });
+            await tx.replies.deleteMany({ where: { post_id: id } });
+            return tx.posts.deleteMany({ where: { id } });
+        });
 
         if (deletedPost.count === 0) {
             return res.status(404).json({
@@ -355,15 +368,14 @@ router.post('/:postId/likes', async (req, res) => {
             });
         }
 
-        const like = await prisma.likes.upsert({
+        const existingLike = await prisma.likes.findFirst({
             where: {
-                post_id_user_id: {
-                    post_id: postId,
-                    user_id: userId
-                }
-            },
-            update: {},
-            create: {
+                post_id: postId,
+                user_id: userId
+            }
+        });
+        const like = existingLike || await prisma.likes.create({
+            data: {
                 post_id: postId,
                 user_id: userId
             }
@@ -389,12 +401,10 @@ router.get('/:postId/likes', async (req, res) => {
 
         const likes = await prisma.likes.count({ where: { post_id: postId } });
         const liked = userId
-            ? Boolean(await prisma.likes.findUnique({
+            ? Boolean(await prisma.likes.findFirst({
                 where: {
-                    post_id_user_id: {
-                        post_id: postId,
-                        user_id: userId
-                    }
+                    post_id: postId,
+                    user_id: userId
                 }
             }))
             : false;

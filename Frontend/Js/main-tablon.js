@@ -5,102 +5,83 @@ import { initFooter } from "./footer.js";
 const categories = {
     all: { label: 'Todas', color: '#028090' },
     experiencia: { label: 'Experiencia', color: '#52B788' },
-    duda: { label: 'Duda técnica', color: '#028090' },
-    uso: { label: 'Caso de uso', color: '#1B4F72' },
+    'duda-tecnica': { label: 'Duda técnica', color: '#028090' },
+    'caso-uso': { label: 'Caso de uso', color: '#1B4F72' },
     general: { label: 'General', color: '#A9CCE3' }
 };
 
 let activeCategory = 'all';
-let nextPostId = 7;
+let posts = [];
 let pendingDeleteTarget = null;
 
-const posts = [
-    {
-        id: 1,
-        user: 'Carlos Mendoza',
-        initials: 'CM',
-        avatar: '#028090',
-        title: 'Instalamos Hardoquin en el estacionamiento de nuestra empresa',
-        text: 'Llevamos 6 meses con la instalación y los resultados son increíbles. En la última temporada de lluvias no tuvimos ninguna inundación.',
-        category: 'experiencia',
-        time: 'hace 2 días',
-        likes: 14,
-        liked: false,
-        replies: [
-            { user: 'Laura Torres', initials: 'LT', avatar: '#52B788', text: '¡Qué buen resultado! ¿Cuántos m² instalaron?', time: 'hace 1 día' },
-            { user: 'Ana García', initials: 'AG', avatar: '#1B4F72', text: '¿Fue complicada la instalación?', time: 'hace 18 h' }
-        ]
-    },
-    {
-        id: 2,
-        user: 'Ing. Patricia Vega',
-        initials: 'PV',
-        avatar: '#1B4F72',
-        title: 'Duda sobre permeabilidad en zonas de alto tráfico',
-        text: 'Estoy diseñando un proyecto para una calle secundaria con tránsito mixto. ¿Qué tipo de adoquín recomiendan y la permeabilidad se mantiene con el tiempo?',
-        category: 'duda',
-        time: 'hace 3 días',
-        likes: 8,
-        liked: false,
-        replies: [
-            { user: 'Soporte Hardoquin', initials: 'SH', avatar: '#028090', text: 'Para tránsito mixto recomendamos la línea HQ-300. La permeabilidad se mantiene por encima del 85% con mantenimiento semestral básico.', time: 'hace 2 días' }
-        ]
-    },
-    {
-        id: 3,
-        user: 'Municipio de San Pedro',
-        initials: 'SP',
-        avatar: '#52B788',
-        title: 'Caso de éxito: Plaza central renaturalizada',
-        text: 'Reemplazamos 800m² de concreto por adoquín Hardoquin. Resultado: 0 inundaciones, reducción de temperatura de 4°C y recuperación del manto freático.',
-        category: 'uso',
-        time: 'hace 1 semana',
-        likes: 31,
-        liked: false,
-        replies: []
-    },
-    {
-        id: 4,
-        user: 'Roberto Kim',
-        initials: 'RK',
-        avatar: '#0D2646',
-        title: '¿Cómo exportar los resultados de la simulación?',
-        text: 'Hice una simulación y me gustaría compartir los resultados con mi equipo de obras en PDF.',
-        category: 'duda',
-        time: 'hace 4 días',
-        likes: 5,
-        liked: false,
-        replies: [
-            { user: 'Ana García', initials: 'AG', avatar: '#028090', text: 'En tu panel hay un botón "Exportar" en la esquina superior derecha que genera el PDF completo.', time: 'hace 3 días' }
-        ]
-    },
-    {
-        id: 5,
-        user: 'Fernanda Ríos',
-        initials: 'FR',
-        avatar: '#52B788',
-        title: 'Mi experiencia como vecina, ya no hay inundaciones',
-        text: 'El municipio instaló Hardoquin en las banquetas hace 8 meses. Esta temporada fue la primera en 10 años sin inundaciones.',
-        category: 'experiencia',
-        time: 'hace 5 días',
-        likes: 22,
-        liked: false,
-        replies: []
-    },
-    {
-        id: 6,
-        user: 'Diego Salinas',
-        initials: 'DS',
-        avatar: '#028090',
-        title: '¿Conocen productos compatibles para captar agua pluvial?',
-        text: 'Evaluamos complementar Hardoquin con sistemas de recolección de agua pluvial. ¿Alguien ha integrado ambos?',
-        category: 'general',
-        time: 'hace 6 días',
-        likes: 7,
-        liked: false,
-        replies: []
+function getApiBaseUrl() {
+    if (window.location.port === '4000') return '';
+
+    const localHosts = ['localhost', '127.0.0.1'];
+    const apiHost = localHosts.includes(window.location.hostname)
+        ? '127.0.0.1'
+        : window.location.hostname;
+
+    return `http://${apiHost}:4000`;
+}
+
+function getCurrentUser() {
+    try {
+        return JSON.parse(sessionStorage.getItem('user'));
+    } catch (error) {
+        return null;
     }
-];
+}
+
+function getInitials(username = '') {
+    return username
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part.charAt(0).toUpperCase())
+        .join('') || 'HC';
+}
+
+function getProfilePhotoSrc(user = {}) {
+    const photo = user.profilePhoto || user.img;
+
+    if (!photo) return '';
+    if (photo.startsWith('http://') || photo.startsWith('https://') || photo.startsWith('/')) return photo;
+    if (photo.startsWith('Frontend/')) return `/${photo}`;
+
+    return `../${photo}`;
+}
+
+function renderAvatar(user = {}, className = 'avatar') {
+    const initials = escapeHtml(getInitials(user.username));
+    const photoSrc = getProfilePhotoSrc(user);
+
+    if (!photoSrc) return `<span class="${className}">${initials}</span>`;
+
+    return `
+        <span class="${className} avatar--photo">
+            <img
+                src="${escapeHtml(photoSrc)}"
+                alt="${escapeHtml(user.username || 'Usuario')}"
+                onerror="this.parentElement.classList.remove('avatar--photo'); this.parentElement.textContent='${initials}'; this.remove();"
+            >
+        </span>
+    `;
+}
+
+async function apiRequest(path, options = {}) {
+    const response = await fetch(`${getApiBaseUrl()}${path}`, {
+        headers: {
+            'Content-Type': 'application/json',
+            ...(options.headers || {})
+        },
+        ...options
+    });
+    const data = await response.json();
+
+    if (!data.ok) throw new Error(data.message || 'No se pudo completar la accion.');
+    return data;
+}
 
 const getElements = () => ({
     postList: document.getElementById('post-list'),
@@ -111,7 +92,7 @@ const getElements = () => ({
     newPostForm: document.getElementById('new-post-form')
 });
 
-const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (char) => ({
+const escapeHtml = (value) => String(value || '').replace(/[&<>"']/g, (char) => ({
     '&': '&amp;',
     '<': '&lt;',
     '>': '&gt;',
@@ -131,20 +112,15 @@ function getVisiblePosts() {
     const visiblePosts = posts.filter((post) => {
         const matchesCategory = activeCategory === 'all' || post.category === activeCategory;
         const matchesQuery = !query
-            || post.title.toLowerCase().includes(query)
-            || post.text.toLowerCase().includes(query)
-            || post.user.toLowerCase().includes(query);
+            || (post.title || '').toLowerCase().includes(query)
+            || post.message.toLowerCase().includes(query)
+            || post.user.username.toLowerCase().includes(query);
 
         return matchesCategory && matchesQuery;
     });
 
-    if (sort.value === 'popular') {
-        visiblePosts.sort((a, b) => b.likes - a.likes);
-    }
-
-    if (sort.value === 'replies') {
-        visiblePosts.sort((a, b) => b.replies.length - a.replies.length);
-    }
+    if (sort.value === 'popular') visiblePosts.sort((a, b) => b.likes - a.likes);
+    if (sort.value === 'replies') visiblePosts.sort((a, b) => b.replies.length - a.replies.length);
 
     return visiblePosts;
 }
@@ -152,50 +128,54 @@ function getVisiblePosts() {
 function updateCounts() {
     document.getElementById('count-all').textContent = posts.length;
 
-    ['experiencia', 'duda', 'uso', 'general'].forEach((categoryKey) => {
+    ['experiencia', 'duda-tecnica', 'caso-uso', 'general'].forEach((categoryKey) => {
         document.getElementById(`count-${categoryKey}`).textContent = posts.filter((post) => post.category === categoryKey).length;
     });
 }
 
 function renderReplies(post) {
-    const replies = post.replies.map((reply, replyIndex) => {
-        const menuId = `reply-menu-${post.id}-${replyIndex}`;
+    const currentUser = getCurrentUser();
+    const replies = post.replies.map((reply) => {
+        const menuId = `reply-menu-${post.id}-${reply.id}`;
+        const canDelete = currentUser?.id === reply.user.id;
 
         return `
         <li class="reply">
-            <span class="avatar reply__avatar" style="background-color: ${reply.avatar};">${escapeHtml(reply.initials)}</span>
+            ${renderAvatar(reply.user, 'avatar reply__avatar')}
             <article class="reply__bubble">
                 <header class="reply__header">
                     <section class="reply__meta">
-                        <strong class="reply__author">${escapeHtml(reply.user)}</strong>
-                        <time class="reply__time">${escapeHtml(reply.time)}</time>
+                        <strong class="reply__author">${escapeHtml(reply.user.username)}</strong>
+                        <time class="reply__time">${escapeHtml(reply.relativeCreatedDate)}</time>
                     </section>
+                    ${canDelete ? `
                     <section class="post-menu reply__menu">
                         <button class="post-menu__trigger" type="button" data-toggle-menu="${menuId}" aria-expanded="false" aria-controls="${menuId}" aria-label="Opciones de respuesta">
                             <i data-lucide="ellipsis" aria-hidden="true"></i>
                         </button>
                         <menu class="post-menu__list" id="${menuId}">
                             <li>
-                                <button class="post-menu__item post-menu__item--danger" type="button" data-delete-reply data-post-id="${post.id}" data-reply-index="${replyIndex}">
+                                <button class="post-menu__item post-menu__item--danger" type="button" data-delete-reply data-post-id="${post.id}" data-reply-id="${reply.id}">
                                     <i data-lucide="trash-2" aria-hidden="true"></i>
                                     Eliminar
                                 </button>
                             </li>
                         </menu>
                     </section>
+                    ` : ''}
                 </header>
-                <p class="reply__text">${escapeHtml(reply.text)}</p>
+                <p class="reply__text">${escapeHtml(reply.message)}</p>
             </article>
         </li>
         `;
     }).join('');
 
     return `
-        <section class="reply-section" id="reply-section-${post.id}" aria-label="Respuestas de ${escapeHtml(post.title)}">
+        <section class="reply-section" id="reply-section-${post.id}" aria-label="Respuestas de ${escapeHtml(post.title || 'publicacion')}">
             <section class="reply-section__inner">
                 <ol class="reply-list">${replies}</ol>
                 <form class="reply-form" data-reply-form data-post-id="${post.id}">
-                    <span class="reply-form__avatar">AG</span>
+                    ${renderAvatar(currentUser, 'reply-form__avatar')}
                     <label class="sr-only" for="reply-${post.id}">Escribe una respuesta</label>
                     <textarea class="reply-form__textarea" id="reply-${post.id}" rows="1" placeholder="Escribe una respuesta..."></textarea>
                     <button class="reply-form__send" type="submit">
@@ -209,20 +189,23 @@ function renderReplies(post) {
 }
 
 function renderPost(post, openReplyIds) {
+    const currentUser = getCurrentUser();
     const isOpen = openReplyIds.has(String(post.id));
     const category = categories[post.category] || categories.general;
     const menuId = `post-menu-${post.id}`;
+    const canDelete = currentUser?.id === post.user.id;
 
     return `
         <article class="community-post">
             <header class="community-post__header">
-                <span class="avatar" style="background-color: ${post.avatar};">${escapeHtml(post.initials)}</span>
+                ${renderAvatar(post.user)}
                 <section class="community-post__meta">
-                    <strong class="community-post__author">${escapeHtml(post.user)}</strong>
-                    <time class="community-post__time">${escapeHtml(post.time)}</time>
+                    <strong class="community-post__author">${escapeHtml(post.user.username)}</strong>
+                    <time class="community-post__time">${escapeHtml(post.relativeCreatedDate)}</time>
                 </section>
                 <section class="community-post__controls">
                     <span class="community-post__category" style="${getCategoryStyle(post.category)}">${escapeHtml(category.label)}</span>
+                    ${canDelete ? `
                     <section class="post-menu">
                         <button class="post-menu__trigger" type="button" data-toggle-menu="${menuId}" aria-expanded="false" aria-controls="${menuId}" aria-label="Opciones de publicación">
                             <i data-lucide="ellipsis" aria-hidden="true"></i>
@@ -236,12 +219,13 @@ function renderPost(post, openReplyIds) {
                             </li>
                         </menu>
                     </section>
+                    ` : ''}
                 </section>
             </header>
 
             <section class="community-post__body">
                 ${post.title ? `<h2 class="community-post__title">${escapeHtml(post.title)}</h2>` : ''}
-                <p class="community-post__text">${escapeHtml(post.text)}</p>
+                <p class="community-post__text">${escapeHtml(post.message)}</p>
             </section>
 
             <footer class="community-post__actions">
@@ -291,6 +275,14 @@ function renderPosts() {
     lucide.createIcons();
 }
 
+async function loadPosts() {
+    const currentUser = getCurrentUser();
+    const userParam = currentUser?.id ? `?userId=${currentUser.id}` : '';
+    const data = await apiRequest(`/api/tablon${userParam}`);
+    posts = data.posts;
+    renderPosts();
+}
+
 function setActiveCategory(categoryKey) {
     activeCategory = categoryKey;
 
@@ -299,6 +291,15 @@ function setActiveCategory(categoryKey) {
     });
 
     renderPosts();
+}
+
+function requireUser() {
+    const user = getCurrentUser();
+    if (!user?.id) {
+        alert('Inicia sesion para publicar, responder o dar me gusta.');
+        return null;
+    }
+    return user;
 }
 
 function toggleReplies(postId) {
@@ -310,12 +311,26 @@ function toggleReplies(postId) {
     button.setAttribute('aria-expanded', isOpen);
 }
 
-function toggleLike(postId) {
+async function toggleLike(postId) {
+    const user = requireUser();
+    if (!user) return;
+
     const post = posts.find((item) => item.id === Number(postId));
     if (!post) return;
 
-    post.liked = !post.liked;
-    post.likes += post.liked ? 1 : -1;
+    if (post.liked) {
+        const data = await apiRequest(`/api/tablon/${postId}/likes/${user.id}`, { method: 'DELETE' });
+        post.likes = data.likes;
+        post.liked = false;
+    } else {
+        const data = await apiRequest(`/api/tablon/${postId}/likes`, {
+            method: 'POST',
+            body: JSON.stringify({ userId: user.id })
+        });
+        post.likes = data.likes;
+        post.liked = true;
+    }
+
     renderPosts();
 }
 
@@ -338,22 +353,14 @@ function togglePostMenu(menuId) {
 
 function openDeleteModal(postId) {
     const { deleteModal } = getElements();
-    const post = posts.find((item) => item.id === Number(postId));
-    if (!post) return;
-
-    pendingDeleteTarget = { type: 'post', postId: post.id };
+    pendingDeleteTarget = { type: 'post', postId: Number(postId) };
     closePostMenus();
     deleteModal.showModal();
 }
 
-function openDeleteReplyModal(postId, replyIndex) {
+function openDeleteReplyModal(postId, replyId) {
     const { deleteModal } = getElements();
-    const post = posts.find((item) => item.id === Number(postId));
-    const index = Number(replyIndex);
-
-    if (!post || !post.replies[index]) return;
-
-    pendingDeleteTarget = { type: 'reply', postId: post.id, replyIndex: index };
+    pendingDeleteTarget = { type: 'reply', postId: Number(postId), replyId: Number(replyId) };
     closePostMenus();
     deleteModal.showModal();
 }
@@ -364,48 +371,55 @@ function closeDeleteModal() {
     deleteModal.close();
 }
 
-function confirmDelete() {
+async function confirmDelete() {
     if (!pendingDeleteTarget) {
         closeDeleteModal();
         return;
     }
 
-    if (pendingDeleteTarget.type === 'post') {
-        const index = posts.findIndex((item) => item.id === pendingDeleteTarget.postId);
-        if (index !== -1) posts.splice(index, 1);
-    }
+    try {
+        if (pendingDeleteTarget.type === 'post') {
+            await apiRequest(`/api/tablon/${pendingDeleteTarget.postId}`, { method: 'DELETE' });
+        }
 
-    if (pendingDeleteTarget.type === 'reply') {
-        const post = posts.find((item) => item.id === pendingDeleteTarget.postId);
-        post?.replies.splice(pendingDeleteTarget.replyIndex, 1);
-    }
+        if (pendingDeleteTarget.type === 'reply') {
+            await apiRequest(`/api/tablon/respuestas/${pendingDeleteTarget.replyId}`, { method: 'DELETE' });
+        }
 
-    closeDeleteModal();
-    renderPosts();
+        closeDeleteModal();
+        await loadPosts();
+    } catch (error) {
+        alert(error.message);
+    }
 }
 
-function sendReply(form) {
+async function sendReply(form) {
+    const user = requireUser();
+    if (!user) return;
+
     const postId = Number(form.dataset.postId);
     const textarea = form.querySelector('.reply-form__textarea');
-    const text = textarea.value.trim();
-    const post = posts.find((item) => item.id === postId);
+    const message = textarea.value.trim();
 
-    if (!text || !post) return;
+    if (!message) return;
 
-    post.replies.push({
-        user: 'Ana García',
-        initials: 'AG',
-        avatar: '#028090',
-        text,
-        time: 'ahora'
-    });
-
-    renderPosts();
-    document.getElementById(`reply-section-${postId}`)?.classList.add('reply-section--open');
-    document.querySelector(`[data-toggle-replies="${postId}"]`)?.classList.add('post-action--active');
+    try {
+        await apiRequest(`/api/tablon/${postId}/respuestas`, {
+            method: 'POST',
+            body: JSON.stringify({ message, userId: user.id })
+        });
+        textarea.value = '';
+        await loadPosts();
+        document.getElementById(`reply-section-${postId}`)?.classList.add('reply-section--open');
+        document.querySelector(`[data-toggle-replies="${postId}"]`)?.classList.add('post-action--active');
+    } catch (error) {
+        alert(error.message);
+    }
 }
 
 function openModal() {
+    if (!requireUser()) return;
+
     const { modal } = getElements();
     modal.showModal();
     document.getElementById('post-title')?.focus();
@@ -416,31 +430,35 @@ function closeModal() {
     modal.close();
 }
 
-function submitPost(form) {
+async function submitPost(form) {
+    const user = requireUser();
+    if (!user) return;
+
     const formData = new FormData(form);
     const title = String(formData.get('title')).trim();
-    const text = String(formData.get('message')).trim();
+    const message = String(formData.get('message')).trim();
     const category = String(formData.get('category'));
 
-    if (!text) return;
+    if (!message) return;
 
-    posts.unshift({
-        id: nextPostId++,
-        user: 'Ana García',
-        initials: 'AG',
-        avatar: '#028090',
-        title,
-        text,
-        category,
-        time: 'ahora',
-        likes: 0,
-        liked: false,
-        replies: []
-    });
-
-    form.reset();
-    closeModal();
-    setActiveCategory('all');
+    try {
+        await apiRequest('/api/tablon', {
+            method: 'POST',
+            body: JSON.stringify({
+                title,
+                message,
+                category,
+                userId: user.id
+            })
+        });
+        form.reset();
+        closeModal();
+        activeCategory = 'all';
+        await loadPosts();
+        setActiveCategory('all');
+    } catch (error) {
+        alert(error.message);
+    }
 }
 
 function setUpBoardEvents() {
@@ -495,7 +513,7 @@ function setUpBoardEvents() {
 
         if (deleteReplyButton) {
             event.stopPropagation();
-            openDeleteReplyModal(deleteReplyButton.dataset.postId, deleteReplyButton.dataset.replyIndex);
+            openDeleteReplyModal(deleteReplyButton.dataset.postId, deleteReplyButton.dataset.replyId);
             return;
         }
 
@@ -531,5 +549,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     await initFooter();
     activeTab('tablon');
     setUpBoardEvents();
-    renderPosts();
+
+    try {
+        await loadPosts();
+    } catch (error) {
+        getElements().postList.innerHTML = `
+            <section class="empty-board">
+                <i data-lucide="messages-square" aria-hidden="true"></i>
+                <p>No se pudo cargar el tablon.<br>${escapeHtml(error.message)}</p>
+            </section>
+        `;
+        lucide.createIcons();
+    }
 });
