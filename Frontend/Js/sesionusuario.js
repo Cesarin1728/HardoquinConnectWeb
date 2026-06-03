@@ -76,18 +76,25 @@ formRegistro.addEventListener('submit', async (e) => {
     const username = document.getElementById('reg-username').value.trim();
 
     const apiBaseUrl = getApiBaseUrl();
-    const res = await fetch(`${apiBaseUrl}/api/usuarios/registro`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            email,
-            password,
-            username,
-            foto: rutaFotoSeleccionada
-        })
-    });
+    let res;
+
+    try {
+        res = await fetch(`${apiBaseUrl}/api/usuarios/registro`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email,
+                password,
+                username,
+                foto: rutaFotoSeleccionada
+            })
+        });
+    } catch (error) {
+        alert(`No se pudo conectar con el servidor en ${apiBaseUrl || 'este mismo sitio'}. Revisa que el backend este corriendo en el puerto 4000.`);
+        return;
+    }
 
     const data = await res.json();
 

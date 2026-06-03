@@ -2,6 +2,25 @@ import { initNavbar } from "./navbar.js";
 import { activeTab } from "./navbar.js";
 import { initFooter } from "./footer.js";
 
+function getApiBaseUrl() {
+    if (window.location.port === '4000') return '';
+
+    const localHosts = ['localhost', '127.0.0.1'];
+    const apiHost = localHosts.includes(window.location.hostname)
+        ? '127.0.0.1'
+        : window.location.hostname;
+
+    return `http://${apiHost}:4000`;
+}
+
+function getStoredUser() {
+    try {
+        return JSON.parse(sessionStorage.getItem('user'));
+    } catch (error) {
+        return null;
+    }
+}
+
 const ranges = document.querySelectorAll('input[type="range"]');
 const rainLevels = [
     {
@@ -103,11 +122,50 @@ ranges.forEach(itm => {
 
 const form = document.querySelector('.request-data__form');
 
-form.addEventListener('submit', (e) => {
+form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(form);
-    console.log(formData.get('rain-level'));
-})
+    const user = getStoredUser();
+    const submitButton = form.querySelector('.request-data__btn--submit');
+    const area = Number(formData.get('area'));
+    const rainLevel = Number(formData.get('rain-level'));
+    const trafficLevel = Number(formData.get('transit-level'));
+    const payload = {
+        title: `Simulacion ${new Date().toLocaleDateString('es-MX')}`,
+        area,
+        rainLevel,
+        trafficLevel,
+        ...(user?.id ? { userId: user.id } : {})
+    };
+    const endpoint = user?.id ? '/api/simulaciones' : '/api/simulaciones/simular';
+
+    submitButton.disabled = true;
+    submitButton.textContent = 'Creando...';
+
+    try {
+        const response = await fetch(`${getApiBaseUrl()}${endpoint}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+        const data = await response.json();
+
+        if (!data.ok) {
+            alert(data.message || 'No se pudo crear la simulacion.');
+            return;
+        }
+
+        sessionStorage.setItem('latestSimulation', JSON.stringify(data));
+        window.location.href = './resultadoSimulacion.html';
+    } catch (error) {
+        alert(`No se pudo conectar con el servidor en ${getApiBaseUrl()}. Revisa que el backend este corriendo en el puerto 4000.`);
+    } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = 'Crear Resultados';
+    }
+});
 
 const btnRainSense = document.querySelector('.request-data__btn--rain-sense');
 
