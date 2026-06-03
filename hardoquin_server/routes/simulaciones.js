@@ -297,6 +297,50 @@ router.get('/usuario/:userId', async (req, res) => {
     }
 });
 
+router.get('/:simulationId/resultados', async (req, res) => {
+    try {
+        const simulationId = toNumber(req.params.simulationId);
+        if (!simulationId) return res.status(400).json({ ok: false, message: 'ID de simulacion invalido.' });
+
+        const simulation = await getSimulationDetails(simulationId);
+        if (!simulation) return res.status(404).json({ ok: false, message: 'Simulacion no encontrada.' });
+
+        res.json({
+            ok: true,
+            results: simulation.results
+        });
+    } catch (error) {
+        handleError(res, error);
+    }
+});
+
+router.get('/:simulationId/resultados/:materialId', async (req, res) => {
+    try {
+        const simulationId = toNumber(req.params.simulationId);
+        const materialId = toNumber(req.params.materialId);
+
+        if (!simulationId || !materialId) {
+            return res.status(400).json({
+                ok: false,
+                message: 'ID de simulacion o material invalido.'
+            });
+        }
+
+        const simulation = await getSimulationDetails(simulationId);
+        if (!simulation) return res.status(404).json({ ok: false, message: 'Simulacion no encontrada.' });
+
+        const result = simulation.results.find((item) => item.materialId === materialId);
+        if (!result) return res.status(404).json({ ok: false, message: 'Resultado no encontrado.' });
+
+        res.json({
+            ok: true,
+            result
+        });
+    } catch (error) {
+        handleError(res, error);
+    }
+});
+
 router.get('/:id', async (req, res) => {
     try {
         const id = toNumber(req.params.id);

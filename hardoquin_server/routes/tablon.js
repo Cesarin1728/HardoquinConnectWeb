@@ -159,6 +159,27 @@ router.get('/buscar', async (req, res) => {
     }
 });
 
+router.get('/respuestas/:replyId', async (req, res) => {
+    try {
+        const replyId = toNumber(req.params.replyId);
+        if (!replyId) return res.status(400).json({ ok: false, message: 'ID de respuesta invalido.' });
+
+        const reply = await prisma.replies.findUnique({
+            where: { id: replyId },
+            include: { users: true }
+        });
+
+        if (!reply) return res.status(404).json({ ok: false, message: 'Respuesta no encontrada.' });
+
+        res.json({
+            ok: true,
+            reply: formatReply(reply)
+        });
+    } catch (error) {
+        handleError(res, error);
+    }
+});
+
 router.post('/', async (req, res) => {
     try {
         requireFields(req.body, ['message', 'category', 'userId']);
@@ -272,6 +293,25 @@ router.get('/:postId/respuestas', async (req, res) => {
         res.json({
             ok: true,
             replies: replies.map(formatReply)
+        });
+    } catch (error) {
+        handleError(res, error);
+    }
+});
+
+router.delete('/:postId/respuestas', async (req, res) => {
+    try {
+        const postId = toNumber(req.params.postId);
+        if (!postId) return res.status(400).json({ ok: false, message: 'ID de mensaje invalido.' });
+
+        const deletedReplies = await prisma.replies.deleteMany({
+            where: { post_id: postId }
+        });
+
+        res.json({
+            ok: true,
+            message: 'Respuestas eliminadas.',
+            deletedCount: deletedReplies.count
         });
     } catch (error) {
         handleError(res, error);
