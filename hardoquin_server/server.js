@@ -2,8 +2,15 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
+require('dotenv').config();
+
+const usuariosRouter = require('./routes/usuarios');
+const simulacionesRouter = require('./routes/simulaciones');
+const tablonRouter = require('./routes/tablon');
+const materialesRouter = require('./routes/materiales');
+
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 4000;
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -21,6 +28,18 @@ app.get('/ver-datos', (req, res) => {
     res.json(datosSensor);
 });
 
+app.use('/api/usuarios', usuariosRouter);
+app.use('/api/simulaciones', simulacionesRouter);
+app.use('/api/materiales', materialesRouter);
+app.use('/api/tablon', tablonRouter);
+
+app.get('/api/health', (_req, res) => {
+    res.json({
+        ok: true,
+        message: 'Backend Hardoquin activo'
+    });
+});
+
 app.listen(port, '0.0.0.0', () => {
-    console.log(`Servidor activo en: http://192.168.137.174:${port}`);
+    console.log(`Servidor activo en: http://localhost:${port}`);
 });
