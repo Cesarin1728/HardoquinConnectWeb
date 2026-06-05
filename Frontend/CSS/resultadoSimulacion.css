@@ -45,6 +45,7 @@ body {
 }
 
 .results__data,
+.results__actions,
 .comparison__visual,
 .comparison__result,
 .analysis__metrics,
@@ -57,6 +58,63 @@ body {
 .savings__highlight {
     gap: 4px;
 }
+
+.results__actions {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 18px;
+    padding: 22px 24px;
+    border-radius: 12px;
+    background-color: rgb(var(--color-blanco));
+}
+
+.results__eyebrow {
+    color: rgb(var(--color-acento-verde));
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: uppercase;
+}
+
+.results__title {
+    margin-top: 6px;
+    color: rgb(var(--color-oscuro));
+    font-size: 1.45rem;
+    line-height: 1.2;
+}
+
+.results__save-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 10px 16px;
+    border: 0;
+    border-radius: 8px;
+    background-color: rgb(var(--color-acento-verde));
+    color: #ffffff;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.results__save-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    background-color: rgb(var(--color-primario));
+}
+
+.results__save-btn:disabled {
+    cursor: default;
+    opacity: 0.78;
+}
+
+.results__save-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
 .results__data {
     grid-template-columns: repeat(auto-fit, minmax(100px, 280px));
     justify-content: space-between;
@@ -287,6 +345,123 @@ body {
     margin: 12px 0;
 }
 
+.save-modal {
+    width: min(92vw, 460px);
+    max-height: max-content;
+    margin: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 14px;
+    background: transparent;
+    position: fixed;
+    inset: 0;
+}
+
+.save-modal::backdrop {
+    background-color: rgba(15, 23, 42, 0.48);
+    backdrop-filter: blur(4px);
+}
+
+.save-modal__panel {
+    display: grid;
+    gap: 14px;
+    padding: 24px;
+    border-radius: 14px;
+    background-color: rgb(var(--color-blanco));
+    box-shadow: 0 22px 60px rgba(15, 23, 42, 0.22);
+}
+
+.save-modal__header,
+.save-modal__actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.save-modal__title {
+    color: rgb(var(--color-oscuro));
+    font-size: 1.2rem;
+    line-height: 1.25;
+}
+
+.save-modal__close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: 8px;
+    background-color: rgba(var(--color-oscuro), 0.08);
+    color: rgb(var(--color-oscuro));
+    cursor: pointer;
+}
+
+.save-modal__close svg {
+    width: 18px;
+    height: 18px;
+}
+
+.save-modal__label {
+    color: rgb(var(--color-oscuro));
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.save-modal__input {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid rgba(var(--color-oscuro), 0.2);
+    border-radius: 8px;
+    color: rgb(var(--color-oscuro));
+    font: inherit;
+    outline: none;
+}
+
+.save-modal__input:focus {
+    border-color: rgb(var(--color-acento-azul));
+    box-shadow: 0 0 0 3px rgba(var(--color-acento-azul), 0.14);
+}
+
+.save-modal__feedback {
+    min-height: 18px;
+    color: #dc2626;
+    font-size: 0.86rem;
+}
+
+.save-modal__feedback[data-type="success"] {
+    color: rgb(var(--color-acento-verde));
+}
+
+.save-modal__cancel,
+.save-modal__submit {
+    min-height: 40px;
+    padding: 9px 14px;
+    border-radius: 8px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.save-modal__cancel {
+    border: 1px solid rgba(var(--color-oscuro), 0.16);
+    background-color: transparent;
+    color: rgb(var(--color-oscuro));
+}
+
+.save-modal__submit {
+    border: 0;
+    background-color: rgb(var(--color-acento-verde));
+    color: #ffffff;
+}
+
+.save-modal__submit:disabled {
+    cursor: progress;
+    opacity: 0.72;
+}
+
 @media (max-width: 880px) {
     .results__data,
     .comparison__visual,
@@ -299,6 +474,11 @@ body {
 @media (max-width: 520px) {
     main {
         padding: 100px 16px 32px;
+    }
+
+    .results__actions {
+        grid-template-columns: 1fr;
+        align-items: stretch;
     }
 
     .comparison__item,

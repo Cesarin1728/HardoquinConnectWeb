@@ -109,8 +109,27 @@ async function updateProfile(user, payload) {
     return data.user;
 }
 
+async function deleteAccount(user, password) {
+    const response = await fetch(`${getApiBaseUrl()}/api/usuarios/${user.id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ password })
+    });
+    const data = await response.json();
+
+    if (!data.ok) throw new Error(data.message || 'No se pudo eliminar la cuenta.');
+    return data;
+}
+
 function setUpEvents(user) {
     const form = document.getElementById('profile-form');
+    const deleteAccountModal = document.getElementById('delete-account-modal');
+    const deleteAccountForm = document.getElementById('delete-account-form');
+    const deleteAccountPassword = document.getElementById('delete-account-password');
+    const deleteAccountFeedback = document.getElementById('delete-account-feedback');
+    const deleteAccountSubmit = deleteAccountForm?.querySelector('.delete-account-modal__submit');
 
     document.querySelectorAll('.profile-avatar__option').forEach((button) => {
         button.addEventListener('click', () => {
@@ -165,6 +184,50 @@ function setUpEvents(user) {
         } finally {
             submitButton.disabled = false;
             submitButton.textContent = 'Guardar cambios';
+        }
+    });
+
+    document.getElementById('open-delete-account-modal')?.addEventListener('click', () => {
+        deleteAccountFeedback.textContent = '';
+        deleteAccountPassword.value = '';
+        deleteAccountModal.showModal();
+        deleteAccountPassword.focus();
+    });
+
+    document.querySelectorAll('[data-close-delete-account]').forEach((button) => {
+        button.addEventListener('click', () => deleteAccountModal.close());
+    });
+
+    deleteAccountModal?.addEventListener('click', (event) => {
+        if (event.target === deleteAccountModal) deleteAccountModal.close();
+    });
+
+    deleteAccountForm?.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const password = deleteAccountPassword.value;
+
+        if (!password) {
+            deleteAccountFeedback.textContent = 'Escribe tu contraseña para confirmar.';
+            return;
+        }
+
+        deleteAccountSubmit.disabled = true;
+        deleteAccountSubmit.textContent = 'Eliminando...';
+        deleteAccountFeedback.textContent = '';
+
+        try {
+            await deleteAccount(user, password);
+
+            sessionStorage.removeItem('user');
+            sessionStorage.removeItem('authToken');
+            sessionStorage.removeItem('latestSimulation');
+            window.location.href = '/Frontend/index.html';
+        } catch (error) {
+            deleteAccountFeedback.textContent = error.message;
+        } finally {
+            deleteAccountSubmit.disabled = false;
+            deleteAccountSubmit.textContent = 'Eliminar cuenta';
         }
     });
 }

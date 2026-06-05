@@ -60,8 +60,39 @@
                     <button class="profile-form__submit" type="submit">Guardar cambios</button>
                 </footer>
             </form>
+
+            <section class="profile-danger" aria-labelledby="profile-danger-title">
+                <header class="profile-danger__header">
+                    <strong class="profile-form__eyebrow">Zona de riesgo</strong>
+                    <h2 class="profile-danger__title" id="profile-danger-title">Eliminar cuenta</h2>
+                </header>
+                <p class="profile-danger__text">Esto elimina tu cuenta, simulaciones, publicaciones, comentarios y likes.</p>
+                <button class="profile-danger__button" type="button" id="open-delete-account-modal">
+                    <i data-lucide="trash-2"></i>
+                    Eliminar cuenta
+                </button>
+            </section>
         </section>
     </main>
+
+    <dialog class="delete-account-modal" id="delete-account-modal" aria-labelledby="delete-account-title">
+        <form class="delete-account-modal__panel" id="delete-account-form" method="dialog">
+            <header class="delete-account-modal__header">
+                <h2 class="delete-account-modal__title" id="delete-account-title">Eliminar cuenta</h2>
+                <button class="delete-account-modal__close" type="button" data-close-delete-account aria-label="Cerrar">
+                    <i data-lucide="x"></i>
+                </button>
+            </header>
+            <p class="delete-account-modal__text">Para confirmar, escribe tu contraseña. Esta acción no se puede deshacer.</p>
+            <label class="profile-form__label" for="delete-account-password">Contraseña</label>
+            <input class="profile-form__input" id="delete-account-password" name="password" type="password" autocomplete="current-password" required>
+            <p class="delete-account-modal__feedback" id="delete-account-feedback" role="status"></p>
+            <footer class="delete-account-modal__actions">
+                <button class="delete-account-modal__cancel" type="button" data-close-delete-account>Cancelar</button>
+                <button class="delete-account-modal__submit" type="submit">Eliminar cuenta</button>
+            </footer>
+        </form>
+    </dialog>
 
     <footer id="main__footer" class="footer"></footer>
     <script src="https://unpkg.com/lucide@0.555.0"></script>

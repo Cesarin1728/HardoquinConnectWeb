@@ -13,14 +13,6 @@ function getApiBaseUrl() {
     return `http://${apiHost}:4000`;
 }
 
-function getStoredUser() {
-    try {
-        return JSON.parse(sessionStorage.getItem('user'));
-    } catch (error) {
-        return null;
-    }
-}
-
 function showSimulationError(message) {
     const errorBox = document.getElementById('simulation-error');
     const errorMessage = document.getElementById('simulation-error-message');
@@ -145,7 +137,6 @@ const form = document.querySelector('.request-data__form');
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(form);
-    const user = getStoredUser();
     const submitButton = form.querySelector('.request-data__btn--submit');
     const area = Number(formData.get('area'));
     const rainLevel = Number(formData.get('rain-level'));
@@ -162,10 +153,9 @@ form.addEventListener('submit', async (e) => {
         title: `Simulacion ${new Date().toLocaleDateString('es-MX')}`,
         area,
         rainLevel,
-        trafficLevel,
-        ...(user?.id ? { userId: user.id } : {})
+        trafficLevel
     };
-    const endpoint = user?.id ? '/api/simulaciones' : '/api/simulaciones/simular';
+    const endpoint = '/api/simulaciones/simular';
 
     submitButton.disabled = true;
     submitButton.textContent = 'Creando...';

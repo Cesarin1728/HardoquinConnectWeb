@@ -8,9 +8,28 @@ let alternateChart;
 let lifespanChart;
 let waterManagementChart;
 
+function getApiBaseUrl() {
+    if (window.location.port === '4000') return '';
+
+    const localHosts = ['localhost', '127.0.0.1'];
+    const apiHost = localHosts.includes(window.location.hostname)
+        ? '127.0.0.1'
+        : window.location.hostname;
+
+    return `http://${apiHost}:4000`;
+}
+
 function getLatestSimulation() {
     try {
         return JSON.parse(sessionStorage.getItem('latestSimulation'));
+    } catch (error) {
+        return null;
+    }
+}
+
+function getStoredUser() {
+    try {
+        return JSON.parse(sessionStorage.getItem('user'));
     } catch (error) {
         return null;
     }
@@ -184,6 +203,126 @@ function replaceChart(chart, createNextChart) {
     return createNextChart();
 }
 
+function setSaveFeedback(message, type = 'error') {
+    const feedback = document.getElementById('save-simulation-feedback');
+    if (!feedback) return;
+
+    feedback.textContent = message;
+    feedback.dataset.type = type;
+}
+
+function updateSaveButton(saved = false) {
+    const saveButton = document.getElementById('save-simulation-btn');
+    if (!saveButton) return;
+
+    saveButton.disabled = saved;
+    saveButton.innerHTML = saved
+        ? '<i data-lucide="check"></i> Guardada'
+        : '<i data-lucide="save"></i> Guardar';
+    window.lucide?.createIcons();
+}
+
+function redirectToLogin() {
+    const returnTo = `${window.location.pathname}${window.location.search}`;
+    sessionStorage.setItem('authReturnTo', returnTo);
+    window.location.href = `/Frontend/Pages/sesionusuario.html?returnTo=${encodeURIComponent(returnTo)}`;
+}
+
+function setupSaveSimulation(simulation) {
+    const modal = document.getElementById('save-simulation-modal');
+    const form = document.getElementById('save-simulation-form');
+    const input = document.getElementById('simulation-name');
+    const saveButton = document.getElementById('save-simulation-btn');
+    const submitButton = form?.querySelector('.save-modal__submit');
+
+    if (!modal || !form || !input || !saveButton || !submitButton) return;
+
+    updateSaveButton(Boolean(simulation.simulationId));
+    input.value = simulation.simulationTitle || simulation.title || '';
+
+    saveButton.addEventListener('click', () => {
+        const user = getStoredUser();
+
+        if (!user?.id) {
+            redirectToLogin();
+            return;
+        }
+
+        setSaveFeedback('');
+        input.value = simulation.simulationTitle || simulation.title || input.value;
+        modal.showModal();
+        input.focus();
+        input.select();
+    });
+
+    document.querySelectorAll('[data-close-save-modal]').forEach((button) => {
+        button.addEventListener('click', () => modal.close());
+    });
+
+    modal.addEventListener('click', (event) => {
+        if (event.target === modal) modal.close();
+    });
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const user = getStoredUser();
+        const title = input.value.trim();
+
+        if (!user?.id) {
+            redirectToLogin();
+            return;
+        }
+
+        if (!title) {
+            setSaveFeedback('Escribe un nombre para guardar la simulación.');
+            return;
+        }
+
+        submitButton.disabled = true;
+        submitButton.textContent = 'Guardando...';
+        setSaveFeedback('');
+
+        try {
+            const response = await fetch(`${getApiBaseUrl()}/api/simulaciones`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    title,
+                    area: simulation.area,
+                    rainLevel: simulation.rainLevel,
+                    trafficLevel: simulation.trafficLevel,
+                    userId: user.id
+                })
+            });
+            const data = await response.json();
+
+            if (!data.ok) {
+                setSaveFeedback(data.message || 'No se pudo guardar la simulación.');
+                return;
+            }
+
+            const savedSimulation = {
+                ...simulation,
+                ...data,
+                simulationTitle: data.simulationTitle || title,
+                title: data.simulationTitle || title
+            };
+
+            sessionStorage.setItem('latestSimulation', JSON.stringify(savedSimulation));
+            document.getElementById('results-title').textContent = savedSimulation.simulationTitle;
+            updateSaveButton(true);
+            setSaveFeedback('Simulación guardada.', 'success');
+            modal.close();
+        } catch (error) {
+            setSaveFeedback('No se pudo conectar con el servidor. Revisa que el backend esté corriendo en el puerto 4000.');
+        } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = 'Guardar';
+        }
+    });
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
     await initNavbar();
     await initFooter();
@@ -207,10 +346,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     const areaElement = document.querySelector(".results__data-value--area");
     const rainfallElement = document.querySelector(".results__data-value--rainfall");
     const transitElement = document.querySelector(".results__data-value--traffic");
+    const resultsTitle = document.getElementById("results-title");
 
+    resultsTitle.textContent = simulation.simulationTitle || simulation.title || "Análisis comparativo";
     areaElement.textContent = `${simulation.area} m²`;
     rainfallElement.textContent = `${simulation.rainLevel}%`;
     transitElement.textContent = `${simulation.trafficLevel}%`;
+    setupSaveSimulation(simulation);
 
     selectMaterial.innerHTML = alternates.map((material) => {
         return `<option value="${material.materialId}">${material.materialName}</option>`;

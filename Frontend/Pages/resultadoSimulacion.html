@@ -15,6 +15,16 @@
         </section>
     </header>
     <main>
+        <section class="results__actions" aria-label="Acciones de simulación">
+            <div>
+                <p class="results__eyebrow">Resultados de simulación</p>
+                <h1 class="results__title" id="results-title">Análisis comparativo</h1>
+            </div>
+            <button class="results__save-btn" type="button" id="save-simulation-btn">
+                <i data-lucide="save"></i>
+                Guardar
+            </button>
+        </section>
         <section class="results__data">
             <article class="results__data-wrapper">
                 <h2 class="results__data-title results__data-title--area">Área a cubrir</h2>
@@ -96,6 +106,23 @@
             <p class="savings__context" id="savings-context"></p>
         </aside>
     </main>
+    <dialog class="save-modal" id="save-simulation-modal" aria-labelledby="save-simulation-title">
+        <form class="save-modal__panel" id="save-simulation-form" method="dialog">
+            <header class="save-modal__header">
+                <h2 class="save-modal__title" id="save-simulation-title">Guardar simulación</h2>
+                <button class="save-modal__close" type="button" data-close-save-modal aria-label="Cerrar">
+                    <i data-lucide="x"></i>
+                </button>
+            </header>
+            <label class="save-modal__label" for="simulation-name">Nombre</label>
+            <input class="save-modal__input" id="simulation-name" name="simulation-name" type="text" placeholder="Ej. Patio con lluvia intensa" maxlength="80" required>
+            <p class="save-modal__feedback" id="save-simulation-feedback" role="status"></p>
+            <footer class="save-modal__actions">
+                <button class="save-modal__cancel" type="button" data-close-save-modal>Cancelar</button>
+                <button class="save-modal__submit" type="submit">Guardar</button>
+            </footer>
+        </form>
+    </dialog>
     <footer id="main__footer" class="footer"></footer>
     <script src="https://unpkg.com/lucide@0.555.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

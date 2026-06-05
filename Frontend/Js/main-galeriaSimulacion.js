@@ -4,6 +4,7 @@ import { initFooter } from "./footer.js";
 import { createWave } from "./simulaciones/simulationCards.js";
 
 let simulations = [];
+let simulationToDelete = null;
 
 function getApiBaseUrl() {
     if (window.location.port === '4000') return '';
@@ -34,8 +35,8 @@ function requireUser() {
     return null;
 }
 
-async function apiRequest(path) {
-    const response = await fetch(`${getApiBaseUrl()}${path}`);
+async function apiRequest(path, options = {}) {
+    const response = await fetch(`${getApiBaseUrl()}${path}`, options);
     const data = await response.json();
 
     if (!data.ok) throw new Error(data.message || 'No se pudo cargar la galeria.');
@@ -79,7 +80,20 @@ function createSimulationCard(simulation) {
             <span class="sim-card__badge sim-card__badge--with-hq">con HQ: ${formatPercent(100 - simulation.hardoquinUnfilteredPercentage)}</span>
             <span class="sim-card__badge sim-card__badge--no-hq">sin HQ: ${formatPercent(100 - simulation.asphaltUnfilteredPercentage)}</span>
         </figure>
-        <h3 class="sim-card__title">${escapeHtml(simulation.simulationTitle)}</h3>
+        <section class="sim-card__body">
+            <h3 class="sim-card__title">${escapeHtml(simulation.simulationTitle)}</h3>
+            <section class="sim-card__overflow">
+                <button class="sim-card__menu-btn" type="button" aria-label="Opciones de simulación" aria-expanded="false" data-open-simulation-menu>
+                    <i data-lucide="ellipsis-vertical"></i>
+                </button>
+                <section class="sim-card__menu" hidden>
+                    <button class="sim-card__menu-item sim-card__menu-item--danger" type="button" data-delete-simulation>
+                        <i data-lucide="trash-2"></i>
+                        Eliminar
+                    </button>
+                </section>
+            </section>
+        </section>
         <footer class="sim-card__meta">
             <time class="sim-card__time">
                 <span class="sim-card__time-icon" data-lucide="clock"></span>
@@ -90,6 +104,45 @@ function createSimulationCard(simulation) {
     `;
 
     return card;
+}
+
+function closeSimulationMenus(exceptCard = null) {
+    document.querySelectorAll('.sim-card').forEach((card) => {
+        if (card === exceptCard) return;
+
+        const menu = card.querySelector('.sim-card__menu');
+        const button = card.querySelector('[data-open-simulation-menu]');
+        if (menu) menu.hidden = true;
+        button?.setAttribute('aria-expanded', 'false');
+    });
+}
+
+function openDeleteSimulationModal(simulation) {
+    const modal = document.getElementById('delete-simulation-modal');
+    const message = document.getElementById('delete-simulation-message');
+    const feedback = document.getElementById('delete-simulation-feedback');
+
+    if (!modal || !simulation) return;
+
+    simulationToDelete = simulation;
+    message.textContent = `La simulación "${simulation.simulationTitle}" se eliminará permanentemente.`;
+    feedback.textContent = '';
+    modal.showModal();
+}
+
+function closeDeleteSimulationModal() {
+    const modal = document.getElementById('delete-simulation-modal');
+    const feedback = document.getElementById('delete-simulation-feedback');
+
+    simulationToDelete = null;
+    if (feedback) feedback.textContent = '';
+    modal?.close();
+}
+
+async function openStoredSimulation(simulationId) {
+    const data = await apiRequest(`/api/simulaciones/${simulationId}`);
+    sessionStorage.setItem('latestSimulation', JSON.stringify(data.simulation));
+    window.location.href = '/Frontend/Pages/resultadoSimulacion.html';
 }
 
 function startCardWave(card, index) {
@@ -154,6 +207,91 @@ function setUpSearch() {
     });
 }
 
+function setUpSimulationActions() {
+    const grid = document.getElementById('gallery-grid');
+    const deleteModal = document.getElementById('delete-simulation-modal');
+    const confirmDeleteButton = document.getElementById('confirm-delete-simulation');
+    const deleteFeedback = document.getElementById('delete-simulation-feedback');
+
+    grid?.addEventListener('click', (event) => {
+        const menuButton = event.target.closest('[data-open-simulation-menu]');
+        const deleteButton = event.target.closest('[data-delete-simulation]');
+        const clickedOverflow = event.target.closest('.sim-card__overflow');
+
+        if (menuButton) {
+            event.stopPropagation();
+
+            const card = menuButton.closest('.sim-card');
+            const menu = card?.querySelector('.sim-card__menu');
+            if (!card || !menu) return;
+
+            const willOpen = menu.hidden;
+            closeSimulationMenus(card);
+            menu.hidden = !willOpen;
+            menuButton.setAttribute('aria-expanded', String(willOpen));
+            return;
+        }
+
+        if (deleteButton) {
+            event.stopPropagation();
+
+            const card = deleteButton.closest('.sim-card');
+            const simulationId = Number(card?.dataset.simulationId);
+            const simulation = simulations.find((item) => item.simulationId === simulationId);
+
+            closeSimulationMenus();
+            openDeleteSimulationModal(simulation);
+            return;
+        }
+
+        if (!clickedOverflow) {
+            const card = event.target.closest('.sim-card');
+            const simulationId = Number(card?.dataset.simulationId);
+
+            if (simulationId) {
+                openStoredSimulation(simulationId).catch((error) => {
+                    renderEmptyState(error.message);
+                });
+            }
+        }
+    });
+
+    document.addEventListener('click', (event) => {
+        if (!event.target.closest('.sim-card__overflow')) closeSimulationMenus();
+    });
+
+    document.querySelectorAll('[data-close-delete-simulation]').forEach((button) => {
+        button.addEventListener('click', closeDeleteSimulationModal);
+    });
+
+    deleteModal?.addEventListener('click', (event) => {
+        if (event.target === deleteModal) closeDeleteSimulationModal();
+    });
+
+    confirmDeleteButton?.addEventListener('click', async () => {
+        if (!simulationToDelete) return;
+
+        confirmDeleteButton.disabled = true;
+        confirmDeleteButton.textContent = 'Eliminando...';
+        deleteFeedback.textContent = '';
+
+        try {
+            await apiRequest(`/api/simulaciones/${simulationToDelete.simulationId}`, {
+                method: 'DELETE'
+            });
+
+            simulations = simulations.filter((item) => item.simulationId !== simulationToDelete.simulationId);
+            closeDeleteSimulationModal();
+            renderGallery();
+        } catch (error) {
+            deleteFeedback.textContent = error.message;
+        } finally {
+            confirmDeleteButton.disabled = false;
+            confirmDeleteButton.textContent = 'Eliminar';
+        }
+    });
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
     await initNavbar();
     await initFooter();
@@ -163,6 +301,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!user) return;
 
     setUpSearch();
+    setUpSimulationActions();
 
     try {
         const data = await apiRequest(`/api/simulaciones/usuario/${user.id}`);

@@ -33,6 +33,22 @@
             <section class="gallery__grid" id="gallery-grid" aria-label="Simulaciones guardadas"></section>
         </div>
     </main>
+    <dialog class="delete-simulation-modal" id="delete-simulation-modal" aria-labelledby="delete-simulation-title">
+        <article class="delete-simulation-modal__panel">
+            <header class="delete-simulation-modal__header">
+                <h2 class="delete-simulation-modal__title" id="delete-simulation-title">Eliminar simulación</h2>
+                <button class="delete-simulation-modal__close" type="button" data-close-delete-simulation aria-label="Cerrar">
+                    <i data-lucide="x"></i>
+                </button>
+            </header>
+            <p class="delete-simulation-modal__text" id="delete-simulation-message">Esta simulación se eliminará permanentemente.</p>
+            <p class="delete-simulation-modal__feedback" id="delete-simulation-feedback" role="status"></p>
+            <footer class="delete-simulation-modal__actions">
+                <button class="delete-simulation-modal__cancel" type="button" data-close-delete-simulation>Cancelar</button>
+                <button class="delete-simulation-modal__submit" type="button" id="confirm-delete-simulation">Eliminar</button>
+            </footer>
+        </article>
+    </dialog>
     <footer id="main__footer" class="footer"></footer>
     <script src="https://unpkg.com/lucide@0.555.0"></script>
     <script type="module" src="../Js/main-galeriaSimulacion.js"></script>
