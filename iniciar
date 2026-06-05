@@ -1,2 +1,2 @@
-cd hardoquin_server
+cd "/Users/4lexlc/Documents/VS CODE/HardoquinConnectWeb/hardoquin_server" || exit 1
 npm start

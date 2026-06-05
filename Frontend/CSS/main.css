@@ -6,10 +6,16 @@
     padding: 0;
 }
 
+html {
+    font-size: 18px;
+}
+
 body {
     scroll-behavior: smooth;
     font-family: 'Poppins', sans-serif;
     background-color: rgb(var(--color-fondo));
+    font-size: 1rem;
+    line-height: 1.5;
 }
 
 p {

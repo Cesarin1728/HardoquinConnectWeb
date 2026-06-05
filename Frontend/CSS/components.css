@@ -334,6 +334,11 @@
     display: block;
 }
 
+.navbar__nav:not(.navbar__nav--authenticated) [data-requires-auth],
+[data-requires-auth][hidden] {
+    display: none !important;
+}
+
 .navbar__nav--authenticated #action-log-out {
     display: flex;
 }

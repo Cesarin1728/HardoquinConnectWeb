@@ -1,117 +1,233 @@
 import { initNavbar, activeTab } from "./navbar.js";
 import { initFooter } from "./footer.js";
-import { calculateWaterData, calculateLifespanByTransit, calculateTotalCost, calculateCostDifference, calculateWaterDifference, round2, formatNumberWithCommas, formatMaterialLabel } from "./simulaciones/calculations.js";
-import { centerTextPlugin, createDoughnutChart, createLifespanChart, createWaterManagementChart } from "./simulaciones/charts.js";
+import { centerTextPlugin } from "./simulaciones/charts.js";
+import { calculateCostDifference, calculateWaterDifference, formatNumberWithCommas, round2 } from "./simulaciones/calculations.js";
+
+let hardoquinChart;
+let alternateChart;
+let lifespanChart;
+let waterManagementChart;
+
+function getLatestSimulation() {
+    try {
+        return JSON.parse(sessionStorage.getItem('latestSimulation'));
+    } catch (error) {
+        return null;
+    }
+}
+
+function normalizeMaterialName(name = '') {
+    return name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+}
+
+function findHardoquin(results) {
+    return results.find((result) => normalizeMaterialName(result.materialName).includes('hardoquin'));
+}
+
+function getAlternateResults(results, hardoquin) {
+    return results.filter((result) => result.materialId !== hardoquin?.materialId);
+}
+
+function getResultTotalWater(result) {
+    return Number(result.filteredWater || 0) + Number(result.unfilteredWater || 0);
+}
+
+function getPermeability(result) {
+    const total = getResultTotalWater(result);
+    if (!total) return 0;
+    return Number(result.filteredWater || 0) / total;
+}
+
+function renderMissingSimulation() {
+    document.querySelector('main').innerHTML = `
+        <section class="result-empty">
+            <h1>No hay resultados para mostrar</h1>
+            <p>Crea una simulación para ver el análisis comparativo.</p>
+            <a href="/Frontend/Pages/datosSimulacion.html">Crear simulación</a>
+        </section>
+    `;
+}
+
+function createDoughnutFromResult(canvas, result, color) {
+    return new Chart(canvas, {
+        type: "doughnut",
+        plugins: [centerTextPlugin],
+        data: {
+            labels: ["Agua filtrada", "Agua no filtrada"],
+            datasets: [{
+                data: [Number(result.filteredWater || 0), Number(result.unfilteredWater || 0)],
+                backgroundColor: [color, "#e5e7eb"],
+                borderWidth: 0,
+                hoverOffset: 5,
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: "75%",
+            animation: { duration: 800 },
+            plugins: {
+                legend: { display: false },
+                tooltip: { callbacks: { label: (context) => `${Math.round(context.raw)} L` } }
+            }
+        }
+    });
+}
+
+function createLifespanFromResults(canvas, trafficLevel, hardoquin, alternate) {
+    return new Chart(canvas, {
+        type: "bar",
+        data: {
+            labels: ["Hardoquín", alternate.materialName],
+            datasets: [{
+                label: "Vida útil (años)",
+                data: [hardoquin.usefulLife, alternate.usefulLife],
+                backgroundColor: ["#22c55e", "#3b82f6"],
+                borderRadius: 6,
+                maxBarThickness: 54
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: { grid: { display: false } },
+                y: { beginAtZero: true, grid: { color: "rgba(15,23,42,0.08)" } }
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: { callbacks: { label: (context) => `${context.parsed.y} años` } },
+                title: { display: true, text: `Nivel de tránsito ${trafficLevel}%` }
+            }
+        }
+    });
+}
+
+function createWaterManagementFromResults(canvas, hardoquin, alternate) {
+    return new Chart(canvas, {
+        type: "bar",
+        data: {
+            labels: ["Hardoquín", alternate.materialName],
+            datasets: [
+                {
+                    label: "Agua filtrada (L)",
+                    data: [round2(hardoquin.filteredWater), round2(alternate.filteredWater)],
+                    backgroundColor: "#3498DB",
+                    borderRadius: 6
+                },
+                {
+                    label: "Agua evaporada (L)",
+                    data: [round2(hardoquin.evaporatedWater || 0), round2(alternate.evaporatedWater || 0)],
+                    backgroundColor: "#2ECC71",
+                    borderRadius: 6
+                },
+                {
+                    label: "Agua no filtrada (L)",
+                    data: [
+                        round2(hardoquin.finalUnfilteredWater ?? hardoquin.unfilteredWater),
+                        round2(alternate.finalUnfilteredWater ?? alternate.unfilteredWater)
+                    ],
+                    backgroundColor: "#E74C3C",
+                    borderRadius: 6
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: { stacked: true, grid: { display: false } },
+                y: { beginAtZero: true, stacked: true, grid: { color: "rgba(15,23,42,0.08)" } }
+            },
+            plugins: {
+                legend: { display: true, position: "bottom" },
+                tooltip: { callbacks: { label: (context) => `${context.dataset.label}: ${context.parsed.y} L` } },
+                title: { display: true, text: "Manejo del agua por material" }
+            }
+        }
+    });
+}
+
+function updateComparison(simulation, hardoquin, alternate) {
+    const alternateMaterialLabel = document.querySelector(".comparison__label--alternate");
+    const alternateCostMaterial = document.querySelector(".cost__material--alternate");
+    const hardoquinCostElement = document.getElementById("cost-hardoquin");
+    const alternateCostElement = document.getElementById("cost-alternate");
+    const hardoquinCostDetails = document.getElementById("cost-hardoquin-details");
+    const alternateCostDetails = document.getElementById("cost-alternate-details");
+    const savingsAmountElement = document.getElementById("savings-amount");
+    const savingsContextElement = document.getElementById("savings-context");
+    const comparisonText = document.getElementById("comparison-text");
+    const comparisonHighlight = document.getElementById("comparison-difference");
+
+    alternateMaterialLabel.textContent = alternate.materialName;
+    alternateCostMaterial.textContent = `${alternate.materialName} - instalación inicial`;
+
+    const hardoquinCost = Number(hardoquin.applicationCost || 0);
+    const alternateCost = Number(alternate.applicationCost || 0);
+    const savingsAmount = alternate.savingsVsHardoquin ?? calculateCostDifference(hardoquinCost, alternateCost);
+    const filteredDiff = alternate.filteredWaterVsHardoquin ?? calculateWaterDifference(hardoquin.filteredWater, alternate.filteredWater);
+
+    hardoquinCostElement.textContent = `$${formatNumberWithCommas(hardoquinCost)}`;
+    alternateCostElement.textContent = `$${formatNumberWithCommas(alternateCost)}`;
+    hardoquinCostDetails.textContent = `${simulation.area}m²`;
+    alternateCostDetails.textContent = `${simulation.area}m²`;
+    savingsAmountElement.textContent = `$${formatNumberWithCommas(savingsAmount)}`;
+    savingsContextElement.textContent = `vs ${alternate.materialName} en ${simulation.area}m²`;
+    comparisonText.textContent = `Hardoquin permeabiliza aproximadamente ${formatNumberWithCommas(filteredDiff)} L más que ${alternate.materialName.toLowerCase()} bajo las mismas condiciones de lluvia y tránsito.`;
+    comparisonHighlight.textContent = `+${formatNumberWithCommas(filteredDiff)}L`;
+}
+
+function replaceChart(chart, createNextChart) {
+    chart?.destroy();
+    return createNextChart();
+}
 
 document.addEventListener("DOMContentLoaded", async () => {
     await initNavbar();
     await initFooter();
     activeTab("simulaciones");
 
-    const area = 50, nivelLluvia = 55, litrosBasePorMetro = 120, transitLevel = 45;
+    const simulation = getLatestSimulation();
+    const results = simulation?.results || [];
+    const hardoquin = findHardoquin(results);
+    const alternates = getAlternateResults(results, hardoquin);
 
-  // DOM
+    if (!simulation || !hardoquin || !alternates.length) {
+        renderMissingSimulation();
+        return;
+    }
+
     const selectMaterial = document.getElementById("select-material");
-    const alternateMaterialLabel = document.querySelector(".comparison__label--alternate");
-    const alternateCostMaterial = document.querySelector(".cost__material--alternate");
     const hardoquinCanvas = document.getElementById("chart-hardoquin-permeability");
     const alternateCanvas = document.getElementById("chart-alternate-permeability");
     const lifespanCanvas = document.getElementById("chart-lifespan");
     const waterManagementCanvas = document.getElementById("chart-water-managed");
-    const hardoquinCostElement = document.getElementById("cost-hardoquin");
-    const alternateCostElement = document.getElementById("cost-alternate");
-    const hardoquinCostDetails = document.getElementById("cost-hardoquin-details");
-    const alternateCostDetails = document.getElementById("cost-alternate-details");
     const areaElement = document.querySelector(".results__data-value--area");
     const rainfallElement = document.querySelector(".results__data-value--rainfall");
     const transitElement = document.querySelector(".results__data-value--traffic");
-    const savingsAmountElement = document.getElementById("savings-amount");
-    const savingsContextElement = document.getElementById("savings-context");
-    const comparisonText = document.getElementById("comparison-text");
-    const comparisonHighlight = document.getElementById("comparison-difference");
 
-    areaElement.textContent = `${area} m²`;
-    rainfallElement.textContent = `${nivelLluvia}%`;
-    transitElement.textContent = `${transitLevel}%`;
+    areaElement.textContent = `${simulation.area} m²`;
+    rainfallElement.textContent = `${simulation.rainLevel}%`;
+    transitElement.textContent = `${simulation.trafficLevel}%`;
 
-    const materiales = [
-        { id: 1, nombre: "Adoquín tradicional", vidaUtil: 25, costoM2: 520, permeabilidad: 0.35 },
-        { id: 2, nombre: "Concreto", vidaUtil: 30, costoM2: 450, permeabilidad: 0.08 },
-        { id: 3, nombre: "Asfalto", vidaUtil: 18, costoM2: 320, permeabilidad: 0.03 },
-        { id: 4, nombre: "Hardoquín", vidaUtil: 40, costoM2: 280, permeabilidad: 0.82 }
-    ];
+    selectMaterial.innerHTML = alternates.map((material) => {
+        return `<option value="${material.materialId}">${material.materialName}</option>`;
+    }).join('');
 
-    const hardoquin = materiales.find(m => m.id === 4);
-    const initialAlternate = materiales.find(m => m.id === 1);
+    const renderSelectedMaterial = () => {
+        const selectedMaterialId = Number(selectMaterial.value);
+        const alternate = alternates.find((material) => material.materialId === selectedMaterialId) || alternates[0];
 
-    const hardoquinChart = createDoughnutChart(hardoquinCanvas, hardoquin.permeabilidad, "#22c55e", area, litrosBasePorMetro, nivelLluvia);
-    const alternateChart = createDoughnutChart(alternateCanvas, initialAlternate.permeabilidad, "#3b82f6", area, litrosBasePorMetro, nivelLluvia);
-    const lifespanChart = createLifespanChart(lifespanCanvas, transitLevel, initialAlternate, calculateLifespanByTransit, hardoquin);
-    const waterManagementChart = createWaterManagementChart(waterManagementCanvas, initialAlternate, calculateWaterData, round2, area, litrosBasePorMetro, nivelLluvia, hardoquin);
+        updateComparison(simulation, hardoquin, alternate);
 
-    // Costs
-    const hardoquinCost = calculateTotalCost(hardoquin, area);
-    const alternateCost = calculateTotalCost(initialAlternate, area);
-    hardoquinCostElement.textContent = `$${formatNumberWithCommas(hardoquinCost)}`;
-    alternateCostElement.textContent = `$${formatNumberWithCommas(alternateCost)}`;
-    hardoquinCostDetails.textContent = `${area}m² • $${hardoquin.costoM2}/m²`;
-    alternateCostDetails.textContent = `${area}m² • $${initialAlternate.costoM2}/m²`;
-    const savingsAmount = calculateCostDifference(hardoquinCost, alternateCost);
-    savingsAmountElement.textContent = `$${formatNumberWithCommas(savingsAmount)}`;
-    savingsContextElement.textContent = `vs ${initialAlternate.nombre} en ${area}m²`;
+        hardoquinChart = replaceChart(hardoquinChart, () => createDoughnutFromResult(hardoquinCanvas, hardoquin, "#22c55e"));
+        alternateChart = replaceChart(alternateChart, () => createDoughnutFromResult(alternateCanvas, alternate, "#3b82f6"));
+        lifespanChart = replaceChart(lifespanChart, () => createLifespanFromResults(lifespanCanvas, simulation.trafficLevel, hardoquin, alternate));
+        waterManagementChart = replaceChart(waterManagementChart, () => createWaterManagementFromResults(waterManagementCanvas, hardoquin, alternate));
+    };
 
-    // Comparison text
-    const { litrosFiltrados: litrosFiltradosAlternate } = calculateWaterData(initialAlternate.permeabilidad, area, litrosBasePorMetro, nivelLluvia);
-    const { litrosFiltrados: litrosFiltradosHardoquin } = calculateWaterData(hardoquin.permeabilidad, area, litrosBasePorMetro, nivelLluvia);
-    const litrosFiltradosDiff = calculateWaterDifference(litrosFiltradosHardoquin, litrosFiltradosAlternate);
-    comparisonText.textContent = `Hardoquin permeabiliza aproximadamente ${formatNumberWithCommas(litrosFiltradosDiff)} L más que el ${initialAlternate.nombre.toLowerCase()} bajo las mismas condiciones de lluvia y tráfico.`;
-    comparisonHighlight.textContent = `+${formatNumberWithCommas(litrosFiltradosDiff)}L`;
-
-    // Select listener
-    selectMaterial.addEventListener("change", () => {
-        const materialId = Number(selectMaterial.value);
-        const material = materiales.find(m => m.id === materialId);
-        if (!material) return;
-        alternateMaterialLabel.textContent = material.nombre;
-        alternateCostMaterial.textContent = `${material.nombre} - instalación inicial`;
-
-        const { litrosFiltrados, litrosNoFiltrados } = calculateWaterData(material.permeabilidad, area, litrosBasePorMetro, nivelLluvia);
-        alternateChart.data.datasets[0].data = [litrosFiltrados, litrosNoFiltrados];
-        alternateChart.update();
-        const litrosFiltradosHardoquin = calculateWaterData(hardoquin.permeabilidad, area, litrosBasePorMetro, nivelLluvia).litrosFiltrados;
-
-        const litrosFiltradosDiff = calculateWaterDifference(litrosFiltradosHardoquin, litrosFiltrados);
-        comparisonText.textContent = `Hardoquin permeabiliza aproximadamente ${formatNumberWithCommas(litrosFiltradosDiff)} L más que el ${material.nombre.toLowerCase()} bajo las mismas condiciones de lluvia y tráfico.`;
-        comparisonHighlight.textContent = `+${formatNumberWithCommas(litrosFiltradosDiff)}L`;
-
-        lifespanChart.data.labels[1] = material.nombre;
-        lifespanChart.data.datasets[0].data = [calculateLifespanByTransit(hardoquin, transitLevel), calculateLifespanByTransit(material, transitLevel)];
-        lifespanChart.update();
-
-        // costs update
-        const hardoquinCostNow = calculateTotalCost(hardoquin, area);
-        const materialCostNow = calculateTotalCost(material, area);
-        hardoquinCostElement.textContent = `$${formatNumberWithCommas(hardoquinCostNow)}`;
-        alternateCostElement.textContent = `$${formatNumberWithCommas(materialCostNow)}`;
-        hardoquinCostDetails.textContent = `${area}m² • $${hardoquin.costoM2}/m²`;
-        alternateCostDetails.textContent = `${area}m² • $${material.costoM2}/m²`;
-        savingsAmountElement.textContent = `$${formatNumberWithCommas(calculateCostDifference(hardoquinCostNow, materialCostNow))}`;
-        savingsContextElement.textContent = `vs ${material.nombre} en ${area}m²`;
-
-        // water management update
-        const hardoquinTotal = calculateWaterData(hardoquin.permeabilidad, area, litrosBasePorMetro, nivelLluvia);
-        const hardoquinFiltrada = round2(hardoquinTotal.litrosFiltrados);
-        const hardoquinNoFiltrada = hardoquinTotal.litrosNoFiltrados;
-        const hardoquinEvaporada = round2(hardoquinNoFiltrada * 0.15);
-        const hardoquinNoFiltradaFinal = round2(hardoquinNoFiltrada - hardoquinEvaporada);
-
-        const litrosEvaporados = round2(litrosNoFiltrados * 0.15);
-        const litrosNoFiltradosFinal = round2(litrosNoFiltrados - litrosEvaporados);
-
-        waterManagementChart.data.labels[1] = material.nombre;
-        waterManagementChart.data.datasets[0].data = [hardoquinFiltrada, round2(litrosFiltrados)];
-        waterManagementChart.data.datasets[1].data = [hardoquinEvaporada, litrosEvaporados];
-        waterManagementChart.data.datasets[2].data = [hardoquinNoFiltradaFinal, litrosNoFiltradosFinal];
-        waterManagementChart.update();
-    });
-    });
+    renderSelectedMaterial();
+    selectMaterial.addEventListener("change", renderSelectedMaterial);
+});

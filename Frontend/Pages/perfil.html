@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil</title>
+    <link rel="stylesheet" href="../CSS/main.css">
+    <link rel="stylesheet" href="../CSS/components.css">
+    <link rel="stylesheet" href="../CSS/perfil.css">
+</head>
+<body>
+    <header class="header">
+        <section id="main__navbar"></section>
+    </header>
+
+    <main class="profile-page">
+        <section class="profile-shell">
+            <aside class="profile-preview">
+                <span class="profile-preview__avatar">
+                    <img id="profile-preview-img" src="/Frontend/Assets/ImagenesPerfil/usuarioimg0.png" alt="Foto de perfil">
+                </span>
+                <h1 class="profile-preview__name" id="profile-preview-name">Mi perfil</h1>
+                <p class="profile-preview__email" id="profile-preview-email"></p>
+            </aside>
+
+            <form class="profile-form" id="profile-form">
+                <header class="profile-form__header">
+                    <strong class="profile-form__eyebrow">Cuenta</strong>
+                    <h2 class="profile-form__title">Editar perfil</h2>
+                </header>
+
+                <section class="profile-feedback" id="profile-feedback" role="alert" aria-live="polite" hidden></section>
+
+                <label class="profile-form__label" for="profile-username">Nombre de usuario</label>
+                <input class="profile-form__input" id="profile-username" name="username" type="text" required>
+
+                <fieldset class="profile-avatar">
+                    <legend class="profile-form__label">Foto de perfil</legend>
+                    <section class="profile-avatar__options" aria-label="Selecciona una foto de perfil">
+                        <button class="profile-avatar__option" type="button" data-photo="Assets/ImagenesPerfil/usuarioimg0.png">
+                            <img src="../Assets/ImagenesPerfil/usuarioimg0.png" alt="Avatar 1">
+                        </button>
+                        <button class="profile-avatar__option" type="button" data-photo="Assets/ImagenesPerfil/usuarioimg2.png">
+                            <img src="../Assets/ImagenesPerfil/usuarioimg2.png" alt="Avatar 2">
+                        </button>
+                        <button class="profile-avatar__option" type="button" data-photo="Assets/ImagenesPerfil/usuarioimg3.png">
+                            <img src="../Assets/ImagenesPerfil/usuarioimg3.png" alt="Avatar 3">
+                        </button>
+                    </section>
+                </fieldset>
+
+                <section class="profile-password" id="profile-password-section" hidden>
+                    <label class="profile-form__label" for="profile-password">Contraseña actual</label>
+                    <input class="profile-form__input" id="profile-password" name="password" type="password" placeholder="Confirma tu contraseña">
+                    <p class="profile-password__hint">Solo la pedimos cuando cambias tu nombre de usuario.</p>
+                </section>
+
+                <footer class="profile-form__actions">
+                    <a class="profile-form__cancel" href="/Frontend/index.html">Cancelar</a>
+                    <button class="profile-form__submit" type="submit">Guardar cambios</button>
+                </footer>
+            </form>
+        </section>
+    </main>
+
+    <footer id="main__footer" class="footer"></footer>
+    <script src="https://unpkg.com/lucide@0.555.0"></script>
+    <script type="module" src="../Js/perfil.js"></script>
+</body>
+</html>

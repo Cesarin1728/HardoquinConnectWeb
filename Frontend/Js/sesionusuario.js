@@ -15,6 +15,42 @@ const linkIrALogin = document.getElementById('ir-a-login');
 const formRegistro = document.getElementById('form-registro');
 const formLogin = document.getElementById('form-login');
 
+function getReturnTo() {
+    const params = new URLSearchParams(window.location.search);
+    const returnTo = params.get('returnTo') || sessionStorage.getItem('authReturnTo');
+
+    if (!returnTo) return '../index.html';
+    if (returnTo.includes('/Pages/sesionusuario.html')) return '../index.html';
+
+    return returnTo;
+}
+
+function finishAuth(user) {
+    sessionStorage.setItem('user', JSON.stringify(user));
+    const returnTo = getReturnTo();
+    sessionStorage.removeItem('authReturnTo');
+    window.location.href = returnTo;
+}
+
+function showFeedback(target, message, type = 'error') {
+    const feedback = document.getElementById(target);
+    if (!feedback) return;
+
+    feedback.textContent = message;
+    feedback.hidden = false;
+    feedback.classList.toggle('auth-feedback--error', type === 'error');
+    feedback.classList.toggle('auth-feedback--success', type === 'success');
+}
+
+function clearFeedback(target) {
+    const feedback = document.getElementById(target);
+    if (!feedback) return;
+
+    feedback.textContent = '';
+    feedback.hidden = true;
+    feedback.classList.remove('auth-feedback--error', 'auth-feedback--success');
+}
+
 function getApiBaseUrl() {
     if (window.location.port === '4000') return '';
 
@@ -70,6 +106,7 @@ linkIrALogin.addEventListener('click', (e) => {
  */
 formRegistro.addEventListener('submit', async (e) => {
     e.preventDefault();
+    clearFeedback('register-feedback');
 
     const email = document.getElementById('reg-email').value.trim();
     const password = document.getElementById('reg-password').value;
@@ -92,18 +129,18 @@ formRegistro.addEventListener('submit', async (e) => {
             })
         });
     } catch (error) {
-        alert(`No se pudo conectar con el servidor en ${apiBaseUrl || 'este mismo sitio'}. Revisa que el backend este corriendo en el puerto 4000.`);
+        showFeedback('register-feedback', 'No se pudo conectar con el servidor. Revisa que el backend este corriendo en el puerto 4000.');
         return;
     }
 
     const data = await res.json();
 
     if (!data.ok) {
-        alert(data.message);
+        showFeedback('register-feedback', data.message);
         return;
     }
 
-    alert('Registro exitoso');
+    showFeedback('register-feedback', 'Registro exitoso. Entrando a tu cuenta...', 'success');
     formRegistro.reset();
     
     // Resetear visualmente el avatar al primero después del registro
@@ -111,7 +148,7 @@ formRegistro.addEventListener('submit', async (e) => {
     if(avatares[0]) avatares[0].classList.add('seleccionada');
     rutaFotoSeleccionada = 'Assets/ImagenesPerfil/usuarioimg0.png';
 
-    contenedor.classList.remove('estado-registro-activo');
+    finishAuth(data.user);
 });
 
 /**
@@ -120,6 +157,7 @@ formRegistro.addEventListener('submit', async (e) => {
  */
 formLogin.addEventListener('submit', async (e) => {
     e.preventDefault();
+    clearFeedback('login-feedback');
 
     const email = document.getElementById('log-email').value.trim();
     const password = document.getElementById('log-password').value;
@@ -151,8 +189,6 @@ formLogin.addEventListener('submit', async (e) => {
     const apiBaseUrl = getApiBaseUrl();
     const url = `${apiBaseUrl}/api/usuarios/login`;
 
-    console.log("➡️ Llamando a:", url);
-
     let res;
     try {
         res = await fetch(url, {
@@ -166,20 +202,19 @@ formLogin.addEventListener('submit', async (e) => {
             })
         });
     } catch (error) {
-        alert(`No se pudo conectar con el servidor en ${apiBaseUrl || 'este mismo sitio'}. Revisa que el backend este corriendo en el puerto 4000.`);
+        showFeedback('login-feedback', 'No se pudo conectar con el servidor. Revisa que el backend este corriendo en el puerto 4000.');
         return;
     }
 
     const data = await res.json();
 
-    if(!data.ok){
-        alert(data.message);
+    if (!data.ok) {
+        showFeedback('login-feedback', data.message || 'Correo o contraseña incorrectos.');
         return;
     }
 
-    sessionStorage.setItem('user', JSON.stringify(data.user));
-
-    window.location.href = '../index.html';
+    showFeedback('login-feedback', 'Sesión iniciada. Regresando...', 'success');
+    finishAuth(data.user);
 
     // alert(`¡Hola de nuevo, ${usuario.username}!`);
 
@@ -206,3 +241,6 @@ formLogin.addEventListener('submit', async (e) => {
 
     // document.getElementById('form-login').appendChild(nombreEl);
 });
+
+formLogin.addEventListener('input', () => clearFeedback('login-feedback'));
+formRegistro.addEventListener('input', () => clearFeedback('register-feedback'));

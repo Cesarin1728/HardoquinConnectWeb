@@ -8,6 +8,10 @@ async function createFooter() {
     const html = await response.text();
 
     footerContainer.innerHTML = html;
+    const user = sessionStorage.getItem('user');
+    footerContainer.querySelectorAll('[data-requires-auth]').forEach((link) => {
+        link.hidden = !user;
+    });
     window.lucide?.createIcons();
 }
 

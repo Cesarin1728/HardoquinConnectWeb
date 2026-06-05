@@ -15,6 +15,7 @@ function setUpDropdownEvents(){
     const userLogOut = document.getElementById('action-log-out');
     const toggleBtn = document.querySelector('.navbar__toggle');
     const nav = document.querySelector('.navbar__nav');
+    const userLogIn = document.getElementById('action-log-in');
 
     if (!userBtn || !userDropdown) return;
 
@@ -46,6 +47,12 @@ function setUpDropdownEvents(){
             sessionStorage.removeItem("user");
             userDropdown.classList.remove('nav__user_dropdown--active');
             updateNavbar(null)
+        });
+    }
+
+    if (userLogIn) {
+        userLogIn.addEventListener('click', () => {
+            sessionStorage.setItem('authReturnTo', window.location.pathname + window.location.search);
         });
     }
 }
@@ -131,10 +138,14 @@ function updateNavbar(user){
 
     const usernameDropdown = document.querySelector('.nav__dropdown-username');
     const userPictureDropDown = document.querySelector('.nav__dropdown-img');
+    const authOnlyLinks = document.querySelectorAll('[data-requires-auth]');
 
     if(!navbar || !usernameInfo || !userPicture || !usernameDropdown || !userPictureDropDown) return;
     
     if(user === null){
+        authOnlyLinks.forEach((link) => {
+            link.hidden = true;
+        });
         usernameInfo.textContent = 'Username';
         usernameDropdown.textContent = 'Username';
 
@@ -143,6 +154,9 @@ function updateNavbar(user){
         navbar.classList.remove('navbar__nav--authenticated');
         return
     }
+    authOnlyLinks.forEach((link) => {
+        link.hidden = false;
+    });
     navbar.classList.add('navbar__nav--authenticated');
 
     usernameInfo.textContent = user.name;

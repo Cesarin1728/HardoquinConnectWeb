@@ -14,6 +14,7 @@ const port = process.env.PORT || 4000;
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use('/Frontend', express.static(path.join(__dirname, '..', 'Frontend')));
 app.use(express.static(path.join(__dirname)));
 
 let datosSensor = { distancia: 0, altura: 0, volumen: 0, lluvia: 0, nivel: 0 };

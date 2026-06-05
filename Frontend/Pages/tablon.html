@@ -60,6 +60,26 @@
         </article>
     </dialog>
 
+    <dialog class="auth-modal" id="auth-modal" aria-labelledby="auth-modal-title">
+        <article class="auth-modal__panel">
+            <header class="auth-modal__header">
+                <h2 class="auth-modal__title" id="auth-modal-title">¿Deseas iniciar sesión?</h2>
+                <button class="auth-modal__close" type="button" data-close-auth-modal aria-label="Cerrar aviso">
+                    <i data-lucide="x" aria-hidden="true"></i>
+                </button>
+            </header>
+
+            <p class="auth-modal__text" id="auth-modal-message">
+                Para participar en el tablón necesitas iniciar sesión.
+            </p>
+
+            <footer class="auth-modal__actions">
+                <button class="auth-modal__cancel" type="button" data-close-auth-modal>Ahora no</button>
+                <a class="auth-modal__submit" href="/Frontend/Pages/sesionusuario.html">Iniciar sesión</a>
+            </footer>
+        </article>
+    </dialog>
+
     <main class="board-page">
         <aside class="board-sidebar" aria-labelledby="category-title">
             <section class="board-sidebar__section">
@@ -119,7 +139,12 @@
                 </form>
             </header>
 
-            <section class="post-list" id="post-list" aria-live="polite" aria-label="Publicaciones comunitarias"></section>
+            <section class="post-list" id="post-list" aria-live="polite" aria-label="Publicaciones comunitarias">
+                <section class="empty-board">
+                    <i data-lucide="loader-circle" aria-hidden="true"></i>
+                    <p>Cargando tablón...</p>
+                </section>
+            </section>
         </section>
     </main>
 

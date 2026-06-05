@@ -12,10 +12,37 @@ body {
 /* --- ESTILOS DE TEXTO --- */
 .texto-titulo { font-weight: bold; margin: 0; font-size: 2rem; color: #1B4F72; }
 .texto-blanco { color: #F3F3F3; font-weight: bold; font-size: 2.2rem; }
-.texto-ayuda { font-size: 12px; margin: 15px 0; color: #0D2646; }
-.texto-parrafo { font-size: 14px; margin: 20px 0; line-height: 1.5; color: #F3F3F3; }
-.switch_movil, .switch_movil > a { display: none; font-size: 13px; color: #0D2646; margin-top: 15px;}
+.texto-ayuda { font-size: 0.9rem; margin: 15px 0; color: #0D2646; }
+.texto-parrafo { font-size: 1rem; margin: 20px 0; line-height: 1.5; color: #F3F3F3; }
+.switch_movil, .switch_movil > a { display: none; font-size: 0.9rem; color: #0D2646; margin-top: 15px;}
 .switch_movil > a { text-decoration: underline; cursor: pointer;}
+
+.auth-feedback {
+    width: 100%;
+    margin: 10px 0 6px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    line-height: 1.35;
+    text-align: left;
+}
+
+.auth-feedback[hidden] {
+    display: none;
+}
+
+.auth-feedback--error {
+    border: 1px solid rgba(225, 29, 72, 0.34);
+    background-color: rgba(225, 29, 72, 0.08);
+    color: #be123c;
+}
+
+.auth-feedback--success {
+    border: 1px solid rgba(82, 183, 136, 0.36);
+    background-color: rgba(82, 183, 136, 0.12);
+    color: #13795b;
+}
 
 /* --- CONTENEDOR MAESTRO --- */
 .autenticacion-container {
@@ -84,7 +111,7 @@ body {
     border: none;
     background-color: #1B4F72;
     color: #F3F3F3;
-    font-size: 12px;
+    font-size: 0.85rem;
     font-weight: bold;
     padding: 14px 50px;
     text-transform: uppercase;
@@ -213,7 +240,7 @@ body {
 }
 
 #nombre-usuario-login {
-    font-size: 14px;
+    font-size: 0.9rem;
     font-weight: 600;
     color: #1B4F72;
     margin: 5px 0 0 0;

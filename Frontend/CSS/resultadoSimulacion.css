@@ -11,6 +11,39 @@ body {
     overflow-x: hidden;
 }
 
+.result-empty {
+    display: grid;
+    justify-items: center;
+    gap: 14px;
+    padding: 56px 20px;
+    border-radius: 18px;
+    background-color: rgb(var(--color-blanco));
+    text-align: center;
+}
+
+.result-empty h1 {
+    color: rgb(var(--color-oscuro));
+    font-size: 1.4rem;
+}
+
+.result-empty p {
+    max-width: 440px;
+    color: rgb(var(--color-texto));
+}
+
+.result-empty a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    background-color: rgb(var(--color-acento-azul));
+    color: #ffffff;
+    font-weight: 600;
+    text-decoration: none;
+}
+
 .results__data,
 .comparison__visual,
 .comparison__result,

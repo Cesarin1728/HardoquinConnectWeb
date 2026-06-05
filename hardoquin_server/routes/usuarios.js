@@ -160,6 +160,71 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+router.put('/:id', async (req, res) => {
+    try {
+        const id = toNumber(req.params.id);
+        if (!id) return res.status(400).json({ ok: false, message: 'ID invalido.' });
+
+        const user = await prisma.users.findUnique({ where: { id } });
+        if (!user) return res.status(404).json({ ok: false, message: 'Usuario no encontrado.' });
+
+        const username = req.body.username ? req.body.username.trim() : user.username;
+        const profilePhoto = req.body.profilePhoto || req.body.foto || user.profile_photo || DEFAULT_PROFILE_PHOTO;
+        const usernameChanged = username !== user.username;
+
+        if (usernameChanged) {
+            requireFields(req.body, ['password']);
+
+            const passwordIsValid = await bcrypt.compare(req.body.password, user.password);
+            if (!passwordIsValid) {
+                return res.status(401).json({
+                    ok: false,
+                    message: 'Contrasena incorrecta.'
+                });
+            }
+        }
+
+        if (!username) {
+            return res.status(400).json({
+                ok: false,
+                message: 'El username no puede estar vacio.'
+            });
+        }
+
+        const existingUser = usernameChanged
+            ? await prisma.users.findFirst({
+                where: {
+                    username,
+                    NOT: { id }
+                }
+            })
+            : null;
+
+        if (existingUser) {
+            return res.status(409).json({
+                ok: false,
+                message: 'Ese username ya esta registrado.'
+            });
+        }
+
+        const updatedUser = await prisma.users.update({
+            where: { id },
+            data: {
+                username,
+                profile_photo: profilePhoto
+            }
+        });
+
+        res.json({
+            ok: true,
+            message: 'Perfil actualizado.',
+            user: formatUser(updatedUser)
+        });
+    } catch (error) {
+        handleError(res, error);
+    }
+});
+
 router.delete('/:id', async (req, res) => {
     try {
         requireFields(req.body, ['password']);

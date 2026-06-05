@@ -39,6 +39,10 @@
                         <input type="number" name="area" id="area-input" value="500" step="5">
                         <span class="request-data__unit">m²</span>
                     </div>
+                    <section class="request-data__error" id="simulation-error" role="alert" aria-live="polite" hidden>
+                        <i data-lucide="circle-alert" aria-hidden="true"></i>
+                        <p id="simulation-error-message"></p>
+                    </section>
                 </div>
                 <div class="request-data__field">
                     <div class="request-data__label-group">
@@ -49,9 +53,9 @@
                                 Intensidad de lluvia estimada. Usa Hardoquin RainSense para mayor precisión.
                             </div>
                         </span>
-                        <strong class="request-data__value">0%</strong>
+                        <strong class="request-data__value">1%</strong>
                     </div>
-                    <input type="range" name="rain-level" id="rain-level-input" value="0" step="5" min="0" max="100">
+                    <input type="range" name="rain-level" id="rain-level-input" value="1" step="5" min="1" max="100">
                     <div class="request-data__range_help" id="request-data__range-help--rain">
                         <strong data-level="llovizna" class="request-data__range_help-value request-data__range_help-value--active">Llovizna</strong>
                         <strong data-level="leve" class="request-data__range_help-value">Leve</strong>
@@ -70,9 +74,9 @@
                                 Intensidad de tránsito esperada en la zona. Considera el flujo de personas y vehículos.
                             </div>
                         </span>
-                        <strong class="request-data__value">0%</strong>
+                        <strong class="request-data__value">1%</strong>
                     </div>
-                    <input type="range" name="transit-level" id="transit-level-input" value="0" step="5" min="0" max="100">
+                    <input type="range" name="transit-level" id="transit-level-input" value="1" step="5" min="1" max="100">
                     <div class="request-data__range_help" id="request-data__range-help--transit">
                         <strong data-level="leve" class="request-data__range_help-value request-data__range_help-value--active">Leve</strong>
                         <strong data-level="bajo" class="request-data__range_help-value">Bajo</strong>

@@ -21,6 +21,28 @@ function getStoredUser() {
     }
 }
 
+function showSimulationError(message) {
+    const errorBox = document.getElementById('simulation-error');
+    const errorMessage = document.getElementById('simulation-error-message');
+
+    if (!errorBox || !errorMessage) return;
+
+    errorMessage.textContent = message;
+    errorBox.hidden = false;
+    errorBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    window.lucide?.createIcons();
+}
+
+function clearSimulationError() {
+    const errorBox = document.getElementById('simulation-error');
+    const errorMessage = document.getElementById('simulation-error-message');
+
+    if (!errorBox || !errorMessage) return;
+
+    errorMessage.textContent = '';
+    errorBox.hidden = true;
+}
+
 const ranges = document.querySelectorAll('input[type="range"]');
 const rainLevels = [
     {
@@ -113,8 +135,6 @@ ranges.forEach(itm => {
         const activeRainText = document.querySelector(`#request-data__range-help--rain [data-level="${currentRainValue.label}"]`);
         const activeTransitText = document.querySelector(`#request-data__range-help--transit [data-level="${currentTransitValue.label}"]`);
 
-        console.log(activeRainText);
-        console.log(currentRainValue.label);
         activeRainText.classList.add('request-data__range_help-value--active');
         activeTransitText.classList.add('request-data__range_help-value--active');
     });
@@ -130,6 +150,14 @@ form.addEventListener('submit', async (e) => {
     const area = Number(formData.get('area'));
     const rainLevel = Number(formData.get('rain-level'));
     const trafficLevel = Number(formData.get('transit-level'));
+
+    clearSimulationError();
+
+    if (!area || area <= 0) {
+        showSimulationError('El área debe ser mayor a 0.');
+        return;
+    }
+
     const payload = {
         title: `Simulacion ${new Date().toLocaleDateString('es-MX')}`,
         area,
@@ -153,19 +181,21 @@ form.addEventListener('submit', async (e) => {
         const data = await response.json();
 
         if (!data.ok) {
-            alert(data.message || 'No se pudo crear la simulacion.');
+            showSimulationError(data.message || 'No se pudo crear la simulacion.');
             return;
         }
 
         sessionStorage.setItem('latestSimulation', JSON.stringify(data));
         window.location.href = './resultadoSimulacion.html';
     } catch (error) {
-        alert(`No se pudo conectar con el servidor en ${getApiBaseUrl()}. Revisa que el backend este corriendo en el puerto 4000.`);
+        showSimulationError(`No se pudo conectar con el servidor. Revisa que el backend este corriendo en el puerto 4000.`);
     } finally {
         submitButton.disabled = false;
         submitButton.textContent = 'Crear Resultados';
     }
 });
+
+form.addEventListener('input', clearSimulationError);
 
 const btnRainSense = document.querySelector('.request-data__btn--rain-sense');
 

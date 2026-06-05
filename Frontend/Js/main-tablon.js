@@ -89,6 +89,8 @@ const getElements = () => ({
     sort: document.getElementById('board-sort'),
     modal: document.getElementById('new-post-modal'),
     deleteModal: document.getElementById('delete-post-modal'),
+    authModal: document.getElementById('auth-modal'),
+    authModalMessage: document.getElementById('auth-modal-message'),
     newPostForm: document.getElementById('new-post-form')
 });
 
@@ -133,7 +135,7 @@ function updateCounts() {
     });
 }
 
-function renderReplies(post) {
+function renderReplies(post, isOpen) {
     const currentUser = getCurrentUser();
     const replies = post.replies.map((reply) => {
         const menuId = `reply-menu-${post.id}-${reply.id}`;
@@ -169,20 +171,30 @@ function renderReplies(post) {
         </li>
         `;
     }).join('');
+    const replyComposer = currentUser?.id ? `
+        <form class="reply-form" data-reply-form data-post-id="${post.id}">
+            ${renderAvatar(currentUser, 'reply-form__avatar')}
+            <label class="sr-only" for="reply-${post.id}">Escribe una respuesta</label>
+            <textarea class="reply-form__textarea" id="reply-${post.id}" rows="1" placeholder="Escribe una respuesta..."></textarea>
+            <button class="reply-form__send" type="submit">
+                <i data-lucide="send" aria-hidden="true"></i>
+                Enviar
+            </button>
+        </form>
+    ` : `
+        <section class="reply-login">
+            <p class="reply-login__text">Inicia sesión para comentar en esta publicación.</p>
+            <button class="reply-login__button" type="button" data-auth-prompt="comment">
+                Iniciar sesión
+            </button>
+        </section>
+    `;
 
     return `
-        <section class="reply-section" id="reply-section-${post.id}" aria-label="Respuestas de ${escapeHtml(post.title || 'publicacion')}">
+        <section class="reply-section ${isOpen ? 'reply-section--open' : ''}" id="reply-section-${post.id}" aria-label="Respuestas de ${escapeHtml(post.title || 'publicacion')}">
             <section class="reply-section__inner">
                 <ol class="reply-list">${replies}</ol>
-                <form class="reply-form" data-reply-form data-post-id="${post.id}">
-                    ${renderAvatar(currentUser, 'reply-form__avatar')}
-                    <label class="sr-only" for="reply-${post.id}">Escribe una respuesta</label>
-                    <textarea class="reply-form__textarea" id="reply-${post.id}" rows="1" placeholder="Escribe una respuesta..."></textarea>
-                    <button class="reply-form__send" type="submit">
-                        <i data-lucide="send" aria-hidden="true"></i>
-                        Enviar
-                    </button>
-                </form>
+                ${replyComposer}
             </section>
         </section>
     `;
@@ -190,7 +202,7 @@ function renderReplies(post) {
 
 function renderPost(post, openReplyIds) {
     const currentUser = getCurrentUser();
-    const isOpen = openReplyIds.has(String(post.id));
+    const isOpen = openReplyIds.has(String(post.id)) || post.replies.length > 0;
     const category = categories[post.category] || categories.general;
     const menuId = `post-menu-${post.id}`;
     const canDelete = currentUser?.id === post.user.id;
@@ -240,7 +252,7 @@ function renderPost(post, openReplyIds) {
                 </button>
             </footer>
 
-            ${renderReplies(post)}
+            ${renderReplies(post, isOpen)}
         </article>
     `;
 }
@@ -293,10 +305,25 @@ function setActiveCategory(categoryKey) {
     renderPosts();
 }
 
-function requireUser() {
+function openAuthModal(message = 'Para participar en el tablón necesitas iniciar sesión.') {
+    const { authModal, authModalMessage } = getElements();
+    const loginLink = authModal.querySelector('.auth-modal__submit');
+
+    authModalMessage.textContent = message;
+    if (loginLink) {
+        loginLink.href = `/Frontend/Pages/sesionusuario.html?returnTo=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+    }
+    authModal.showModal();
+}
+
+function closeAuthModal() {
+    getElements().authModal.close();
+}
+
+function requireUser(message) {
     const user = getCurrentUser();
     if (!user?.id) {
-        alert('Inicia sesion para publicar, responder o dar me gusta.');
+        openAuthModal(message);
         return null;
     }
     return user;
@@ -312,7 +339,7 @@ function toggleReplies(postId) {
 }
 
 async function toggleLike(postId) {
-    const user = requireUser();
+    const user = requireUser('Para dar me gusta necesitas iniciar sesión. ¿Deseas iniciar sesión ahora?');
     if (!user) return;
 
     const post = posts.find((item) => item.id === Number(postId));
@@ -394,7 +421,7 @@ async function confirmDelete() {
 }
 
 async function sendReply(form) {
-    const user = requireUser();
+    const user = requireUser('Para comentar en el tablón necesitas iniciar sesión. ¿Deseas iniciar sesión ahora?');
     if (!user) return;
 
     const postId = Number(form.dataset.postId);
@@ -418,7 +445,7 @@ async function sendReply(form) {
 }
 
 function openModal() {
-    if (!requireUser()) return;
+    if (!requireUser('Para crear una publicación necesitas iniciar sesión. ¿Deseas iniciar sesión ahora?')) return;
 
     const { modal } = getElements();
     modal.showModal();
@@ -431,7 +458,7 @@ function closeModal() {
 }
 
 async function submitPost(form) {
-    const user = requireUser();
+    const user = requireUser('Para crear una publicación necesitas iniciar sesión. ¿Deseas iniciar sesión ahora?');
     if (!user) return;
 
     const formData = new FormData(form);
@@ -462,7 +489,7 @@ async function submitPost(form) {
 }
 
 function setUpBoardEvents() {
-    const { postList, search, sort, modal, deleteModal, newPostForm } = getElements();
+    const { postList, search, sort, modal, deleteModal, authModal, newPostForm } = getElements();
 
     document.querySelectorAll('.category-nav__button').forEach((button) => {
         button.addEventListener('click', () => setActiveCategory(button.dataset.category));
@@ -480,6 +507,14 @@ function setUpBoardEvents() {
 
     deleteModal.addEventListener('click', (event) => {
         if (event.target === deleteModal) closeDeleteModal();
+    });
+
+    authModal.addEventListener('click', (event) => {
+        if (event.target === authModal) closeAuthModal();
+    });
+
+    document.querySelectorAll('[data-close-auth-modal]').forEach((button) => {
+        button.addEventListener('click', closeAuthModal);
     });
 
     document.querySelector('[data-confirm-delete-post]').addEventListener('click', confirmDelete);
@@ -519,6 +554,11 @@ function setUpBoardEvents() {
 
         if (replyButton) toggleReplies(replyButton.dataset.toggleReplies);
         if (likeButton) toggleLike(likeButton.dataset.likePost);
+
+        const authPromptButton = event.target.closest('[data-auth-prompt]');
+        if (authPromptButton) {
+            openAuthModal('Para comentar en el tablón necesitas iniciar sesión. ¿Deseas iniciar sesión ahora?');
+        }
     });
 
     document.addEventListener('click', (event) => {
@@ -541,6 +581,14 @@ function setUpBoardEvents() {
 
         event.preventDefault();
         sendReply(textarea.closest('[data-reply-form]'));
+    });
+
+    postList.addEventListener('focusin', (event) => {
+        const textarea = event.target.closest('.reply-form__textarea');
+        if (!textarea || getCurrentUser()?.id) return;
+
+        textarea.blur();
+        openAuthModal('Para comentar en el tablón necesitas iniciar sesión. ¿Deseas iniciar sesión ahora?');
     });
 }
 
