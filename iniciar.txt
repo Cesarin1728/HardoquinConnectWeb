@@ -6,4 +6,6 @@ cd "/Users/4lexlc/Documents/VS CODE/HardoquinConnectWeb/blue-green"
 
 cd "/Users/4lexlc/Documents/VS CODE/HardoquinConnectWeb/blue-green"
 ./switch.sh green
-d
+
+PARA INGRESAR ES ESTA URL 
+http://127.0.0.1:8088/Frontend/index.html
