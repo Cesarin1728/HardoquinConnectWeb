@@ -5,6 +5,9 @@ const { handleError } = require('./helpers');
 
 const router = express.Router();
 
+// conversationId (number) → adminId (number)
+const advisorSessions = new Map();
+
 function getJwtSecret() {
     return process.env.JWT_SECRET || 'hardoquin-dev-secret';
 }
@@ -67,7 +70,8 @@ router.get('/conversations', async (req, res) => {
                 last_message: lastMsg?.message || null,
                 last_message_at: lastMsg?.created_at || null,
                 needs_attention: lastMsg?.sender_type === 'user',
-                customer_messages: customerMessages
+                customer_messages: customerMessages,
+                advisor_active: advisorSessions.has(conv.id)
             };
         }));
 
@@ -150,4 +154,31 @@ router.post('/conversations/:id/messages', async (req, res) => {
     }
 });
 
-module.exports = router;
+// POST /api/admin/chat/conversations/:id/join
+router.post('/conversations/:id/join', (req, res) => {
+    const admin = requireAdmin(req, res);
+    if (!admin) return;
+    const conversationId = Number(req.params.id);
+    if (!Number.isFinite(conversationId)) {
+        return res.status(400).json({ ok: false, message: 'ID inválido.' });
+    }
+    advisorSessions.set(conversationId, admin.id);
+    res.json({ ok: true });
+});
+
+// POST /api/admin/chat/conversations/:id/leave
+router.post('/conversations/:id/leave', (req, res) => {
+    const admin = requireAdmin(req, res);
+    if (!admin) return;
+    const conversationId = Number(req.params.id);
+    if (!Number.isFinite(conversationId)) {
+        return res.status(400).json({ ok: false, message: 'ID inválido.' });
+    }
+    if (advisorSessions.get(conversationId) === admin.id) {
+        advisorSessions.delete(conversationId);
+    }
+    res.json({ ok: true });
+});
+
+// advisorSessions is exported so the WS server can check it before auto-replying
+module.exports = { router, advisorSessions };

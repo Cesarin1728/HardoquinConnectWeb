@@ -102,6 +102,7 @@ function renderConversations() {
                 <span>#${conversation.id}</span>
                 <span>${conversation.needs_attention ? 'Pendiente' : 'Respondido'}</span>
                 <span>${conversation.customer_messages || 0} mensaje(s)</span>
+                ${conversation.advisor_active ? '<span class="support-thread__advisor-on">Asesor activo</span>' : ''}
             </span>
         </button>
     `).join('');
@@ -141,14 +142,32 @@ async function requestJson(path, options = {}) {
     return data;
 }
 
+function joinConversation(conversationId) {
+    if (!conversationId) return;
+    requestJson(`/api/admin/chat/conversations/${conversationId}/join`, { method: 'POST' }).catch(() => {});
+}
+
+function leaveConversation(conversationId) {
+    if (!conversationId) return;
+    const { token } = getSession();
+    fetch(`${getApiBaseUrl()}/api/admin/chat/conversations/${conversationId}/leave`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        keepalive: true
+    }).catch(() => {});
+}
+
 async function loadConversations({ keepSelection = true } = {}) {
     const data = await requestJson('/api/admin/chat/conversations');
-    conversations = data.conversations.map((conversation) => ({
-        ...conversation,
-        id: Number(conversation.id),
-        customer_messages: Number(conversation.customer_messages || 0),
-        needs_attention: Boolean(conversation.needs_attention)
-    }));
+    conversations = data.conversations
+        .map((conversation) => ({
+            ...conversation,
+            id: Number(conversation.id),
+            customer_messages: Number(conversation.customer_messages || 0),
+            needs_attention: Boolean(conversation.needs_attention),
+            advisor_active: Boolean(conversation.advisor_active)
+        }))
+        .filter((conversation) => conversation.customer_messages > 0);
 
     if (!keepSelection || !conversations.some((conversation) => conversation.id === selectedConversationId)) {
         selectedConversationId = conversations[0]?.id || null;
@@ -162,7 +181,13 @@ async function loadConversations({ keepSelection = true } = {}) {
 }
 
 async function loadMessages(conversationId) {
+    const prevId = selectedConversationId;
     selectedConversationId = Number(conversationId);
+
+    if (prevId && prevId !== selectedConversationId) {
+        leaveConversation(prevId);
+    }
+
     const conversation = conversations.find((item) => item.id === selectedConversationId);
 
     document.getElementById('bo-chat-name').textContent = conversation?.customer_name || 'Cliente';
@@ -174,6 +199,7 @@ async function loadMessages(conversationId) {
     const data = await requestJson(`/api/admin/chat/conversations/${selectedConversationId}/messages`);
     renderMessages(data.messages);
     renderConversations();
+    joinConversation(selectedConversationId);
 }
 
 async function sendReply(event) {
@@ -246,6 +272,7 @@ async function initBackoffice() {
 
 window.addEventListener('beforeunload', () => {
     clearInterval(refreshTimer);
+    leaveConversation(selectedConversationId);
 });
 
 initBackoffice();

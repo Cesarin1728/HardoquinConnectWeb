@@ -8,7 +8,7 @@ const usuariosRouter = require('./routes/usuarios');
 const simulacionesRouter = require('./routes/simulaciones');
 const tablonRouter = require('./routes/tablon');
 const materialesRouter = require('./routes/materiales');
-const chatRouter = require('./routes/chat');
+const { router: chatRouter } = require('./routes/chat');
 
 const app = express();
 const port = process.env.PORT || 4000;

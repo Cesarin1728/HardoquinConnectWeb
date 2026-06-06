@@ -184,6 +184,14 @@
     background: #22c55e;
 }
 
+.support-thread__advisor-on {
+    color: #0369a1;
+    font-weight: 600;
+    background: rgba(3, 105, 161, 0.1);
+    border-radius: 4px;
+    padding: 1px 5px;
+}
+
 .support-thread__top small,
 .support-thread__meta {
     color: rgba(var(--color-texto), 0.62);
