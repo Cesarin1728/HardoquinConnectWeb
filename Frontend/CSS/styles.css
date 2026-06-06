@@ -133,7 +133,7 @@
 
 .solution-card__title {
     color: rgb(var(--color-acento-azul));
-    font-size: 1.7em;
+    font-size: clamp(.8em, 2vw, 1.7em);
     font-weight: 600;
 }
 
@@ -151,8 +151,6 @@
 }
 
 /* -------- SOLUTION ENDS ---------- */
-
-
 
 /* -------- BENEFITS SECTION ---------- */
 
@@ -188,10 +186,10 @@
     display: grid;
     height: 100%;
     width: 95%;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
     grid-auto-rows: 1fr;
     gap: 20px;
-    justify-items: center;
+    justify-items: stretch;
     align-items: stretch;
     margin: auto;
 }
@@ -208,6 +206,10 @@
     box-shadow: 0 0 10px #0004;
     padding-bottom: 20px;
     transition: transform 0.3s;
+}
+
+.benefits-slider__track .benefits-card:nth-child(n+5) {
+    display: none;
 }
 
 .benefits-card:hover {
@@ -251,6 +253,8 @@
 .benefits-card__info {
     padding: 8px 12px;
     text-align: center;
+    overflow-wrap: break-word;
+    min-width: 0;
 }
 
 .benefits-card__intro {
@@ -260,7 +264,7 @@
 
 .benefits-card__title {
     color: rgb(var(--color-oscuro));
-    font-size: 1.27em;
+    font-size: clamp(0.65em, 1.3vw, 1.27em);
 }
 
 .benefits-card__description {
@@ -397,6 +401,7 @@
     display: flex;
     overflow: hidden;
     flex: 0.2;
+    width: 100%;
     border-radius: 30px;
     background-color: rgb(var(--color-fondo));
     border: 2px solid color-mix(in srgb, rgb(var(--color-fondo-oscuro)) 90%, black 10%);
@@ -431,7 +436,7 @@
     grid-area: title;
     justify-self: center;
     text-align: center;
-    font-size: 1.52em;
+    font-size: clamp(0.65em, 1.6vw, 1.52em);
     color: rgb(var(--color-acento-azul));
 }
 
@@ -439,13 +444,16 @@
     align-self: self-start;
     text-align: center;
     grid-area: description;
+    overflow-wrap: break-word;
+    min-width: 0;
+    font-size: clamp(0.75em, 1.1vw, 1em);
 }
 
 .services-card__icon {
     grid-area: icon;
     border-radius: 12px;
-    padding: 7px;
-    width: 55px;
+    padding: clamp(4px, 0.5vw, 7px);
+    width: clamp(28px, 3.5vw, 55px);
     stroke-width: 1.5px;
     color: rgb(var(--color-acento-azul));
     height: auto;
@@ -456,6 +464,29 @@
 .services-card,
 .services-card * {
     cursor: default;
+}
+
+@media (max-width: 1223px) and (min-width: 711px) {
+    .services__wrapper {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        flex: initial;
+        overflow: hidden;
+    }
+
+    .services-card {
+        min-width: 0;
+        border-right: 0;
+        border-bottom: 2px solid color-mix(in srgb, rgb(var(--color-fondo-oscuro)) 90%, black 10%);
+    }
+
+    .services-card:nth-child(odd) {
+        border-right: 2px solid color-mix(in srgb, rgb(var(--color-fondo-oscuro)) 90%, black 10%);
+    }
+
+    .services-card:nth-last-child(-n+2) {
+        border-bottom: 0;
+    }
 }
 
 /* -------- SERVICES ENDS ---------- */
@@ -589,6 +620,30 @@
         max-width: 250px;
     }
 
+    .v2-banner + .header #hero,
+    .v2-banner + .header .hero__wrapper {
+        min-height: calc(100svh - var(--v2-banner-offset));
+        height: auto;
+        padding-top: calc(95px + var(--v2-banner-offset));
+    }
+
+    .v2-banner + .header .hero__subtitle {
+        max-width: min(100%, 32rem);
+    }
+
+    .benefits-card--v2 {
+        border: 2px solid #16a34a;
+        box-shadow: 0 10px 26px rgba(22, 163, 74, 0.18);
+    }
+
+    .benefits-card--v2 .benefits-card__img_wrapper {
+        background: rgba(22, 163, 74, 0.12);
+    }
+
+    .benefits-card--v2 .benefits-card__icon {
+        color: #16a34a;
+    }
+
     .solution__info {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
@@ -655,6 +710,8 @@
         overflow-y: visible;
         gap:18px;
         width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
         padding: 10px 4px 25px;
         scrollbar-width: none;
         -ms-overflow-style: none;
@@ -662,13 +719,28 @@
 
     .benefits-slider{
         margin-top: 20px;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        overflow: hidden;
     }
+
+    .benefits-slider__viewport {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        overflow: hidden;
+    }
+
     #benefits {
         height: auto;
+        overflow-x: hidden;
     }
 
     .benefits-card {
-        min-width: 80%;
+        flex: 0 0 min(82%, 320px);
+        min-width: 0;
+        max-width: 320px;
     }
 
     .benefits-indicator {
@@ -697,7 +769,11 @@
     }
 
     .services__wrapper {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
         flex-direction: column;
+        overflow: hidden;
     }
 
     #characteristics {
@@ -809,6 +885,9 @@
     .services__wrapper {
         display: flex;
         flex-direction: column;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
         border-radius: 20px;
         background-color: rgb(var(--color-fondo));
         border: 1px solid rgba(0,0,0,0.1);
@@ -817,11 +896,18 @@
 
     .services-card {
         display: grid;
-        grid-template-columns: auto 1fr auto;
+        grid-template-columns: 36px minmax(0, 1fr) auto;
+        grid-template-rows: auto auto;
+        grid-template-areas:
+            "icon title arrow"
+            ". description description";
         align-items: center;
         gap: 12px;
+        width: 100%;
+        min-width: 0;
         padding: 18px 16px;
         border-bottom: 1px solid rgba(0,0,0,0.08);
+        border-right: 0;
     }
 
     .services-card:last-child {
@@ -838,22 +924,27 @@
     }
 
     .services-card__title {
+        min-width: 0;
         font-size: 1.1em;
         color: rgb(var(--color-oscuro));
         text-align: left;
+        overflow-wrap: anywhere;
     }
 
     .services-card__description {
+        min-width: 0;
         font-size: 0.85em;
         color: rgb(var(--color-texto));
-        grid-column: 2 / 4;
+        grid-area: description;
+        overflow-wrap: anywhere;
     }
 
     .services-card::after {
-    content: "›";
-    font-size: 1.4em;
-    color: rgba(0,0,0,0.4);
-}
+        content: "›";
+        grid-area: arrow;
+        font-size: 1.4em;
+        color: rgba(0,0,0,0.4);
+    }
 
     #faqs {
         display: flex;
@@ -897,6 +988,22 @@
 @media (max-width: 430px) {
     .hero__title {
         font-size: 2.2rem;
+    }
+
+    .v2-banner {
+        gap: 8px;
+        padding: 0 10px;
+        font-size: 0.72rem;
+    }
+
+    .v2-banner__badge {
+        font-size: 0.68rem;
+        padding: 2px 6px;
+    }
+
+    .v2-banner + .header #hero,
+    .v2-banner + .header .hero__wrapper {
+        padding: calc(86px + var(--v2-banner-offset)) 16px 36px;
     }
 
     .solution__info {

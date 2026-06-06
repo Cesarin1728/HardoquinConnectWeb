@@ -14,16 +14,34 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const track = document.querySelector('.benefits-slider__track');
     const dots = document.querySelectorAll('.benefits-indicator__bar');
+    const previousButton = document.getElementById('benefits-slider__previous');
+    const nextButton = document.getElementById('benefits-slider__next');
 
     if (track && dots.length > 0) {
-        track.addEventListener('scroll', () => {
-            const scrollLeft = track.scrollLeft;
+        const updateActiveDot = () => {
             const maxScroll = track.scrollWidth - track.clientWidth;
-            const index = Math.round((scrollLeft / maxScroll) * (dots.length - 1));
+            const index = maxScroll > 0
+                ? Math.round((track.scrollLeft / maxScroll) * (dots.length - 1))
+                : 0;
+
             dots.forEach(dot => dot.classList.remove('active'));
-            if (dots[index]) {
-                dots[index].classList.add('active');
-            }
-        });
+            dots[index]?.classList.add('active');
+        };
+
+        const scrollBenefits = (direction) => {
+            const card = track.querySelector('.benefits-card');
+            const gap = parseFloat(getComputedStyle(track).gap) || 0;
+            const distance = card ? card.getBoundingClientRect().width + gap : track.clientWidth;
+
+            track.scrollBy({
+                left: direction * distance,
+                behavior: 'smooth'
+            });
+        };
+
+        track.addEventListener('scroll', updateActiveDot);
+        previousButton?.addEventListener('click', () => scrollBenefits(-1));
+        nextButton?.addEventListener('click', () => scrollBenefits(1));
+        updateActiveDot();
     }
 });

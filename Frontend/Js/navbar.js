@@ -1,3 +1,5 @@
+import { initChatSoporte } from './chat-soporte.js';
+
 async function createNavbar(){
     const url = '/Frontend/Components/navbar.html';
     const navbarContainer = document.getElementById('main__navbar');
@@ -7,6 +9,21 @@ async function createNavbar(){
 
     navbarContainer.innerHTML = html;
     lucide.createIcons();
+}
+
+function getApiBaseUrl() {
+    const localHosts = ['localhost', '127.0.0.1'];
+    const isLocalDev = localHosts.includes(window.location.hostname);
+
+    if (window.location.protocol !== 'file:' && (!isLocalDev || window.location.port === '8088' || window.location.port === '')) {
+        return '';
+    }
+
+    const apiHost = localHosts.includes(window.location.hostname)
+        ? '127.0.0.1'
+        : window.location.hostname;
+
+    return `http://${apiHost}:8088`;
 }
 
 function setUpDropdownEvents(){
@@ -45,6 +62,7 @@ function setUpDropdownEvents(){
     if(userLogOut){
         userLogOut.addEventListener('click', () => {
             sessionStorage.removeItem("user");
+            sessionStorage.removeItem("authToken");
             userDropdown.classList.remove('nav__user_dropdown--active');
             updateNavbar(null)
         });
@@ -139,6 +157,8 @@ function updateNavbar(user){
     const usernameDropdown = document.querySelector('.nav__dropdown-username');
     const userPictureDropDown = document.querySelector('.nav__dropdown-img');
     const authOnlyLinks = document.querySelectorAll('[data-requires-auth]');
+    const adminOnlyLinks = document.querySelectorAll('[data-requires-admin]');
+    const dropdownEmail = document.querySelector('.nav__dropdown-email');
 
     if(!navbar || !usernameInfo || !userPicture || !usernameDropdown || !userPictureDropDown) return;
     
@@ -146,8 +166,12 @@ function updateNavbar(user){
         authOnlyLinks.forEach((link) => {
             link.hidden = true;
         });
+        adminOnlyLinks.forEach((link) => {
+            link.hidden = true;
+        });
         usernameInfo.textContent = 'Username';
         usernameDropdown.textContent = 'Username';
+        if (dropdownEmail) dropdownEmail.textContent = 'Correo';
 
         userPicture.src = '/Frontend/Assets/ImagenesPerfil/usuarioimg0.png';
         userPictureDropDown.src = '/Frontend/Assets/ImagenesPerfil/usuarioimg0.png';
@@ -155,14 +179,43 @@ function updateNavbar(user){
         return
     }
     authOnlyLinks.forEach((link) => {
+        if (link.matches('[data-green-only]')) return;
         link.hidden = false;
+    });
+    adminOnlyLinks.forEach((link) => {
+        link.hidden = user.role !== 'admin';
     });
     navbar.classList.add('navbar__nav--authenticated');
 
     usernameInfo.textContent = user.name;
     usernameDropdown.textContent = user.name;
+    if (dropdownEmail) dropdownEmail.textContent = user.email || '';
     userPicture.src = `/Frontend/${user.img}`;
     userPictureDropDown.src = `/Frontend/${user.img}`;
+
+    updateBackofficeBadge(user);
+}
+
+async function updateBackofficeBadge(user) {
+    const badge = document.getElementById('backoffice-message-badge');
+    const token = sessionStorage.getItem('authToken');
+    if (!badge || user?.role !== 'admin' || !token) return;
+
+    try {
+        const res = await fetch(`${getApiBaseUrl()}/api/admin/chat/conversations`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        const data = await res.json();
+        if (!res.ok || !data.ok) return;
+
+        const count = data.conversations.length;
+        badge.textContent = String(count);
+        badge.hidden = count === 0;
+    } catch (_) {
+        badge.hidden = true;
+    }
 }
 
 export function activeTab(tab){
@@ -182,6 +235,6 @@ export async function initNavbar(){
     setUpMobileMenuEvents();
     const storedUser = sessionStorage.getItem("user");
     const user = storedUser ? JSON.parse(storedUser) : null;
-
     updateNavbar(user);
+    await initChatSoporte();
 }

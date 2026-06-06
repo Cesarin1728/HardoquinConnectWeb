@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backoffice</title>
+    <link rel="stylesheet" href="../CSS/main.css">
+    <link rel="stylesheet" href="../CSS/components.css">
+    <link rel="stylesheet" href="../CSS/backoffice.css">
+</head>
+<body>
+    <header class="header">
+        <section id="main__navbar"></section>
+    </header>
+
+    <main class="backoffice">
+        <header class="backoffice__header">
+            <div>
+                <strong class="backoffice__eyebrow">Administración</strong>
+                <h1 class="backoffice__title">Backoffice</h1>
+            </div>
+            <button class="backoffice__refresh" id="bo-refresh" type="button">
+                <i data-lucide="refresh-cw"></i>
+                Actualizar
+            </button>
+        </header>
+
+        <section class="backoffice__notice" id="bo-notice" hidden></section>
+
+        <section class="support-board" id="support-board" hidden>
+            <aside class="support-inbox" aria-label="Conversaciones de soporte">
+                <header class="support-inbox__header">
+                    <h2>Mensajes de clientes</h2>
+                    <span class="support-inbox__count" id="bo-count">0</span>
+                </header>
+                <div class="support-inbox__list" id="bo-conversations"></div>
+            </aside>
+
+            <section class="support-chat" aria-label="Chat seleccionado">
+                <header class="support-chat__header">
+                    <div>
+                        <strong id="bo-chat-name">Selecciona una conversación</strong>
+                        <p id="bo-chat-meta">Los mensajes aparecerán aquí.</p>
+                    </div>
+                    <span class="support-chat__status" id="bo-chat-status">Sin selección</span>
+                </header>
+
+                <div class="support-chat__messages" id="bo-messages"></div>
+
+                <form class="support-chat__reply" id="bo-reply-form">
+                    <input id="bo-reply-input" type="text" maxlength="500" placeholder="Responder al cliente..." autocomplete="off" disabled>
+                    <button id="bo-send" type="submit" disabled>
+                        <i data-lucide="send"></i>
+                        Enviar
+                    </button>
+                </form>
+            </section>
+        </section>
+    </main>
+
+    <footer id="main__footer" class="footer"></footer>
+    <script src="https://unpkg.com/lucide@0.555.0"></script>
+    <script type="module" src="../Js/backoffice.js"></script>
+</body>
+</html>

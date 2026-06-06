@@ -5,14 +5,18 @@ let selectedPhoto = 'Assets/ImagenesPerfil/usuarioimg0.png';
 let originalUsername = '';
 
 function getApiBaseUrl() {
-    if (window.location.port === '4000') return '';
-
     const localHosts = ['localhost', '127.0.0.1'];
+    const isLocalDev = localHosts.includes(window.location.hostname);
+
+    if (window.location.protocol !== 'file:' && (!isLocalDev || window.location.port === '8088' || window.location.port === '')) {
+        return '';
+    }
+
     const apiHost = localHosts.includes(window.location.hostname)
         ? '127.0.0.1'
         : window.location.hostname;
 
-    return `http://${apiHost}:4000`;
+    return `http://${apiHost}:8088`;
 }
 
 function getCurrentUser() {

@@ -63,6 +63,15 @@
                         <i data-lucide="layout-dashboard"></i>
                         <strong class="dropdown__action_name">Mis simulaciones</strong>
                     </a>
+                    <button class="nav__dropdown_action" id="action-chat-soporte" data-requires-auth data-green-only hidden>
+                        <i data-lucide="message-circle"></i>
+                        <strong class="dropdown__action_name">Chat de Soporte</strong>
+                    </button>
+                    <a href="/Frontend/Pages/backoffice.html" class="nav__dropdown_action" id="action-backoffice" data-requires-auth data-requires-admin hidden>
+                        <i data-lucide="briefcase-business"></i>
+                        <strong class="dropdown__action_name">Backoffice</strong>
+                        <span class="nav__admin-badge" id="backoffice-message-badge" hidden>0</span>
+                    </a>
                 </div>
                 <div class="nav__dropdown_actions nav__dropdown_actions--session">
                     <button class="nav__dropdown_action" id="action-log-out">

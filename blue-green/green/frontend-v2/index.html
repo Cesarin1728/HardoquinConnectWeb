@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hardoquin Connect — v2.0</title>
+    <link rel="stylesheet" href="CSS/main.css">
+    <link rel="stylesheet" href="CSS/components.css">
+    <link rel="stylesheet" href="CSS/styles.css">
+    <style>
+        .benefits-card--v2,
+        .benefits-slider__track .benefits-card.benefits-card--v2,
+        .benefits-slider__track .benefits-card--v2 {
+            display: flex;
+        }
+
+        .services__wrapper {
+            max-width: calc(100% - 2px);
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            overflow: clip;
+            clip-path: inset(0 1px 0 0 round 24px);
+        }
+
+        .services-card--v2 {
+            grid-column: auto;
+        }
+
+        .services-card {
+            display: flex;
+            min-width: 0;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 10px;
+            padding: 18px 14px;
+            text-align: center;
+            border-bottom: 0;
+        }
+
+        .services-card:not(:last-child) {
+            border-right: 2px solid color-mix(in srgb, rgb(var(--color-fondo-oscuro)) 90%, black 10%);
+        }
+
+        .services-card__icon {
+            width: clamp(30px, 3vw, 44px);
+        }
+
+        .services-card__title {
+            width: 100%;
+            min-width: 0;
+            font-size: clamp(0.78rem, 0.9vw, 1rem);
+            line-height: 1.18;
+            text-align: center;
+            overflow-wrap: anywhere;
+        }
+
+        .services-card__description {
+            width: 100%;
+            min-width: 0;
+            align-self: center;
+            font-size: clamp(0.68rem, 0.78vw, 0.82rem);
+            line-height: 1.45;
+            text-align: center;
+            overflow-wrap: anywhere;
+        }
+
+        .services-card__new-badge {
+            display: inline-block;
+            margin-left: 4px;
+            font-size: 0.58rem;
+            line-height: 1;
+            vertical-align: middle;
+        }
+
+        .v2-hero-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            width: fit-content;
+            margin-bottom: 14px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(22, 163, 74, 0.18);
+            color: #dcfce7;
+            border: 1px solid rgba(134, 239, 172, 0.48);
+            font-size: 0.76rem;
+            font-weight: 700;
+        }
+
+        .v2-hero-kicker::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #86efac;
+            box-shadow: 0 0 0 4px rgba(134, 239, 172, 0.18);
+        }
+
+        .v2-hero-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 24px;
+        }
+
+        .v2-hero-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 44px;
+            padding: 0 18px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.14);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.34);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .v2-hero-status {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+            width: min(760px, 100%);
+            margin-top: 24px;
+        }
+
+        .v2-hero-status span {
+            display: flex;
+            align-items: center;
+            min-height: 46px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            background: rgba(5, 18, 34, 0.72);
+            color: #e5f7ff;
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+
+        @media (max-width: 1223px) {
+            .services__wrapper {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .services-card--v2 {
+                grid-column: 1 / -1;
+            }
+
+            .services-card:nth-child(even),
+            .services-card--v2 {
+                border-right: 0;
+            }
+
+            .services-card:nth-child(n+3) {
+                border-top: 2px solid color-mix(in srgb, rgb(var(--color-fondo-oscuro)) 90%, black 10%);
+            }
+        }
+
+        @media (max-width: 1015px) {
+            .benefits-slider {
+                position: relative;
+                width: 100%;
+                max-width: 100%;
+                overflow: hidden;
+            }
+
+            .benefits-slider__viewport {
+                width: 100%;
+                overflow: hidden;
+            }
+
+            .benefits-slider__track {
+                display: flex;
+                width: 100%;
+                max-width: 100%;
+                gap: 18px;
+                padding: 10px 48px 24px;
+                overflow-x: auto;
+                overflow-y: visible;
+                scroll-snap-type: x mandatory;
+                scroll-padding-inline: 48px;
+                scrollbar-width: none;
+            }
+
+            .benefits-slider__track::-webkit-scrollbar {
+                display: none;
+            }
+
+            .benefits-card {
+                flex: 0 0 min(78vw, 340px);
+                max-width: 340px;
+                scroll-snap-align: center;
+            }
+
+            .benefits-slider__button {
+                position: absolute;
+                z-index: 2;
+                top: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 36px;
+                height: 36px;
+                transform: translateY(-50%);
+                border: 0;
+                border-radius: 999px;
+                background-color: rgb(var(--color-fondo));
+                box-shadow: 0 6px 18px #0003;
+                color: transparent;
+                cursor: pointer;
+                overflow: hidden;
+            }
+
+            .benefits-slider__button::before {
+                color: rgb(var(--color-oscuro));
+                font-size: 1.35rem;
+                line-height: 1;
+            }
+
+            #benefits-slider__previous {
+                left: 6px;
+            }
+
+            #benefits-slider__next {
+                right: 6px;
+            }
+
+            #benefits-slider__previous::before {
+                content: "<";
+            }
+
+            #benefits-slider__next::before {
+                content: ">";
+            }
+
+            .benefits-indicator {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 8px;
+                margin-top: 8px;
+            }
+
+            .benefits-indicator__bar {
+                width: 8px;
+                height: 8px;
+                border-radius: 999px;
+                background-color: #cbd5e1;
+                transition: width 0.2s, background-color 0.2s;
+            }
+
+            .benefits-indicator__bar.active {
+                width: 22px;
+                background-color: rgb(var(--color-acento-azul));
+            }
+        }
+
+        @media (max-width: 710px) {
+            .v2-hero-actions {
+                align-items: stretch;
+                flex-direction: column;
+                width: min(100%, 320px);
+            }
+
+            .v2-hero-actions .hero__button,
+            .v2-hero-link {
+                width: 100%;
+            }
+
+            .v2-hero-status {
+                grid-template-columns: 1fr;
+                width: min(100%, 320px);
+            }
+
+            .services__wrapper {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                max-width: 100%;
+                min-width: 0;
+                border-radius: 20px;
+                background-color: rgb(var(--color-fondo));
+                border: 1px solid rgba(0,0,0,0.1);
+                overflow: hidden;
+                clip-path: none;
+            }
+
+            .services-card--v2 {
+                grid-column: auto;
+            }
+
+            .services-card,
+            .services-card:not(:last-child),
+            .services-card:nth-child(3),
+            .services-card:nth-child(n+4) {
+                display: grid;
+                grid-template-columns: 36px minmax(0, 1fr) auto;
+                grid-template-rows: auto auto;
+                grid-template-areas:
+                    "icon title arrow"
+                    ". description description";
+                align-items: center;
+                gap: 12px;
+                width: 100%;
+                min-width: 0;
+                padding: 18px 16px;
+                border-top: 0;
+                border-right: 0;
+                border-bottom: 1px solid rgba(0,0,0,0.08);
+                text-align: left;
+            }
+
+            .services-card:last-child {
+                border-bottom: none;
+            }
+
+            .services-card__icon {
+                width: 36px;
+                height: 36px;
+                border-radius: 10px;
+                padding: 6px;
+                background-color: rgba(var(--color-acento-azul), 0.1);
+                color: rgb(var(--color-acento-azul));
+            }
+
+            .services-card__title {
+                min-width: 0;
+                font-size: 1.1em;
+                color: rgb(var(--color-oscuro));
+                text-align: left;
+                overflow-wrap: anywhere;
+            }
+
+            .services-card__description {
+                min-width: 0;
+                font-size: 0.85em;
+                color: rgb(var(--color-texto));
+                grid-area: description;
+                text-align: left;
+                overflow-wrap: anywhere;
+            }
+
+            .services-card::after {
+                content: "›";
+                grid-area: arrow;
+                font-size: 1.4em;
+                color: rgba(0,0,0,0.4);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="v2-banner" role="banner" aria-label="Versión 2.0 activa">
+        <span class="v2-banner__dot"></span>
+        <span class="v2-banner__badge">v2.0 GREEN</span>
+        <span>Nueva versión desplegada — Chat de soporte desplegado</span>
+    </div>
+
+    <header class="header">
+        <section id="main__navbar">
+            <button class="navbar__toggle" aria-label="Abrir menú">
+                <svg class="nav__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                    <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </section>
+        <section id="hero">
+            <canvas id="hero__canvas"></canvas>
+            <div class="hero__wrapper">
+                <span class="v2-hero-kicker">GREEN v2.0 activa</span>
+                <h2 class="hero__title">Nueva versión con</h2>
+                <h2 class="hero__title hero__title--segunda-linea">soporte <span>en vivo</span></h2>
+                <p class="hero__subtitle">Chat de soporte, respuestas frecuentes automáticas y backoffice para que el equipo atienda clientes desde la plataforma.</p>
+                <div class="v2-hero-actions">
+                    <a href="./Pages/sesionusuario.html" class="hero__button hero__button--v2">Entrar a Green</a>
+                    <a href="#faqs" class="v2-hero-link">Ver novedades v2</a>
+                </div>
+                <div class="v2-hero-status" aria-label="Novedades principales de Green v2">
+                    <span>Chat de soporte para clientes</span>
+                    <span>Backoffice para administradores</span>
+                    <span>FAQ automática conectada a Supabase</span>
+                </div>
+            </div>
+        </section>
+    </header>
+    <main>
+        <section id="solution" class="section">
+            <header class="info-section_header">
+                <strong class="section-header__intro">EL PROBLEMA REAL</strong>
+                <h2 class="section-header__title">El suelo urbano tradicional <span>bloquea el agua</span></h2>
+                <p class="section-header__description">
+                    Las ciudades se inundan porque el asfalto y el concreto que utilizamos en la actualidad no permiten el paso del agua. Hardoquin cambia eso.
+                </p>
+            </header>
+            <div class="solution__content">
+                <img class="solution__video" src="./Assets/Videos/Video.gif" alt="Demostracion de permeabilidad de Hardoquin">
+                <div class="solution__info">
+                    <article class="solution-card">
+                        <h3 class="solution-card__title">+ del 50%</h3>
+                        <p class="solution-card__description">
+                            de ciudades latinoamericanas sufren de inundaciones anuales debido a la impermeabilización del suelo.
+                        </p>
+                    </article>
+                    <article class="solution-card">
+                        <h3 class="solution-card__title">70% - 95%</h3>
+                        <p class="solution-card__description">
+                            del agua de lluvia puede infiltrarse con Hardoquin en condiciones adecuadas, logrando reducir considerablemente los encharcamientos.
+                        </p>
+                    </article>
+                    <article class="solution-card solution-card--conclusion">
+                        <h3 class="solution-card__title">Solución Hardoquin</h3>
+                        <p class="solution-card__description">
+                            Creación de adoquines diseñados para permitir que el agua de la lluvia regrese al suelo natural, debido a sus propiedades permeables.
+                        </p>
+                    </article>
+                </div>
+            </div>
+        </section>
+        <section id="benefits" class="section section--dark">
+            <header class="section-header">
+                <strong class="section-header__intro">¿POR QUÉ HARDOQUIN?</strong>
+                <h2 class="section-header__title">Beneficios que <span>transforman ciudades</span></h2>
+                <p class="section-header__description">
+                    Hardoquin es más que un adoquin, es infraestructura inteligente con un propósito claro.
+                </p>
+            </header>
+            <div class="benefits-slider">
+                <button class="benefits-slider__button" id="benefits-slider__previous" aria-label="Ver beneficio anterior">left
+                </button>
+                <div class="benefits-slider__viewport">
+                    <div class="benefits-slider__track">
+                        <article class="benefits-card">
+                            <div class="benefits-card__img_wrapper">
+                                <i data-lucide="waves-arrow-down" class="benefits-card__icon"></i>
+                            </div>
+                            <div class="benefits-card__info">
+                                <strong class="benefits-card__intro">PERMEABILIDAD</strong>
+                                <h3 class="benefits-card__title">Control de Inundaciones</h3>
+                                <p class="benefits-card__description">Gracias a sus propiedad permeable, Hardoquin reduce el escurrimiento superficial hasta un 94% en condiciones adecuadas, devolviendo el agua al suelo.</p>
+                            </div>
+                        </article>
+                        <article class="benefits-card">
+                            <div class="benefits-card__img_wrapper">
+                                <i data-lucide="dollar-sign" class="benefits-card__icon"></i>
+                            </div>
+                            <div class="benefits-card__info">
+                                <strong class="benefits-card__intro">COSTO</strong>
+                                <h3 class="benefits-card__title">Inversión Accesible</h3>
+                                <p class="benefits-card__description">Reduce costos a largo plazo al disminuir gastos en mantenimiento, reparaciones por inundaciones y sistemas de drenaje adicionales.</p>
+                            </div>
+                        </article>
+                        <article class="benefits-card">
+                            <div class="benefits-card__img_wrapper">
+                                <i data-lucide="car" class="benefits-card__icon"></i>
+                            </div>
+                            <div class="benefits-card__info">
+                                <strong class="benefits-card__intro">RESISTENCIA</strong>
+                                <h3 class="benefits-card__title">Alta resistencia al tráfico</h3>
+                                <p class="benefits-card__description">Diseñado para soportar alto flujo vehicular y peatonal, incluyendo autos, camiones y zonas de uso intensivo sin deformarse.</p>
+                            </div>
+                        </article>
+                        <article class="benefits-card">
+                            <div class="benefits-card__img_wrapper">
+                                <i data-lucide="clock-arrow-up" class="benefits-card__icon"></i>
+                            </div>
+                            <div class="benefits-card__info">
+                                <strong class="benefits-card__intro">DURABILIDAD</strong>
+                                <h3 class="benefits-card__title">Larga vida útil</h3>
+                                <p class="benefits-card__description">Material diseñado para mantener su rendimiento durante años, reduciendo la necesidad de reemplazos y reparaciones frecuentes.</p>
+                            </div>
+                        </article>
+                        <article class="benefits-card benefits-card--v2">
+                            <div class="benefits-card__img_wrapper">
+                                <i data-lucide="bell" class="benefits-card__icon"></i>
+                            </div>
+                            <div class="benefits-card__info">
+                                <strong class="benefits-card__intro">NUEVO EN v2.0</strong>
+                                <h3 class="benefits-card__title">Alertas en Tiempo Real</h3>
+                                <p class="benefits-card__description">Monitorea el nivel de agua, lluvia acumulada y rendimiento del sistema Hardoquin en tiempo real a través del sensor IoT integrado.</p>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+                <button class="benefits-slider__button" id="benefits-slider__next" aria-label="Ver siguiente beneficio">right</button>
+                <div class="benefits-indicator">
+                    <div class="benefits-indicator__bar active"></div>
+                    <div class="benefits-indicator__bar"></div>
+                    <div class="benefits-indicator__bar"></div>
+                    <div class="benefits-indicator__bar"></div>
+                    <div class="benefits-indicator__bar"></div>
+                </div>
+            </div>
+        </section>
+        <section id="characteristics" class="section">
+            <header class="section-header">
+                <strong class="section-header__intro">¿CÓMO FUNCIONA?</strong>
+                <h2 class="section-header__title">Tecnología de <span>suelo innovador</span></h2>
+            </header>
+            <nav class="characteristics__tabs">
+                <ul class="characteristics__tabs-list">
+                    <li class="characteristics__tabs-item characteristics__tabs-item--active" data-tab="composicion">Composición</li>
+                    <li class="characteristics__tabs-item" data-tab="permeabilidad">Permeabilidad</li>
+                    <li class="characteristics__tabs-item" data-tab="instalacion">Instalación</li>
+                </ul>
+            </nav>
+            <div class="characteristics__content">
+                <img src="#" alt="Imagen del producto Hardoquin" class="characteristics__img">
+                <div class="characteristics__info">
+                    <article class="characteristics__panel characteristics__panel--active" data-panel="composicion">
+                        <ul class="characteristics__panel-list">
+                            <li class="characteristics__panel-item">
+                                <h3 class="characteristics__subtitle">Capa Superficial Permeable</h3>
+                                <p class="characteristics__description">Adoquín elaborado con una mezcla de cemento blanco o gris, arena de río, grava fina y aditivos, diseñada para permitir el paso del agua a través de su estructura.</p>
+                            </li>
+                            <li class="characteristics__panel-item">
+                                <h3 class="characteristics__subtitle">Capa de asentamiento</h3>
+                                <p class="characteristics__description">Capa de arena que permite nivelar la superficie y distribuir las cargas de manera uniforme, mejorando la estabilidad del sistema.</p>
+                            </li>
+                            <li class="characteristics__panel-item">
+                                <h3 class="characteristics__subtitle">Base drenante</h3>
+                                <p class="characteristics__description">Capa de grava que facilita el flujo del agua hacia el subsuelo, evitando acumulaciones en la superficie.</p>
+                            </li>
+                            <li class="characteristics__panel-item characteristics__panel-item--diferenciador">
+                                <h3 class="characteristics__subtitle">Diferenciador clave</h3>
+                                <p class="characteristics__description">Su composición permite combinar resistencia estructural con permeabilidad, logrando un pavimento funcional y duradero.</p>
+                            </li>
+                        </ul>
+                    </article>
+                    <article class="characteristics__panel" data-panel="permeabilidad">
+                        <ul class="characteristics__panel-list">
+                            <li class="characteristics__panel-item">
+                                <h3 class="characteristics__subtitle">Filtración eficiente del agua</h3>
+                                <p class="characteristics__description">Permite la infiltración de entre el 70% y 95% del agua de lluvia en condiciones adecuadas, reduciendo encharcamientos.</p>
+                            </li>
+                            <li class="characteristics__panel-item">
+                                <h3 class="characteristics__subtitle">Recarga del subsuelo</h3>
+                                <p class="characteristics__description">El agua se dirige hacia el suelo natural, ayudando a recuperar el ciclo hídrico urbano.</p>
+                            </li>
+                            <li class="characteristics__panel-item">
+                                <h3 class="characteristics__subtitle">Reducción de escorrentía</h3>
+                                <p class="characteristics__description">Disminuye el flujo superficial que satura los drenajes tradicionales y provoca inundaciones.</p>
+                            </li>
+                            <li class="characteristics__panel-item characteristics__panel-item--diferenciador">
+                                <h3 class="characteristics__subtitle">Diferenciador clave</h3>
+                                <p class="characteristics__description">Reduce el riesgo de inundaciones urbanas al permitir que el agua se infiltre de forma natural en el terreno.</p>
+                            </li>
+                        </ul>
+                    </article>
+                    <article class="characteristics__panel" data-panel="instalacion">
+                        <ul class="characteristics__panel-list">
+                            <li class="characteristics__panel-item">
+                                <h3 class="characteristics__subtitle">Proceso similar al adoquín tradicional</h3>
+                                <p class="characteristics__description">No requiere maquinaria especializada, lo que facilita su implementación en distintos entornos urbanos.</p>
+                            </li>
+                            <li class="characteristics__panel-item">
+                                <h3 class="characteristics__subtitle">Colocación por capas</h3>
+                                <p class="characteristics__description">Se instala mediante un sistema estructurado: base drenante, capa de asentamiento y adoquines permeables.</p>
+                            </li>
+                            <li class="characteristics__panel-item">
+                                <h3 class="characteristics__subtitle">Mantenimiento sencillo</h3>
+                                <p class="characteristics__description">Permite limpieza superficial y conservación sin necesidad de reemplazar toda la estructura.</p>
+                            </li>
+                            <li class="characteristics__panel-item characteristics__panel-item--diferenciador">
+                                <h3 class="characteristics__subtitle">Diferenciador clave</h3>
+                                <p class="characteristics__description">Su instalación práctica y adaptable reduce tiempos de obra y facilita su aplicación en distintos espacios.</p>
+                            </li>
+                        </ul>
+                    </article>
+                </div>
+            </div>
+        </section>
+        <section id="services" class="section section--dark">
+            <header class="section-header">
+                <strong class="section-header__intro">LO QUE OFRECEMOS</strong>
+                <h2 class="section-header__title">Servicios <span>a tu medida</span></h2>
+                <p class="section-header__description">
+                    Con ayuda de Hardoquin Connect podrás visualizar el impacto de Hardoquin en tu entorno a través de las siguientes herramientas:
+                </p>
+            </header>
+            <div class="services__wrapper">
+                <article class="services-card">
+                    <i data-lucide="brain-circuit" class="icon services-card__icon"></i>
+                    <h3 class="services-card__title">Análisis de Impacto</h3>
+                    <p class="services-card__description">Evalúa los beneficios de implementar Hardoquin en un entorno específico, estimando reducción de inundaciones, infiltración de agua y rendimiento del sistema.</p>
+                </article>
+                <article class="services-card">
+                    <i data-lucide="calculator" class="icon services-card__icon"></i>
+                    <h3 class="services-card__title">Cotización</h3>
+                    <p class="services-card__description">Calcula el costo estimado de implementación con base en las condiciones del proyecto, considerando el área que se desea cubrir en metros cuadrados.</p>
+                </article>
+                <article class="services-card">
+                    <i data-lucide="chart-column" class="icon services-card__icon"></i>
+                    <h3 class="services-card__title">Comparativa</h3>
+                    <p class="services-card__description">Compara el desempeño de Hardoquin frente a otros materiales, analizando variables como permeabilidad, durabilidad y costos a largo plazo.</p>
+                </article>
+                <article class="services-card">
+                    <i data-lucide="messages-square" class="icon services-card__icon"></i>
+                    <h3 class="services-card__title">Tablón Comunitario</h3>
+                    <p class="services-card__description">Espacio donde usuarios pueden compartir experiencias, resolver dudas y aportar información sobre Hardoquin, con posibilidad de interactuar, responder y filtrar por categorías.</p>
+                </article>
+                <article class="services-card services-card--v2">
+                    <i data-lucide="activity" class="icon services-card__icon"></i>
+                    <h3 class="services-card__title">Monitor en Tiempo Real <sup class="services-card__new-badge">NUEVO</sup></h3>
+                    <p class="services-card__description">Visualiza en tiempo real los datos del sensor IoT integrado: nivel de agua, lluvia acumulada, volumen y rendimiento de infiltración.</p>
+                </article>
+            </div>
+        </section>
+        <section id="faqs" class="section">
+            <header class="info-section_header">
+                <strong class="section-header__intro">PREGUNTAS FRECUENTES</strong>
+                <h2 class="section-header__title">Todo lo que <span>necesitas saber</span></h2>
+                <p class="section-header__description">
+                    ¿Tienes más preguntas? Visita el Tablón de la comunidad.
+                </p>
+                <a href="/Frontend/Pages/tablon.html" class="section-header__boton-cta">
+                    <strong>Ir al Tablón</strong>
+                    <i data-lucide="arrow-right" class="section-header__boton-cta-icon"></i>
+                </a>
+            </header>
+            <section class="faq__list">
+                <article class="faq__item">
+                    <button class="faq__question" aria-expanded="false">
+                        <strong>¿Necesito registrarme para usar Hardoquin Connect?</strong>
+                        <i data-lucide="plus" class="faq__icon faq__icon-open"></i>
+                        <i data-lucide="x" class="faq__icon faq__icon-close"></i>
+                    </button>
+                    <p class="faq__answer">No es necesario registrarse para explorar la plataforma. Puedes realizar análisis y consultar información. Sin embargo, al crear una cuenta podrás guardar tus resultados, acceder a tu historial y participar en el tablón comunitario.</p>
+                </article>
+                <article class="faq__item">
+                    <button class="faq__question" aria-expanded="false">
+                        <strong>¿Qué información proporciona el análisis de impacto?</strong>
+                        <i data-lucide="plus" class="faq__icon faq__icon-open"></i>
+                        <i data-lucide="x" class="faq__icon faq__icon-close"></i>
+                    </button>
+                    <p class="faq__answer">El análisis muestra resultados basados en los datos ingresados, incluyendo estimaciones de infiltración de agua, reducción de encharcamientos, costos de implementación y comparativas frente a otros materiales.</p>
+                </article>
+                <article class="faq__item">
+                    <button class="faq__question" aria-expanded="false">
+                        <strong>¿Con qué materiales se puede comparar Hardoquin en el análisis?</strong>
+                        <i data-lucide="plus" class="faq__icon faq__icon-open"></i>
+                        <i data-lucide="x" class="faq__icon faq__icon-close"></i>
+                    </button>
+                    <p class="faq__answer">Puedes comparar Hardoquin con materiales como asfalto, concreto y adoquín tradicional, evaluando diferencias en permeabilidad, durabilidad y costos a largo plazo.</p>
+                </article>
+                <article class="faq__item">
+                    <button class="faq__question" aria-expanded="false">
+                        <strong>¿Dónde se puede implementar Hardoquin?</strong>
+                        <i data-lucide="plus" class="faq__icon faq__icon-open"></i>
+                        <i data-lucide="x" class="faq__icon faq__icon-close"></i>
+                    </button>
+                    <p class="faq__answer">Hardoquin puede implementarse en calles, estacionamientos, banquetas y espacios urbanos con alto flujo vehicular o peatonal, adaptándose a distintas necesidades de infraestructura.</p>
+                </article>
+                <article class="faq__item">
+                    <button class="faq__question" aria-expanded="false">
+                        <strong>¿Qué es el tablón comunitario?</strong>
+                        <i data-lucide="plus" class="faq__icon faq__icon-open"></i>
+                        <i data-lucide="x" class="faq__icon faq__icon-close"></i>
+                    </button>
+                    <p class="faq__answer">Es un espacio donde los usuarios pueden compartir experiencias, resolver dudas y aportar información sobre Hardoquin. Los usuarios registrados pueden publicar y responder, mientras que los visitantes pueden consultar el contenido.</p>
+                </article>
+                <article class="faq__item">
+                    <button class="faq__question" aria-expanded="false">
+                        <strong>¿Qué hay de nuevo en la versión 2.0?</strong>
+                        <i data-lucide="plus" class="faq__icon faq__icon-open"></i>
+                        <i data-lucide="x" class="faq__icon faq__icon-close"></i>
+                    </button>
+                    <p class="faq__answer">La versión 2.0 incorpora el Monitor en Tiempo Real, que permite visualizar los datos del sensor IoT directamente en la plataforma, incluyendo nivel de agua, lluvia acumulada y rendimiento del sistema Hardoquin.</p>
+                </article>
+            </section>
+        </section>
+    </main>
+    <footer id="main__footer" class="footer"></footer>
+    <script src="https://unpkg.com/lucide@0.555.0"></script>
+    <script type="module" src="./Js/main-landingPage.js"></script>
+</body>
+</html>

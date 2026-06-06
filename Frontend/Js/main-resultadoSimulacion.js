@@ -9,14 +9,18 @@ let lifespanChart;
 let waterManagementChart;
 
 function getApiBaseUrl() {
-    if (window.location.port === '4000') return '';
-
     const localHosts = ['localhost', '127.0.0.1'];
+    const isLocalDev = localHosts.includes(window.location.hostname);
+
+    if (window.location.protocol !== 'file:' && (!isLocalDev || window.location.port === '8088' || window.location.port === '')) {
+        return '';
+    }
+
     const apiHost = localHosts.includes(window.location.hostname)
         ? '127.0.0.1'
         : window.location.hostname;
 
-    return `http://${apiHost}:4000`;
+    return `http://${apiHost}:8088`;
 }
 
 function getLatestSimulation() {
@@ -315,7 +319,7 @@ function setupSaveSimulation(simulation) {
             setSaveFeedback('Simulación guardada.', 'success');
             modal.close();
         } catch (error) {
-            setSaveFeedback('No se pudo conectar con el servidor. Revisa que el backend esté corriendo en el puerto 4000.');
+            setSaveFeedback('No se pudo conectar con el servidor. Revisa que Docker esté corriendo en http://localhost:8088.');
         } finally {
             submitButton.disabled = false;
             submitButton.textContent = 'Guardar';

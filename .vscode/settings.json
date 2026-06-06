@@ -1,3 +1,6 @@
 {
-    "livePreview.defaultPreviewPath": "/Frontend/index.html"
+    "livePreview.defaultPreviewPath": "/Frontend/index.html",
+    "livePreview.portNumber": 8088,
+    "liveServer.settings.port": 8089,
+    "liveServer.settings.root": "/"
 }

@@ -16,7 +16,8 @@ function createToken(user) {
         {
             id: user.id,
             email: user.email,
-            username: user.username
+            username: user.username,
+            role: user.role || 'cliente'
         },
         getJwtSecret(),
         { expiresIn: '7d' }
@@ -30,7 +31,8 @@ function formatUser(user) {
         name: user.username,
         email: user.email,
         img: user.profile_photo || DEFAULT_PROFILE_PHOTO,
-        profilePhoto: user.profile_photo || DEFAULT_PROFILE_PHOTO
+        profilePhoto: user.profile_photo || DEFAULT_PROFILE_PHOTO,
+        role: user.role || 'cliente'
     };
 }
 
@@ -72,7 +74,8 @@ router.post('/registro', async (req, res) => {
                 username,
                 email,
                 password: hashedPassword,
-                profile_photo: profilePhoto
+                profile_photo: profilePhoto,
+                role: 'cliente'
             }
         });
 

@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hardoquin Connect Landing Page</title>
+    <script>
+        if (['5500', '5501'].includes(window.location.port)) {
+            window.location.replace(`http://localhost:8088/Frontend/index.html${window.location.search}${window.location.hash}`);
+        }
+    </script>
     <link rel="stylesheet" href="CSS/main.css">
     <link rel="stylesheet" href="CSS/components.css">
     <link rel="stylesheet" href="CSS/styles.css">

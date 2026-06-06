@@ -1,2 +1,2 @@
-cd "/Users/4lexlc/Documents/VS CODE/HardoquinConnectWeb/hardoquin_server" || exit 1
-npm start
+cd "/Users/4lexlc/Documents/VS CODE/HardoquinConnectWeb/blue-green"
+docker compose up -d --build

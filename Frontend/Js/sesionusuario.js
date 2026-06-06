@@ -25,8 +25,9 @@ function getReturnTo() {
     return returnTo;
 }
 
-function finishAuth(user) {
+function finishAuth(user, token) {
     sessionStorage.setItem('user', JSON.stringify(user));
+    if (token) sessionStorage.setItem('authToken', token);
     const returnTo = getReturnTo();
     sessionStorage.removeItem('authReturnTo');
     window.location.href = returnTo;
@@ -52,14 +53,18 @@ function clearFeedback(target) {
 }
 
 function getApiBaseUrl() {
-    if (window.location.port === '4000') return '';
-
     const localHosts = ['localhost', '127.0.0.1'];
+    const isLocalDev = localHosts.includes(window.location.hostname);
+
+    if (window.location.protocol !== 'file:' && (!isLocalDev || window.location.port === '8088' || window.location.port === '')) {
+        return '';
+    }
+
     const apiHost = localHosts.includes(window.location.hostname)
         ? '127.0.0.1'
         : window.location.hostname;
 
-    return `http://${apiHost}:4000`;
+    return `http://${apiHost}:8088`;
 }
 
 // --- LÓGICA DE SELECCIÓN DE AVATAR ---
@@ -129,7 +134,7 @@ formRegistro.addEventListener('submit', async (e) => {
             })
         });
     } catch (error) {
-        showFeedback('register-feedback', 'No se pudo conectar con el servidor. Revisa que el backend este corriendo en el puerto 4000.');
+        showFeedback('register-feedback', 'No se pudo conectar con el servidor. Revisa que Docker este corriendo en http://localhost:8088.');
         return;
     }
 
@@ -148,7 +153,7 @@ formRegistro.addEventListener('submit', async (e) => {
     if(avatares[0]) avatares[0].classList.add('seleccionada');
     rutaFotoSeleccionada = 'Assets/ImagenesPerfil/usuarioimg0.png';
 
-    finishAuth(data.user);
+    finishAuth(data.user, data.token);
 });
 
 /**
@@ -202,7 +207,7 @@ formLogin.addEventListener('submit', async (e) => {
             })
         });
     } catch (error) {
-        showFeedback('login-feedback', 'No se pudo conectar con el servidor. Revisa que el backend este corriendo en el puerto 4000.');
+        showFeedback('login-feedback', 'No se pudo conectar con el servidor. Revisa que Docker este corriendo en http://localhost:8088.');
         return;
     }
 
@@ -214,7 +219,7 @@ formLogin.addEventListener('submit', async (e) => {
     }
 
     showFeedback('login-feedback', 'Sesión iniciada. Regresando...', 'success');
-    finishAuth(data.user);
+    finishAuth(data.user, data.token);
 
     // alert(`¡Hola de nuevo, ${usuario.username}!`);
 

@@ -1,0 +1,6 @@
+hardoquin_server/node_modules
+hardoquin_server/.env
+hardoquin_server/prisma.config.ts
+.git
+.vscode
+Arduino

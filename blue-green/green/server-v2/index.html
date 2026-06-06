@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hardoquin — Chat Comunidad v2.0</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #15803d, #166534);
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+        .header__title { font-size: 1.2rem; font-weight: 700; }
+        .header__badge {
+            background: rgba(255,255,255,0.2);
+            padding: 3px 12px;
+            border-radius: 99px;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+
+        .ws-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 24px;
+            background: #1e293b;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            border-bottom: 1px solid #334155;
+            flex-shrink: 0;
+        }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: #ef4444; transition: background .3s; }
+        .dot.on  { background: #22c55e; animation: blink 2s infinite; }
+        .dot.mid { background: #f59e0b; }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+        .faq-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 12px 24px;
+            background: #1e293b;
+            border-bottom: 1px solid #334155;
+            flex-shrink: 0;
+        }
+        .faq-bar span { font-size: 0.72rem; color: #94a3b8; font-weight: 600; align-self: center; }
+        .chip {
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: #cbd5e1;
+            padding: 4px 12px;
+            border-radius: 99px;
+            font-size: 0.78rem;
+            cursor: pointer;
+            transition: background .2s, border-color .2s;
+        }
+        .chip:hover { background: #15803d; border-color: #16a34a; color: #fff; }
+
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .msg { display: flex; flex-direction: column; max-width: 70%; }
+        .msg.faq, .msg.sistema { align-self: flex-start; max-width: 85%; }
+        .msg.mio { align-self: flex-end; }
+        .msg.otro { align-self: flex-start; }
+
+        .msg__bubble {
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 0.88rem;
+            line-height: 1.5;
+        }
+        .msg.mio    .msg__bubble { background: #15803d; color: #fff; border-bottom-right-radius: 4px; }
+        .msg.otro   .msg__bubble { background: #1e293b; color: #e2e8f0; border-bottom-left-radius: 4px; }
+        .msg.faq    .msg__bubble { background: #1e3a5f; color: #93c5fd; border: 1px solid #1e40af; border-bottom-left-radius: 4px; }
+        .msg.sistema .msg__bubble { background: #14532d; color: #86efac; font-style: italic; border-bottom-left-radius: 4px; }
+
+        .msg__meta { font-size: 0.7rem; color: #475569; margin-top: 3px; padding: 0 4px; }
+        .msg.mio .msg__meta { text-align: right; }
+
+        .input-bar {
+            display: flex;
+            gap: 10px;
+            padding: 16px 24px;
+            background: #1e293b;
+            border-top: 1px solid #334155;
+            flex-shrink: 0;
+        }
+        .input-bar input {
+            flex: 1;
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: #e2e8f0;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color .2s;
+        }
+        .input-bar input:focus { border-color: #16a34a; }
+        .input-bar button {
+            background: #16a34a;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background .2s;
+        }
+        .input-bar button:hover { background: #15803d; }
+        .input-bar button:disabled { background: #334155; cursor: not-allowed; }
+
+        .nick-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 24px;
+            background: #0f172a;
+            border-bottom: 1px solid #1e293b;
+            flex-shrink: 0;
+        }
+        .nick-bar label { font-size: 0.78rem; color: #64748b; }
+        .nick-bar input {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #e2e8f0;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            width: 160px;
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <span class="header__title">&#x1F4AC; Hardoquin — Chat Comunidad</span>
+    <span class="header__badge">v2.0 WebSocket</span>
+</header>
+
+<div class="ws-bar">
+    <div class="dot" id="dot"></div>
+    <span id="wsLabel">Conectando...</span>
+</div>
+
+<div class="nick-bar">
+    <label for="nickInput">Tu nombre:</label>
+    <input id="nickInput" type="text" maxlength="30" placeholder="Anónimo">
+</div>
+
+<div class="faq-bar">
+    <span>Preguntas rápidas:</span>
+    <button class="chip" onclick="sendFaq('¿Cuánto cuesta Hardoquin?')">💰 ¿Cuánto cuesta?</button>
+    <button class="chip" onclick="sendFaq('¿Qué tan permeable es Hardoquin?')">💧 Permeabilidad</button>
+    <button class="chip" onclick="sendFaq('¿Cómo se instala Hardoquin?')">🔧 Instalación</button>
+    <button class="chip" onclick="sendFaq('¿Cuánto dura Hardoquin?')">⏳ Durabilidad</button>
+    <button class="chip" onclick="sendFaq('¿Es resistente al tráfico vehicular?')">🚗 Resistencia</button>
+    <button class="chip" onclick="sendFaq('¿Hardoquin es ecológico?')">🌱 Ecología</button>
+</div>
+
+<div class="messages" id="messages"></div>
+
+<div class="input-bar">
+    <input id="txtInput" type="text" maxlength="500" placeholder="Escribe un mensaje o pregunta sobre Hardoquin..." autocomplete="off">
+    <button id="btnSend" disabled>Enviar</button>
+</div>
+
+<script>
+    const HOST     = location.host;
+    const WS_URL   = `ws://${HOST}/ws/chat`;
+    const messagesEl = document.getElementById('messages');
+    const txtInput   = document.getElementById('txtInput');
+    const btnSend    = document.getElementById('btnSend');
+    const nickInput  = document.getElementById('nickInput');
+    const dot        = document.getElementById('dot');
+    const wsLabel    = document.getElementById('wsLabel');
+
+    nickInput.value = 'Usuario_' + Math.floor(Math.random() * 1000);
+
+    let ws;
+    let myMessages = new Set();
+
+    function addMsg(tipo, usuario, texto, hora) {
+        const isMine = tipo === 'mensaje' && myMessages.has(texto + hora);
+        const div  = document.createElement('div');
+        div.className = `msg ${tipo === 'faq' ? 'faq' : tipo === 'sistema' ? 'sistema' : isMine ? 'mio' : 'otro'}`;
+        div.innerHTML = `
+            <div class="msg__bubble">${texto}</div>
+            <div class="msg__meta">${usuario} · ${hora}</div>
+        `;
+        messagesEl.appendChild(div);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function send() {
+        const texto = txtInput.value.trim();
+        if (!texto || !ws || ws.readyState !== 1) return;
+        const nick = nickInput.value.trim() || 'Anónimo';
+        const hora = new Date().toLocaleTimeString('es-MX');
+        myMessages.add(texto + hora);
+        ws.send(JSON.stringify({ usuario: nick, texto }));
+        txtInput.value = '';
+    }
+
+    function sendFaq(pregunta) {
+        txtInput.value = pregunta;
+        send();
+    }
+
+    function connect() {
+        ws = new WebSocket(WS_URL);
+
+        ws.onopen = () => {
+            dot.className = 'dot on';
+            wsLabel.textContent = `Conectado — ${WS_URL}`;
+            btnSend.disabled = false;
+        };
+
+        ws.onmessage = ({ data }) => {
+            const { tipo, usuario, texto, hora } = JSON.parse(data);
+            addMsg(tipo, usuario, texto, hora);
+        };
+
+        ws.onerror = () => {
+            dot.className = 'dot mid';
+            wsLabel.textContent = 'Error de conexión';
+        };
+
+        ws.onclose = () => {
+            dot.className = 'dot';
+            wsLabel.textContent = 'Desconectado — reconectando en 3 s...';
+            btnSend.disabled = true;
+            setTimeout(connect, 3000);
+        };
+    }
+
+    btnSend.addEventListener('click', send);
+    txtInput.addEventListener('keydown', e => { if (e.key === 'Enter') send(); });
+    connect();
+</script>
+</body>
+</html>
