@@ -4,6 +4,7 @@ let ws           = null;
 let panelOpen    = false;
 let reconnTimer  = null;
 let failCount    = 0;
+let advisorDelayTimer = null;
 
 function getBackendBaseUrl() {
     const localHosts = ['localhost', '127.0.0.1'];
@@ -73,6 +74,17 @@ function addMsg({ tipo, usuario, texto }) {
     box.scrollTop = box.scrollHeight;
 }
 
+function addAdvisorMsgWithDelay(payload) {
+    const status = document.getElementById('cs-status');
+    if (status) status.textContent = 'Un asesor está escribiendo…';
+
+    clearTimeout(advisorDelayTimer);
+    advisorDelayTimer = setTimeout(() => {
+        addMsg(payload);
+        setStatus('on');
+    }, 1400);
+}
+
 function escapeHtml(str) {
     return str
         .replace(/&/g, '&amp;')
@@ -117,7 +129,14 @@ function connect() {
     };
 
     ws.onmessage = ({ data }) => {
-        try { addMsg(JSON.parse(data)); } catch (_) {}
+        try {
+            const payload = JSON.parse(data);
+            if (payload.tipo === 'asesor') {
+                addAdvisorMsgWithDelay(payload);
+                return;
+            }
+            addMsg(payload);
+        } catch (_) {}
     };
 
     ws.onerror = () => {
@@ -145,6 +164,7 @@ function connect() {
 
 function disconnect() {
     clearTimeout(reconnTimer);
+    clearTimeout(advisorDelayTimer);
     if (ws) { ws.close(); ws = null; }
 }
 

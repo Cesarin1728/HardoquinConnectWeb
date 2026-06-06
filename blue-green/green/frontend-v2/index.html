@@ -105,42 +105,6 @@
             margin-top: 24px;
         }
 
-        .v2-hero-link {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 44px;
-            padding: 0 18px;
-            border-radius: 999px;
-            background: rgba(255, 255, 255, 0.14);
-            color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.34);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 700;
-        }
-
-        .v2-hero-status {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 10px;
-            width: min(760px, 100%);
-            margin-top: 24px;
-        }
-
-        .v2-hero-status span {
-            display: flex;
-            align-items: center;
-            min-height: 46px;
-            padding: 10px 12px;
-            border-radius: 8px;
-            background: rgba(5, 18, 34, 0.72);
-            color: #e5f7ff;
-            border: 1px solid rgba(148, 163, 184, 0.35);
-            font-size: 0.78rem;
-            font-weight: 600;
-        }
-
         @media (max-width: 1223px) {
             .services__wrapper {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -266,14 +230,8 @@
                 width: min(100%, 320px);
             }
 
-            .v2-hero-actions .hero__button,
-            .v2-hero-link {
+            .v2-hero-actions .hero__button {
                 width: 100%;
-            }
-
-            .v2-hero-status {
-                grid-template-columns: 1fr;
-                width: min(100%, 320px);
             }
 
             .services__wrapper {
@@ -376,13 +334,7 @@
                 <h2 class="hero__title hero__title--segunda-linea">soporte <span>en vivo</span></h2>
                 <p class="hero__subtitle">Chat de soporte, respuestas frecuentes automáticas y backoffice para que el equipo atienda clientes desde la plataforma.</p>
                 <div class="v2-hero-actions">
-                    <a href="./Pages/sesionusuario.html" class="hero__button hero__button--v2">Entrar a Green</a>
-                    <a href="#faqs" class="v2-hero-link">Ver novedades v2</a>
-                </div>
-                <div class="v2-hero-status" aria-label="Novedades principales de Green v2">
-                    <span>Chat de soporte para clientes</span>
-                    <span>Backoffice para administradores</span>
-                    <span>FAQ automática conectada a Supabase</span>
+                    <a href="./Pages/sesionusuario.html" class="hero__button hero__button--v2">Registrarse</a>
                 </div>
             </div>
         </section>

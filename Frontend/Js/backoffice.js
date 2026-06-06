@@ -91,12 +91,16 @@ function renderConversations() {
     list.innerHTML = conversations.map((conversation) => `
         <button class="support-thread ${conversation.id === selectedConversationId ? 'support-thread--active' : ''}" type="button" data-conversation-id="${conversation.id}">
             <span class="support-thread__top">
-                <strong>${escapeHtml(conversation.customer_name || 'Cliente')}</strong>
+                <strong>
+                    <span class="support-thread__indicator ${conversation.needs_attention ? 'support-thread__indicator--attention' : 'support-thread__indicator--answered'}" aria-hidden="true"></span>
+                    ${escapeHtml(conversation.customer_name || 'Cliente')}
+                </strong>
                 <small>${formatDate(conversation.last_message_at || conversation.created_at)}</small>
             </span>
             <span class="support-thread__preview">${escapeHtml(conversation.last_message || 'Conversación iniciada')}</span>
             <span class="support-thread__meta">
-                <span>${conversation.status === 'open' ? 'Abierta' : 'Cerrada'}</span>
+                <span>#${conversation.id}</span>
+                <span>${conversation.needs_attention ? 'Pendiente' : 'Respondido'}</span>
                 <span>${conversation.customer_messages || 0} mensaje(s)</span>
             </span>
         </button>
@@ -142,7 +146,8 @@ async function loadConversations({ keepSelection = true } = {}) {
     conversations = data.conversations.map((conversation) => ({
         ...conversation,
         id: Number(conversation.id),
-        customer_messages: Number(conversation.customer_messages || 0)
+        customer_messages: Number(conversation.customer_messages || 0),
+        needs_attention: Boolean(conversation.needs_attention)
     }));
 
     if (!keepSelection || !conversations.some((conversation) => conversation.id === selectedConversationId)) {

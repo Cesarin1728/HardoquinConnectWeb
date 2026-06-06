@@ -33,6 +33,18 @@ function setUpDropdownEvents(){
     const toggleBtn = document.querySelector('.navbar__toggle');
     const nav = document.querySelector('.navbar__nav');
     const userLogIn = document.getElementById('action-log-in');
+    const switchToGreen = document.getElementById('action-switch-green');
+
+    const clearUserState = () => {
+        sessionStorage.removeItem("user");
+        sessionStorage.removeItem("authToken");
+        sessionStorage.removeItem("latestSimulation");
+    };
+
+    const setVersionPreference = (version) => {
+        document.cookie = `hardoquin_version=${version}; Path=/; Max-Age=31536000; SameSite=Lax`;
+        localStorage.setItem('hardoquin_version', version);
+    };
 
     if (!userBtn || !userDropdown) return;
 
@@ -61,12 +73,18 @@ function setUpDropdownEvents(){
 
     if(userLogOut){
         userLogOut.addEventListener('click', () => {
-            sessionStorage.removeItem("user");
-            sessionStorage.removeItem("authToken");
+            clearUserState();
             userDropdown.classList.remove('nav__user_dropdown--active');
             updateNavbar(null)
         });
     }
+
+    switchToGreen?.addEventListener('click', () => {
+        const targetVersion = switchToGreen.dataset.targetVersion || 'green';
+        setVersionPreference(targetVersion);
+        sessionStorage.setItem('versionSwitchNotice', getVersionSwitchMessage(targetVersion));
+        window.location.href = '/Frontend/index.html';
+    });
 
     if (userLogIn) {
         userLogIn.addEventListener('click', () => {
@@ -159,6 +177,7 @@ function updateNavbar(user){
     const authOnlyLinks = document.querySelectorAll('[data-requires-auth]');
     const adminOnlyLinks = document.querySelectorAll('[data-requires-admin]');
     const dropdownEmail = document.querySelector('.nav__dropdown-email');
+    const greenOnlyLinks = document.querySelectorAll('[data-green-only]');
 
     if(!navbar || !usernameInfo || !userPicture || !usernameDropdown || !userPictureDropDown) return;
     
@@ -167,6 +186,9 @@ function updateNavbar(user){
             link.hidden = true;
         });
         adminOnlyLinks.forEach((link) => {
+            link.hidden = true;
+        });
+        greenOnlyLinks.forEach((link) => {
             link.hidden = true;
         });
         usernameInfo.textContent = 'Username';
@@ -179,8 +201,7 @@ function updateNavbar(user){
         return
     }
     authOnlyLinks.forEach((link) => {
-        if (link.matches('[data-green-only]')) return;
-        link.hidden = false;
+        if (!link.matches('[data-green-only]')) link.hidden = false;
     });
     adminOnlyLinks.forEach((link) => {
         link.hidden = user.role !== 'admin';
@@ -210,7 +231,7 @@ async function updateBackofficeBadge(user) {
         const data = await res.json();
         if (!res.ok || !data.ok) return;
 
-        const count = data.conversations.length;
+        const count = data.conversations.filter((conversation) => conversation.needs_attention).length;
         badge.textContent = String(count);
         badge.hidden = count === 0;
     } catch (_) {
@@ -237,4 +258,74 @@ export async function initNavbar(){
     const user = storedUser ? JSON.parse(storedUser) : null;
     updateNavbar(user);
     await initChatSoporte();
+    initVersionActions(user);
+    showVersionSwitchNotice();
+}
+
+async function initVersionActions(user) {
+    const switchToGreen = document.getElementById('action-switch-green');
+    const greenOnlyLinks = document.querySelectorAll('[data-green-only]');
+
+    try {
+        const res = await fetch(`${getApiBaseUrl()}/api/health`);
+        const data = await res.json();
+        const isGreen = data.env === 'green';
+
+        updateVersionSwitchButton(isGreen);
+        greenOnlyLinks.forEach((link) => {
+            link.hidden = !isGreen || !user;
+        });
+    } catch (_) {
+        if (switchToGreen) switchToGreen.hidden = false;
+    }
+}
+
+function updateVersionSwitchButton(isGreen) {
+    const switchButton = document.getElementById('action-switch-green');
+    if (!switchButton) return;
+
+    const icon = switchButton.querySelector('i');
+    const label = switchButton.querySelector('.dropdown__action_name');
+
+    switchButton.dataset.targetVersion = isGreen ? 'blue' : 'green';
+    if (icon) icon.setAttribute('data-lucide', isGreen ? 'rotate-ccw' : 'rocket');
+    if (label) label.textContent = isGreen ? 'Regresar a v1 azul' : 'Cambiar a v2 Green';
+    switchButton.hidden = false;
+    lucide.createIcons();
+}
+
+function getVersionSwitchMessage(version) {
+    if (version === 'green') {
+        return 'Estás usando la versión Green. Puedes regresar a la versión azul desde Mi Perfil o desde este menú.';
+    }
+
+    return 'Regresaste a la versión azul. Puedes volver a Green desde el menú de usuario.';
+}
+
+function showVersionSwitchNotice() {
+    const message = sessionStorage.getItem('versionSwitchNotice');
+    if (!message) return;
+
+    sessionStorage.removeItem('versionSwitchNotice');
+
+    const notice = document.createElement('section');
+    notice.className = 'version-switch-toast';
+    notice.setAttribute('role', 'status');
+    notice.setAttribute('aria-live', 'polite');
+    notice.innerHTML = `
+        <span>${message}</span>
+        <a href="/Frontend/Pages/perfil.html">Ir a Perfil</a>
+        <button type="button" aria-label="Cerrar notificación">×</button>
+    `;
+
+    document.body.appendChild(notice);
+    requestAnimationFrame(() => notice.classList.add('version-switch-toast--visible'));
+
+    const close = () => {
+        notice.classList.remove('version-switch-toast--visible');
+        setTimeout(() => notice.remove(), 220);
+    };
+
+    notice.querySelector('button')?.addEventListener('click', close);
+    setTimeout(close, 6500);
 }

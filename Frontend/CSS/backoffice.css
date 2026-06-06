@@ -1,6 +1,6 @@
 .backoffice {
     width: min(1180px, calc(100% - 32px));
-    margin: 120px auto 48px;
+    margin: clamp(80px, 10vw, 120px) auto clamp(28px, 4vw, 48px);
 }
 
 .backoffice__header {
@@ -22,7 +22,7 @@
 
 .backoffice__title {
     color: rgb(var(--color-oscuro));
-    font-size: 1.7rem;
+    font-size: clamp(1.3rem, 2.5vw, 1.7rem);
     line-height: 1.15;
 }
 
@@ -69,6 +69,7 @@
 .support-board {
     display: grid;
     grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+    min-width: 300px;
     min-height: 620px;
     border: 1px solid rgb(var(--color-gris-claro));
     border-radius: 8px;
@@ -160,8 +161,27 @@
 }
 
 .support-thread__top strong {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     color: rgb(var(--color-oscuro));
     font-size: 0.9rem;
+}
+
+.support-thread__indicator {
+    width: 9px;
+    height: 9px;
+    flex: 0 0 9px;
+    border-radius: 50%;
+    background: #22c55e;
+}
+
+.support-thread__indicator--attention {
+    background: #dc2626;
+}
+
+.support-thread__indicator--answered {
+    background: #22c55e;
 }
 
 .support-thread__top small,

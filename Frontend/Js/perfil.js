@@ -134,7 +134,6 @@ function setUpEvents(user) {
     const deleteAccountPassword = document.getElementById('delete-account-password');
     const deleteAccountFeedback = document.getElementById('delete-account-feedback');
     const deleteAccountSubmit = deleteAccountForm?.querySelector('.delete-account-modal__submit');
-
     document.querySelectorAll('.profile-avatar__option').forEach((button) => {
         button.addEventListener('click', () => {
             clearFeedback();
@@ -236,6 +235,46 @@ function setUpEvents(user) {
     });
 }
 
+async function initVersionSection() {
+    const message = document.getElementById('profile-version-message');
+    const btn = document.getElementById('profile-switch-version');
+    const label = document.getElementById('profile-switch-version-label');
+
+    let env = 'blue';
+    try {
+        const res = await fetch(`${getApiBaseUrl()}/api/health`);
+        const data = await res.json();
+        env = data.env || 'blue';
+    } catch (_) {}
+
+    const isGreen = env === 'green';
+
+    if (message) {
+        message.textContent = isGreen
+            ? 'Estás en la versión Green (v2). Puedes regresar a la versión Blue cuando quieras.'
+            : 'Estás en la versión Blue (v1). Puedes probar la versión Green cuando quieras.';
+    }
+
+    if (btn && label) {
+        label.textContent = isGreen ? 'Regresar a versión azul' : 'Cambiar a v2 Green';
+        btn.hidden = false;
+
+        btn.addEventListener('click', () => {
+            const target = isGreen ? 'blue' : 'green';
+            document.cookie = `hardoquin_version=${target}; Path=/; Max-Age=31536000; SameSite=Lax`;
+            localStorage.setItem('hardoquin_version', target);
+            sessionStorage.removeItem('latestSimulation');
+            sessionStorage.setItem(
+                'versionSwitchNotice',
+                target === 'green'
+                    ? 'Estás usando la versión Green. Puedes regresar a la versión azul desde Mi Perfil.'
+                    : 'Estás usando la versión Blue. Puedes probar la versión Green desde el menú superior.'
+            );
+            window.location.href = '/Frontend/index.html';
+        });
+    }
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
     await initNavbar();
     await initFooter();
@@ -246,4 +285,5 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     fillProfile(user);
     setUpEvents(user);
+    initVersionSection();
 });

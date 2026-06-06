@@ -8,6 +8,7 @@ const usuariosRouter = require('./routes/usuarios');
 const simulacionesRouter = require('./routes/simulaciones');
 const tablonRouter = require('./routes/tablon');
 const materialesRouter = require('./routes/materiales');
+const chatRouter = require('./routes/chat');
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -33,11 +34,14 @@ app.use('/api/usuarios', usuariosRouter);
 app.use('/api/simulaciones', simulacionesRouter);
 app.use('/api/materiales', materialesRouter);
 app.use('/api/tablon', tablonRouter);
+app.use('/api/admin/chat', chatRouter);
 
 app.get('/api/health', (_req, res) => {
     res.json({
         ok: true,
-        message: 'Backend Hardoquin activo'
+        message: 'Backend Hardoquin activo',
+        version: process.env.APP_VERSION || '1.0.0',
+        env: process.env.APP_ENV || 'blue'
     });
 });
 

@@ -268,6 +268,7 @@ app.get('/api/admin/chat/conversations', requireAdmin, async (_req, res) => {
                 last_msg.message AS last_message,
                 last_msg.sender_type AS last_sender_type,
                 last_msg.created_at AS last_message_at,
+                (last_msg.sender_type = 'user') AS needs_attention,
                 COALESCE(last_user.metadata->>'nick', 'Cliente') AS customer_name,
                 COUNT(m.id) FILTER (WHERE m.sender_type = 'user') AS customer_messages
              FROM chat_conversations c

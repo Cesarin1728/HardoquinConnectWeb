@@ -1,2 +1,0 @@
-cd "/Users/4lexlc/Documents/VS CODE/HardoquinConnectWeb/blue-green"
-docker compose up -d --build
