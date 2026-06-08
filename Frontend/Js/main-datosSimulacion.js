@@ -194,7 +194,7 @@ form.addEventListener('input', clearSimulationError);
 const btnRainSense = document.querySelector('.request-data__btn--rain-sense');
 
 btnRainSense.addEventListener('click', () => {
-    //CESAR LABURA AQUI 
+    //CESAR LABURA AQUI sas
     console.log('click btn rain sense');
 });
 
