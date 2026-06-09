@@ -9,3 +9,9 @@ cd "/Users/4lexlc/Documents/VS CODE/HardoquinConnectWeb/blue-green"
 
 PARA INGRESAR ES ESTA URL 
 http://127.0.0.1:8088/Frontend/index.html
+
+wsl
+cd "/mnt/c/Users/acer/Desktop/Escuela/WEB Kegovc/ArchivosHardoquin/blue-green"
+docker compose down
+docker compose up -d --build
+sed -i -e 's/\r$//' switch.sh
