@@ -89,6 +89,23 @@
         </section>
     </main>
     <footer id="main__footer" class="footer"></footer>
+
+    <!-- Modal BLE RainSense -->
+    <div id="modal-bluetooth" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:2000;align-items:center;justify-content:center;">
+        <div style="background:#fff;width:min(340px,calc(100% - 32px));border-radius:12px;padding:28px 24px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.25);">
+            <h3 style="margin:0 0 8px;font-size:1.2rem;">Conectar RainSense</h3>
+            <p id="estado-conexion" style="font-size:.875rem;color:#666;margin:0 0 20px;">
+                Asegúrate de que el ESP32 esté encendido.
+            </p>
+            <button id="btn-iniciar-conexion" class="btn--primary" style="width:100%;margin-bottom:10px;">
+                Buscar ESP32
+            </button>
+            <button id="btn-cerrar-modal" style="width:100%;padding:8px;background:none;border:1px solid #ccc;border-radius:6px;cursor:pointer;font-size:.875rem;">
+                Cancelar
+            </button>
+        </div>
+    </div>
+
     <script src="https://unpkg.com/lucide@0.555.0"></script>
     <script type="module" src="../Js/main-datosSimulacion.js"></script>
 </body>
