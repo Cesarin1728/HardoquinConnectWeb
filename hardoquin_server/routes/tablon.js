@@ -1,6 +1,6 @@
 const express = require('express');
 const prisma = require('../prismaClient');
-const { getRelativeTime, handleError, requireFields, toNumber } = require('./helpers');
+const { getRelativeTime, handleError, requireFields, toNumber, getRequesterFromToken } = require('./helpers');
 
 const router = express.Router();
 const DEFAULT_PROFILE_PHOTO = 'Assets/ImagenesPerfil/usuarioimg0.png';
@@ -38,6 +38,7 @@ function formatPost(post, currentUserId = null) {
         title: post.title,
         category: post.category,
         message: post.message,
+        featured: post.featured ?? false,
         relativeCreatedDate: getRelativeTime(post.created_at),
         likes: post.likes.length,
         liked: currentUserId ? post.likes.some((like) => like.user_id === currentUserId) : false,
@@ -238,23 +239,23 @@ router.delete('/:id', async (req, res) => {
         const id = toNumber(req.params.id);
         if (!id) return res.status(400).json({ ok: false, message: 'ID invalido.' });
 
-        const deletedPost = await prisma.$transaction(async (tx) => {
-            await tx.likes.deleteMany({ where: { post_id: id } });
-            await tx.replies.deleteMany({ where: { post_id: id } });
-            return tx.posts.deleteMany({ where: { id } });
-        });
+        const requester = getRequesterFromToken(req);
+        if (!requester) return res.status(401).json({ ok: false, message: 'Autenticacion requerida.' });
 
-        if (deletedPost.count === 0) {
-            return res.status(404).json({
-                ok: false,
-                message: 'Mensaje no encontrado.'
-            });
+        const post = await prisma.posts.findUnique({ where: { id }, select: { user_id: true } });
+        if (!post) return res.status(404).json({ ok: false, message: 'Mensaje no encontrado.' });
+
+        if (requester.role !== 'admin' && requester.id !== post.user_id) {
+            return res.status(403).json({ ok: false, message: 'No tienes permiso para eliminar este mensaje.' });
         }
 
-        res.json({
-            ok: true,
-            message: 'Mensaje eliminado.'
+        await prisma.$transaction(async (tx) => {
+            await tx.likes.deleteMany({ where: { post_id: id } });
+            await tx.replies.deleteMany({ where: { post_id: id } });
+            await tx.posts.delete({ where: { id } });
         });
+
+        res.json({ ok: true, message: 'Mensaje eliminado.' });
     } catch (error) {
         handleError(res, error);
     }
@@ -336,19 +337,19 @@ router.delete('/respuestas/:replyId', async (req, res) => {
         const replyId = toNumber(req.params.replyId);
         if (!replyId) return res.status(400).json({ ok: false, message: 'ID de respuesta invalido.' });
 
-        const deletedReply = await prisma.replies.deleteMany({ where: { id: replyId } });
+        const requester = getRequesterFromToken(req);
+        if (!requester) return res.status(401).json({ ok: false, message: 'Autenticacion requerida.' });
 
-        if (deletedReply.count === 0) {
-            return res.status(404).json({
-                ok: false,
-                message: 'Respuesta no encontrada.'
-            });
+        const reply = await prisma.replies.findUnique({ where: { id: replyId }, select: { user_id: true } });
+        if (!reply) return res.status(404).json({ ok: false, message: 'Respuesta no encontrada.' });
+
+        if (requester.role !== 'admin' && requester.id !== reply.user_id) {
+            return res.status(403).json({ ok: false, message: 'No tienes permiso para eliminar esta respuesta.' });
         }
 
-        res.json({
-            ok: true,
-            message: 'Respuesta eliminada.'
-        });
+        await prisma.replies.delete({ where: { id: replyId } });
+
+        res.json({ ok: true, message: 'Respuesta eliminada.' });
     } catch (error) {
         handleError(res, error);
     }

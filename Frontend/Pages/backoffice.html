@@ -27,35 +27,181 @@
 
         <section class="backoffice__notice" id="bo-notice" hidden></section>
 
-        <section class="support-board" id="support-board" hidden>
-            <aside class="support-inbox" aria-label="Conversaciones de soporte">
-                <header class="support-inbox__header">
-                    <h2>Mensajes de clientes</h2>
-                    <span class="support-inbox__count" id="bo-count">0</span>
-                </header>
-                <div class="support-inbox__list" id="bo-conversations"></div>
-            </aside>
+        <div id="bo-main" hidden>
+            <nav class="bo-tabs" role="tablist" aria-label="Secciones del backoffice">
+                <button class="bo-tab bo-tab--active" data-tab="chat" role="tab" aria-selected="true">
+                    <i data-lucide="message-square"></i>
+                    Chat de Soporte
+                </button>
+                <button class="bo-tab" data-tab="usuarios" role="tab" aria-selected="false">
+                    <i data-lucide="users"></i>
+                    Usuarios
+                </button>
+                <button class="bo-tab" data-tab="tablon" role="tab" aria-selected="false">
+                    <i data-lucide="layout-list"></i>
+                    Tablón
+                </button>
+                <button class="bo-tab" data-tab="precios" role="tab" aria-selected="false">
+                    <i data-lucide="tag"></i>
+                    Precios
+                </button>
+                <button class="bo-tab" data-tab="simulaciones" role="tab" aria-selected="false">
+                    <i data-lucide="flask-conical"></i>
+                    Simulaciones
+                </button>
+            </nav>
 
-            <section class="support-chat" aria-label="Chat seleccionado">
-                <header class="support-chat__header">
-                    <div>
-                        <strong id="bo-chat-name">Selecciona una conversación</strong>
-                        <p id="bo-chat-meta">Los mensajes aparecerán aquí.</p>
-                    </div>
-                    <span class="support-chat__status" id="bo-chat-status">Sin selección</span>
-                </header>
+            <!-- Chat de Soporte -->
+            <section class="bo-panel" data-panel="chat">
+                <div class="support-board" id="support-board">
+                    <aside class="support-inbox" aria-label="Conversaciones de soporte">
+                        <header class="support-inbox__header">
+                            <h2>Mensajes de clientes</h2>
+                            <span class="support-inbox__count" id="bo-count">0</span>
+                        </header>
+                        <div class="support-inbox__list" id="bo-conversations"></div>
+                    </aside>
 
-                <div class="support-chat__messages" id="bo-messages"></div>
+                    <section class="support-chat" aria-label="Chat seleccionado">
+                        <header class="support-chat__header">
+                            <div>
+                                <strong id="bo-chat-name">Selecciona una conversación</strong>
+                                <p id="bo-chat-meta">Los mensajes aparecerán aquí.</p>
+                            </div>
+                            <span class="support-chat__status" id="bo-chat-status">Sin selección</span>
+                        </header>
 
-                <form class="support-chat__reply" id="bo-reply-form">
-                    <input id="bo-reply-input" type="text" maxlength="500" placeholder="Responder al cliente..." autocomplete="off" disabled>
-                    <button id="bo-send" type="submit" disabled>
-                        <i data-lucide="send"></i>
-                        Enviar
-                    </button>
-                </form>
+                        <div class="support-chat__messages" id="bo-messages"></div>
+
+                        <form class="support-chat__reply" id="bo-reply-form">
+                            <input id="bo-reply-input" type="text" maxlength="500" placeholder="Responder al cliente..." autocomplete="off" disabled>
+                            <button id="bo-send" type="submit" disabled>
+                                <i data-lucide="send"></i>
+                                Enviar
+                            </button>
+                        </form>
+                    </section>
+                </div>
             </section>
-        </section>
+
+            <!-- Usuarios -->
+            <section class="bo-panel" data-panel="usuarios" hidden>
+                <div class="bo-filters">
+                    <input class="bo-filter-input" type="text" id="users-q" placeholder="Nombre o correo…" autocomplete="off">
+                    <input class="bo-filter-input bo-filter-input--date" type="date" id="users-from" title="Desde">
+                    <input class="bo-filter-input bo-filter-input--date" type="date" id="users-to" title="Hasta">
+                    <button class="bo-filter-btn" id="users-search-btn" type="button">
+                        <i data-lucide="search"></i>
+                        Buscar
+                    </button>
+                </div>
+                <div class="bo-table-wrap">
+                    <table class="bo-table" id="users-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Usuario</th>
+                                <th>Correo</th>
+                                <th>Rol</th>
+                                <th>Registro</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-tbody">
+                            <tr><td colspan="5" class="bo-table__empty">Usa el buscador para encontrar usuarios.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Tablón -->
+            <section class="bo-panel" data-panel="tablon" hidden>
+                <div class="bo-filters">
+                    <input class="bo-filter-input" type="text" id="tablon-q" placeholder="Buscar publicación…" autocomplete="off">
+                    <label class="bo-filter-check">
+                        <input type="checkbox" id="tablon-featured-only">
+                        Solo destacadas
+                    </label>
+                    <button class="bo-filter-btn" id="tablon-search-btn" type="button">
+                        <i data-lucide="search"></i>
+                        Buscar
+                    </button>
+                </div>
+                <div class="bo-table-wrap">
+                    <table class="bo-table" id="tablon-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Autor</th>
+                                <th>Título / Mensaje</th>
+                                <th>Categoría</th>
+                                <th>Likes</th>
+                                <th>Fecha</th>
+                                <th>Destacar</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablon-tbody">
+                            <tr><td colspan="7" class="bo-table__empty">Usa el buscador para ver publicaciones.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Precios -->
+            <section class="bo-panel" data-panel="precios" hidden>
+                <p class="bo-section-desc">Ajusta el costo aproximado por m² de cada material. Estos valores se usan en las simulaciones.</p>
+                <div class="bo-table-wrap">
+                    <table class="bo-table" id="precios-table">
+                        <thead>
+                            <tr>
+                                <th>Material</th>
+                                <th>Vida útil (años)</th>
+                                <th>Permeabilidad (%)</th>
+                                <th>Costo por m²</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="precios-tbody">
+                            <tr><td colspan="5" class="bo-table__empty">Cargando materiales…</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Simulaciones -->
+            <section class="bo-panel" data-panel="simulaciones" hidden>
+                <div class="bo-filters">
+                    <input class="bo-filter-input" type="text" id="sim-q" placeholder="Buscar por título…" autocomplete="off">
+                    <input class="bo-filter-input bo-filter-input--date" type="date" id="sim-from" title="Desde">
+                    <input class="bo-filter-input bo-filter-input--date" type="date" id="sim-to" title="Hasta">
+                    <button class="bo-filter-btn" id="sim-search-btn" type="button">
+                        <i data-lucide="search"></i>
+                        Buscar
+                    </button>
+                    <button class="bo-filter-btn bo-filter-btn--secondary" id="sim-export-btn" type="button" disabled>
+                        <i data-lucide="download"></i>
+                        Exportar CSV
+                    </button>
+                </div>
+                <div class="bo-table-wrap">
+                    <table class="bo-table" id="sim-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Título</th>
+                                <th>Usuario</th>
+                                <th>Área m²</th>
+                                <th>Lluvia %</th>
+                                <th>Tránsito %</th>
+                                <th>Fecha</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sim-tbody">
+                            <tr><td colspan="7" class="bo-table__empty">Usa el buscador para ver simulaciones.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
     </main>
 
     <footer id="main__footer" class="footer"></footer>

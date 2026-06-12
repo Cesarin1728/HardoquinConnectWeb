@@ -12,6 +12,7 @@ const usuariosRouter     = require('./routes/usuarios');
 const simulacionesRouter = require('./routes/simulaciones');
 const tablonRouter       = require('./routes/tablon');
 const materialesRouter   = require('./routes/materiales');
+const adminRouter        = require('./routes/admin');
 
 const app    = express();
 const server = http.createServer(app);
@@ -367,6 +368,7 @@ app.use('/api/usuarios',     usuariosRouter);
 app.use('/api/simulaciones', simulacionesRouter);
 app.use('/api/materiales',   materialesRouter);
 app.use('/api/tablon',       tablonRouter);
+app.use('/api/admin',        adminRouter);
 
 app.get('/api/health', async (_req, res) => {
     let faqCount = 0;
@@ -375,6 +377,7 @@ app.get('/api/health', async (_req, res) => {
         faqCount = parseInt(rows[0].c, 10);
     } catch (_) {}
 
+    res.set('Cache-Control', 'no-store');
     res.json({
         ok:        true,
         message:   'Backend Hardoquin v2.0 — Chat WebSocket + DB activo',

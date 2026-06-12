@@ -7,7 +7,8 @@ const categories = {
     experiencia: { label: 'Experiencia', color: '#52B788' },
     'duda-tecnica': { label: 'Duda técnica', color: '#028090' },
     'caso-uso': { label: 'Caso de uso', color: '#1B4F72' },
-    general: { label: 'General', color: '#A9CCE3' }
+    general: { label: 'General', color: '#A9CCE3' },
+    destacadas: { label: 'Destacadas', color: '#d97706' }
 };
 
 let activeCategory = 'all';
@@ -74,9 +75,11 @@ function renderAvatar(user = {}, className = 'avatar') {
 }
 
 async function apiRequest(path, options = {}) {
+    const token = sessionStorage.getItem('authToken');
     const response = await fetch(`${getApiBaseUrl()}${path}`, {
         headers: {
             'Content-Type': 'application/json',
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
             ...(options.headers || {})
         },
         ...options
@@ -116,7 +119,8 @@ function getVisiblePosts() {
     const query = (search.value || '').toLowerCase();
 
     const visiblePosts = posts.filter((post) => {
-        const matchesCategory = activeCategory === 'all' || post.category === activeCategory;
+        const matchesCategory = activeCategory === 'all'
+            || (activeCategory === 'destacadas' ? post.featured : post.category === activeCategory);
         const matchesQuery = !query
             || (post.title || '').toLowerCase().includes(query)
             || post.message.toLowerCase().includes(query)
@@ -137,13 +141,15 @@ function updateCounts() {
     ['experiencia', 'duda-tecnica', 'caso-uso', 'general'].forEach((categoryKey) => {
         document.getElementById(`count-${categoryKey}`).textContent = posts.filter((post) => post.category === categoryKey).length;
     });
+
+    document.getElementById('count-destacadas').textContent = posts.filter((post) => post.featured).length;
 }
 
 function renderReplies(post, isOpen) {
     const currentUser = getCurrentUser();
     const replies = post.replies.map((reply) => {
         const menuId = `reply-menu-${post.id}-${reply.id}`;
-        const canDelete = currentUser?.id === reply.user.id;
+        const canDelete = currentUser?.id === reply.user.id || currentUser?.role === 'admin';
 
         return `
         <li class="reply">
@@ -209,10 +215,10 @@ function renderPost(post, openReplyIds) {
     const isOpen = openReplyIds.has(String(post.id)) || post.replies.length > 0;
     const category = categories[post.category] || categories.general;
     const menuId = `post-menu-${post.id}`;
-    const canDelete = currentUser?.id === post.user.id;
+    const canDelete = currentUser?.id === post.user.id || currentUser?.role === 'admin';
 
     return `
-        <article class="community-post">
+        <article class="community-post${post.featured ? ' community-post--featured' : ''}">
             <header class="community-post__header">
                 ${renderAvatar(post.user)}
                 <section class="community-post__meta">
@@ -220,6 +226,7 @@ function renderPost(post, openReplyIds) {
                     <time class="community-post__time">${escapeHtml(post.relativeCreatedDate)}</time>
                 </section>
                 <section class="community-post__controls">
+                    ${post.featured ? `<span class="post-featured-badge" title="Publicación destacada por el equipo" aria-label="Destacada"><i data-lucide="star" aria-hidden="true"></i></span>` : ''}
                     <span class="community-post__category" style="${getCategoryStyle(post.category)}">${escapeHtml(category.label)}</span>
                     ${canDelete ? `
                     <section class="post-menu">

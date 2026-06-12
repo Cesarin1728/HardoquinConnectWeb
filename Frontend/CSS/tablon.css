@@ -100,6 +100,10 @@
     background-color: rgb(var(--color-claro));
 }
 
+.category-nav__dot--featured {
+    background-color: #f59e0b;
+}
+
 .category-nav__count {
     margin-left: auto;
     padding: 1px 6px;
@@ -239,6 +243,34 @@
 .community-post:hover {
     border-color: #c5d8e8;
     box-shadow: 0 2px 8px rgba(var(--color-primario), 0.06);
+}
+
+.community-post--featured {
+    border-color: #fcd34d;
+    border-left: 3px solid #f59e0b;
+    background-color: #fffdf7;
+}
+
+.community-post--featured:hover {
+    border-color: #f59e0b;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.12);
+}
+
+.post-featured-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    color: #f59e0b;
+}
+
+.post-featured-badge svg {
+    width: 15px;
+    height: 15px;
+    fill: #f59e0b;
+    stroke: #d97706;
 }
 
 .community-post__header {

@@ -12,6 +12,6 @@ if [ "$ENVIRONMENT" != "blue" ] && [ "$ENVIRONMENT" != "green" ]; then
 fi
 
 cp "nginx/nginx-$ENVIRONMENT.conf" "nginx/nginx.conf"
-docker compose up -d --build nginx
+docker compose up -d --build --no-deps nginx
 
 echo "Nginx apunta a $ENVIRONMENT en http://localhost:8088"

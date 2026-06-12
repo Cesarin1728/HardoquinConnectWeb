@@ -4,6 +4,7 @@ import { initFooter } from './footer.js';
 let conversations = [];
 let selectedConversationId = null;
 let refreshTimer = null;
+let currentSimulations = [];
 
 function getApiBaseUrl() {
     const localHosts = ['localhost', '127.0.0.1'];
@@ -55,12 +56,21 @@ function clearNotice() {
 }
 
 function formatDate(value) {
-    if (!value) return 'Sin mensajes';
+    if (!value) return '—';
     return new Intl.DateTimeFormat('es-MX', {
         hour: '2-digit',
         minute: '2-digit',
         day: '2-digit',
         month: 'short'
+    }).format(new Date(value));
+}
+
+function formatDateShort(value) {
+    if (!value) return '—';
+    return new Intl.DateTimeFormat('es-MX', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
     }).format(new Date(value));
 }
 
@@ -77,6 +87,51 @@ function escapeHtml(str) {
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;');
 }
+
+async function requestJson(path, options = {}) {
+    const res = await fetch(`${getApiBaseUrl()}${path}`, {
+        ...options,
+        headers: {
+            ...authHeaders(),
+            ...(options.headers || {})
+        }
+    });
+    const data = await res.json();
+
+    if (!res.ok || !data.ok) {
+        throw new Error(data.message || 'No se pudo completar la operación.');
+    }
+
+    return data;
+}
+
+// ── Tab switching ─────────────────────────────────────────────────────────────
+
+function initTabs() {
+    const tabBtns = document.querySelectorAll('.bo-tab');
+    const panels = document.querySelectorAll('.bo-panel');
+
+    tabBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const target = btn.dataset.tab;
+
+            tabBtns.forEach((t) => {
+                t.classList.toggle('bo-tab--active', t === btn);
+                t.setAttribute('aria-selected', String(t === btn));
+            });
+
+            panels.forEach((panel) => {
+                panel.hidden = panel.dataset.panel !== target;
+            });
+
+            clearNotice();
+
+            if (target === 'precios') loadPrecios();
+        });
+    });
+}
+
+// ── Chat de Soporte ───────────────────────────────────────────────────────────
 
 function renderConversations() {
     const list = document.getElementById('bo-conversations');
@@ -123,23 +178,6 @@ function renderMessages(messages) {
         </article>
     `).join('');
     box.scrollTop = box.scrollHeight;
-}
-
-async function requestJson(path, options = {}) {
-    const res = await fetch(`${getApiBaseUrl()}${path}`, {
-        ...options,
-        headers: {
-            ...authHeaders(),
-            ...(options.headers || {})
-        }
-    });
-    const data = await res.json();
-
-    if (!res.ok || !data.ok) {
-        throw new Error(data.message || 'No se pudo completar la operación.');
-    }
-
-    return data;
 }
 
 function joinConversation(conversationId) {
@@ -227,10 +265,298 @@ async function sendReply(event) {
     }
 }
 
+// ── Usuarios ─────────────────────────────────────────────────────────────────
+
+function renderUsers(users) {
+    const tbody = document.getElementById('users-tbody');
+
+    if (!users.length) {
+        tbody.innerHTML = '<tr><td colspan="5" class="bo-table__empty">No se encontraron usuarios.</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = users.map((user) => `
+        <tr>
+            <td class="bo-table__id">#${user.id}</td>
+            <td>
+                <span class="bo-user-name">${escapeHtml(user.username)}</span>
+            </td>
+            <td class="bo-table__email">${escapeHtml(user.email)}</td>
+            <td>
+                <span class="bo-role bo-role--${user.role}">${escapeHtml(user.role)}</span>
+            </td>
+            <td class="bo-table__date">${formatDateShort(user.created_at)}</td>
+        </tr>
+    `).join('');
+}
+
+async function searchUsers() {
+    const q = document.getElementById('users-q').value.trim();
+    const from = document.getElementById('users-from').value;
+    const to = document.getElementById('users-to').value;
+
+    const params = new URLSearchParams();
+    if (q) params.set('q', q);
+    if (from) params.set('from', from);
+    if (to) params.set('to', to);
+
+    try {
+        const data = await requestJson(`/api/admin/usuarios?${params}`);
+        renderUsers(data.users);
+    } catch (error) {
+        showNotice(error.message);
+    }
+}
+
+// ── Tablón ────────────────────────────────────────────────────────────────────
+
+function renderTablon(posts) {
+    const tbody = document.getElementById('tablon-tbody');
+
+    if (!posts.length) {
+        tbody.innerHTML = '<tr><td colspan="7" class="bo-table__empty">No se encontraron publicaciones.</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = posts.map((post) => `
+        <tr id="tablon-row-${post.id}">
+            <td class="bo-table__id">#${post.id}</td>
+            <td>${escapeHtml(post.user.username)}</td>
+            <td class="bo-table__text">
+                ${post.title ? `<strong>${escapeHtml(post.title)}</strong><br>` : ''}
+                <span class="bo-table__preview">${escapeHtml(post.message)}</span>
+            </td>
+            <td><span class="bo-category">${escapeHtml(post.category)}</span></td>
+            <td class="bo-table__stats">${post.likes} / ${post.replies}</td>
+            <td class="bo-table__date">${formatDateShort(post.created_at)}</td>
+            <td>
+                <button class="bo-featured-btn ${post.featured ? 'bo-featured-btn--on' : ''}"
+                    data-post-id="${post.id}"
+                    title="${post.featured ? 'Quitar destacado' : 'Destacar publicación'}"
+                    type="button">
+                    <i data-lucide="${post.featured ? 'star' : 'star'}"></i>
+                    ${post.featured ? 'Destacada' : 'Destacar'}
+                </button>
+            </td>
+        </tr>
+    `).join('');
+
+    lucide.createIcons();
+}
+
+async function searchTablon() {
+    const q = document.getElementById('tablon-q').value.trim();
+    const featuredOnly = document.getElementById('tablon-featured-only').checked;
+
+    const params = new URLSearchParams();
+    if (q) params.set('q', q);
+    if (featuredOnly) params.set('featured', 'true');
+
+    try {
+        const data = await requestJson(`/api/admin/tablon?${params}`);
+        renderTablon(data.posts);
+    } catch (error) {
+        showNotice(error.message);
+    }
+}
+
+async function toggleFeatured(postId) {
+    try {
+        const data = await requestJson(`/api/admin/tablon/${postId}/destacar`, { method: 'PATCH' });
+        const btn = document.querySelector(`[data-post-id="${postId}"]`);
+        if (btn) {
+            btn.classList.toggle('bo-featured-btn--on', data.featured);
+            btn.title = data.featured ? 'Quitar destacado' : 'Destacar publicación';
+            btn.innerHTML = `<i data-lucide="star"></i> ${data.featured ? 'Destacada' : 'Destacar'}`;
+            lucide.createIcons();
+        }
+        showNotice(
+            data.featured ? 'Publicación marcada como destacada.' : 'Publicación ya no está destacada.',
+            'success'
+        );
+    } catch (error) {
+        showNotice(error.message);
+    }
+}
+
+// ── Precios ───────────────────────────────────────────────────────────────────
+
+function renderPrecios(materials) {
+    const tbody = document.getElementById('precios-tbody');
+
+    if (!materials.length) {
+        tbody.innerHTML = '<tr><td colspan="5" class="bo-table__empty">No hay materiales.</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = materials.map((mat) => `
+        <tr id="precio-row-${mat.id}">
+            <td><strong>${escapeHtml(mat.name)}</strong></td>
+            <td>${mat.usefulLife} años</td>
+            <td>${mat.permeability}%</td>
+            <td class="bo-price-cell" id="precio-display-${mat.id}">
+                $${mat.costPerM2.toFixed(2)}
+            </td>
+            <td>
+                <button class="bo-edit-btn" data-mat-id="${mat.id}" data-cost="${mat.costPerM2}" type="button">
+                    <i data-lucide="pencil"></i>
+                    Editar
+                </button>
+            </td>
+        </tr>
+    `).join('');
+
+    lucide.createIcons();
+}
+
+async function loadPrecios() {
+    try {
+        const data = await requestJson('/api/admin/materiales');
+        renderPrecios(data.materials);
+    } catch (error) {
+        showNotice(error.message);
+    }
+}
+
+function startEditPrice(matId, currentCost) {
+    const cell = document.getElementById(`precio-display-${matId}`);
+    const btn = document.querySelector(`[data-mat-id="${matId}"]`);
+    if (!cell || !btn) return;
+
+    cell.innerHTML = `
+        <div class="bo-price-edit">
+            <span class="bo-price-edit__prefix">$</span>
+            <input class="bo-price-edit__input" id="precio-input-${matId}" type="number" min="0.01" step="0.01" value="${currentCost}" autocomplete="off">
+        </div>
+    `;
+
+    btn.innerHTML = '<i data-lucide="check"></i> Guardar';
+    btn.dataset.editing = 'true';
+    lucide.createIcons();
+
+    document.getElementById(`precio-input-${matId}`)?.focus();
+}
+
+async function savePrice(matId) {
+    const input = document.getElementById(`precio-input-${matId}`);
+    const value = parseFloat(input?.value);
+
+    if (!input || isNaN(value) || value <= 0) {
+        showNotice('Ingresa un precio válido mayor a 0.');
+        return;
+    }
+
+    const btn = document.querySelector(`[data-mat-id="${matId}"]`);
+    btn.disabled = true;
+
+    try {
+        const data = await requestJson(`/api/admin/materiales/${matId}`, {
+            method: 'PUT',
+            body: JSON.stringify({ costPerM2: value })
+        });
+
+        const cell = document.getElementById(`precio-display-${matId}`);
+        cell.textContent = `$${data.material.costPerM2.toFixed(2)}`;
+
+        btn.dataset.cost = data.material.costPerM2;
+        btn.dataset.editing = '';
+        btn.innerHTML = '<i data-lucide="pencil"></i> Editar';
+        lucide.createIcons();
+
+        showNotice(`Precio de ${data.material.name} actualizado.`, 'success');
+    } catch (error) {
+        showNotice(error.message);
+    } finally {
+        btn.disabled = false;
+    }
+}
+
+// ── Simulaciones ──────────────────────────────────────────────────────────────
+
+function renderSimulaciones(simulations) {
+    const tbody = document.getElementById('sim-tbody');
+    const exportBtn = document.getElementById('sim-export-btn');
+
+    currentSimulations = simulations;
+    exportBtn.disabled = simulations.length === 0;
+
+    if (!simulations.length) {
+        tbody.innerHTML = '<tr><td colspan="7" class="bo-table__empty">No se encontraron simulaciones.</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = simulations.map((sim) => `
+        <tr>
+            <td class="bo-table__id">#${sim.id}</td>
+            <td>${escapeHtml(sim.title)}</td>
+            <td>
+                <span class="bo-user-name">${escapeHtml(sim.users?.username || '—')}</span>
+                <span class="bo-table__email">${escapeHtml(sim.users?.email || '')}</span>
+            </td>
+            <td>${sim.area} m²</td>
+            <td>${sim.rain_level}%</td>
+            <td>${sim.traffic_level}%</td>
+            <td class="bo-table__date">${formatDateShort(sim.created_at)}</td>
+        </tr>
+    `).join('');
+}
+
+async function searchSimulaciones() {
+    const q = document.getElementById('sim-q').value.trim();
+    const from = document.getElementById('sim-from').value;
+    const to = document.getElementById('sim-to').value;
+
+    const params = new URLSearchParams();
+    if (q) params.set('q', q);
+    if (from) params.set('from', from);
+    if (to) params.set('to', to);
+
+    try {
+        const data = await requestJson(`/api/admin/simulaciones?${params}`);
+        renderSimulaciones(data.simulations);
+    } catch (error) {
+        showNotice(error.message);
+    }
+}
+
+function exportSimulacionesCsv() {
+    if (!currentSimulations.length) return;
+
+    const headers = ['ID', 'Título', 'Usuario', 'Email', 'Área (m²)', 'Lluvia (%)', 'Tránsito (%)', 'Fecha'];
+
+    const rows = currentSimulations.map((sim) => [
+        sim.id,
+        `"${(sim.title || '').replace(/"/g, '""')}"`,
+        `"${(sim.users?.username || '').replace(/"/g, '""')}"`,
+        `"${(sim.users?.email || '').replace(/"/g, '""')}"`,
+        sim.area,
+        sim.rain_level,
+        sim.traffic_level,
+        sim.created_at ? new Date(sim.created_at).toISOString().slice(0, 10) : ''
+    ]);
+
+    const csv = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `simulaciones_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+// ── Event binding ─────────────────────────────────────────────────────────────
+
 function bindEvents() {
     document.getElementById('bo-refresh').addEventListener('click', async () => {
         clearNotice();
-        await loadConversations();
+        const activePanel = document.querySelector('.bo-panel:not([hidden])')?.dataset.panel;
+        if (activePanel === 'chat') await loadConversations();
+        if (activePanel === 'usuarios') await searchUsers();
+        if (activePanel === 'tablon') await searchTablon();
+        if (activePanel === 'precios') await loadPrecios();
+        if (activePanel === 'simulaciones') await searchSimulaciones();
     });
 
     document.getElementById('bo-conversations').addEventListener('click', async (event) => {
@@ -241,13 +567,58 @@ function bindEvents() {
     });
 
     document.getElementById('bo-reply-form').addEventListener('submit', sendReply);
+
+    document.getElementById('users-search-btn').addEventListener('click', () => {
+        clearNotice();
+        searchUsers();
+    });
+    document.getElementById('users-q').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { clearNotice(); searchUsers(); }
+    });
+
+    document.getElementById('tablon-search-btn').addEventListener('click', () => {
+        clearNotice();
+        searchTablon();
+    });
+    document.getElementById('tablon-q').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { clearNotice(); searchTablon(); }
+    });
+
+    document.getElementById('tablon-tbody').addEventListener('click', (e) => {
+        const btn = e.target.closest('.bo-featured-btn');
+        if (!btn) return;
+        clearNotice();
+        toggleFeatured(Number(btn.dataset.postId));
+    });
+
+    document.getElementById('precios-tbody').addEventListener('click', (e) => {
+        const btn = e.target.closest('.bo-edit-btn');
+        if (!btn) return;
+        clearNotice();
+        const matId = Number(btn.dataset.matId);
+        if (btn.dataset.editing === 'true') {
+            savePrice(matId);
+        } else {
+            startEditPrice(matId, btn.dataset.cost);
+        }
+    });
+
+    document.getElementById('sim-search-btn').addEventListener('click', () => {
+        clearNotice();
+        searchSimulaciones();
+    });
+    document.getElementById('sim-q').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { clearNotice(); searchSimulaciones(); }
+    });
+    document.getElementById('sim-export-btn').addEventListener('click', exportSimulacionesCsv);
 }
+
+// ── Init ──────────────────────────────────────────────────────────────────────
 
 async function initBackoffice() {
     await initNavbar();
     initFooter();
     activeTab('');
-    bindEvents();
 
     const { user, token } = getSession();
     if (!user || !token) {
@@ -260,11 +631,17 @@ async function initBackoffice() {
         return;
     }
 
-    document.getElementById('support-board').hidden = false;
+    document.getElementById('bo-main').hidden = false;
+
+    initTabs();
+    bindEvents();
 
     try {
         await loadConversations({ keepSelection: false });
-        refreshTimer = setInterval(() => loadConversations().catch(() => {}), 10000);
+        refreshTimer = setInterval(() => {
+            const activePanel = document.querySelector('.bo-panel:not([hidden])')?.dataset.panel;
+            if (activePanel === 'chat') loadConversations().catch(() => {});
+        }, 10000);
     } catch (error) {
         showNotice(error.message);
     }

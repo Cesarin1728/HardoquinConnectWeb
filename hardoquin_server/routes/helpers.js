@@ -1,3 +1,20 @@
+const jwt = require('jsonwebtoken');
+
+function getJwtSecret() {
+    return process.env.JWT_SECRET || 'hardoquin-dev-secret';
+}
+
+function getRequesterFromToken(req) {
+    const header = req.headers.authorization || '';
+    const [type, token] = header.split(' ');
+    if (type !== 'Bearer' || !token) return null;
+    try {
+        return jwt.verify(token, getJwtSecret());
+    } catch (_) {
+        return null;
+    }
+}
+
 function toNumber(value) {
     const numberValue = Number(value);
     return Number.isFinite(numberValue) ? numberValue : null;
@@ -51,5 +68,6 @@ module.exports = {
     getRelativeTime,
     handleError,
     requireFields,
-    toNumber
+    toNumber,
+    getRequesterFromToken
 };

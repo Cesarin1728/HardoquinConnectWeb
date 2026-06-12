@@ -1,10 +1,13 @@
 const WS_PATH = '/ws/chat';
+const INACTIVITY_MS = 10 * 60 * 1000;
 
-let ws           = null;
-let panelOpen    = false;
-let reconnTimer  = null;
-let failCount    = 0;
+let ws               = null;
+let panelOpen        = false;
+let reconnTimer      = null;
+let failCount        = 0;
 let advisorDelayTimer = null;
+let inactivityTimer  = null;
+let sessionEnded     = false;
 
 function getBackendBaseUrl() {
     const localHosts = ['localhost', '127.0.0.1'];
@@ -115,17 +118,38 @@ function setStatus(state) {
     }
 }
 
+// ── Inactivity ────────────────────────────────────────────────────────────────
+
+function startInactivityTimer() {
+    clearTimeout(inactivityTimer);
+    inactivityTimer = setTimeout(() => {
+        clearTimeout(reconnTimer);
+        clearTimeout(advisorDelayTimer);
+        if (ws) { ws.close(); ws = null; }
+        sessionEnded = true;
+        addMsg({
+            tipo: 'sistema',
+            usuario: '',
+            texto: 'Chat cerrado por inactividad (10 min sin mensajes). Ábrelo de nuevo para continuar.'
+        });
+        setStatus('off');
+    }, INACTIVITY_MS);
+}
+
 // ── WebSocket ────────────────────────────────────────────────────────────────
 
 function connect() {
     if (ws && ws.readyState < 2) return;
 
     const url = getWsUrl();
-    try { ws = new WebSocket(url); } catch (_) { setStatus('off'); return; }
+    let socket;
+    try { socket = new WebSocket(url); } catch (_) { setStatus('off'); return; }
+    ws = socket;
 
     ws.onopen = () => {
         failCount = 0;
         setStatus('on');
+        startInactivityTimer();
     };
 
     ws.onmessage = ({ data }) => {
@@ -144,6 +168,7 @@ function connect() {
     };
 
     ws.onclose = () => {
+        if (ws !== socket) return; // cierre intencional — no reconectar
         failCount++;
         if (failCount >= 3) {
             setStatus('off');
@@ -165,6 +190,7 @@ function connect() {
 function disconnect() {
     clearTimeout(reconnTimer);
     clearTimeout(advisorDelayTimer);
+    clearTimeout(inactivityTimer);
     if (ws) { ws.close(); ws = null; }
 }
 
@@ -182,6 +208,7 @@ function send() {
     ws.send(JSON.stringify({ usuario: nick, texto }));
     inputEl.value = '';
     inputEl.focus();
+    startInactivityTimer();
 }
 
 // ── Public API ───────────────────────────────────────────────────────────────
@@ -190,7 +217,7 @@ export async function initChatSoporte() {
     const chatAction = document.getElementById('action-chat-soporte');
 
     try {
-        const res  = await fetch(`${getBackendBaseUrl()}/api/health`);
+        const res  = await fetch(`${getBackendBaseUrl()}/api/health`, { cache: 'no-store' });
         const data = await res.json();
         if (data.env !== 'green') {
             chatAction?.remove();
@@ -211,7 +238,6 @@ export async function initChatSoporte() {
     const sendEl  = document.getElementById('cs-send');
     const inputEl = document.getElementById('cs-input');
 
-    // Open from navbar dropdown (event delegation — button is injected later)
     document.addEventListener('click', (e) => {
         if (!e.target.closest('#action-chat-soporte')) return;
         e.preventDefault();
@@ -225,15 +251,25 @@ export async function initChatSoporte() {
     inputEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') send(); });
 
     function openChat() {
+        if (sessionEnded) {
+            const box = document.getElementById('cs-messages');
+            if (box) box.innerHTML = '';
+            sessionEnded = false;
+            setStatus('');
+        }
+
         widget.hidden = false;
         panelOpen     = true;
-        failCount     = 0;
-        connect();
+
+        if (!ws || ws.readyState > 1) {
+            failCount = 0;
+            connect();
+        }
     }
 
     function closeChat() {
         widget.hidden = true;
         panelOpen     = false;
-        disconnect();
+        // La conexión permanece activa; solo se cierra por el timer de inactividad
     }
 }

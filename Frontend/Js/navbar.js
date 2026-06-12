@@ -267,7 +267,7 @@ async function initVersionActions(user) {
     const greenOnlyLinks = document.querySelectorAll('[data-green-only]');
 
     try {
-        const res = await fetch(`${getApiBaseUrl()}/api/health`);
+        const res = await fetch(`${getApiBaseUrl()}/api/health`, { cache: 'no-store' });
         const data = await res.json();
         const isGreen = data.env === 'green';
 
